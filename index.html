@@ -1594,7 +1594,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
   /* ================= O'QUVCHILAR BO'LIMI — light / dark mavzuga moslashadi ================= */
   /* Modallar <body> ga portal orqali chiqadi (.stu-dark ning tashqarisida), shuning uchun
      ranglar o'zgaruvchilari .sd-backdrop uchun ham e'lon qilinadi — aks holda modal "yo'qolib" qoladi. */
-  .stu-dark, .sd-backdrop, .av-page{
+  .stu-dark, .sd-backdrop{
     /* ---- LIGHT (standart) ---- */
     --sd-bg:#eaf3ee;
     --sd-row:#FFFFFF;
@@ -1621,7 +1621,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
     display:flex; flex-direction:column;
   }
   /* ---- DARK ---- */
-  html.theme-dark .stu-dark, html.theme-dark .sd-backdrop, html.theme-dark .av-page{
+  html.theme-dark .stu-dark, html.theme-dark .sd-backdrop{
     --sd-bg:#0f1a15;
     --sd-row:#0f1a15;
     --sd-card:#0f1a15;
@@ -1933,170 +1933,117 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
     .kc-save .sd-btn{ flex:1; }
   }
 
-  /* ===== Yangi darslik joylash sahifasi (sidebar → Darslik qo'shish) ===== */
-  .av-page{ font-family:'Manrope', sans-serif; color:var(--sd-text); max-width:1180px; }
-  .av-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1.1rem; }
-  .av-head h1{ font-family:'Fraunces', serif; font-size:1.7rem; line-height:1.15; color:var(--sd-text); }
-  .av-head p{ font-size:.86rem; color:var(--sd-muted); margin-top:.25rem; }
-  .av-stats{ display:flex; gap:.5rem; flex-wrap:wrap; }
-  .av-stats span{ font-size:.76rem; color:var(--sd-muted); background:var(--sd-row); border:1px solid var(--sd-line); border-radius:999px; padding:.3rem .8rem; }
-  .av-stats b{ color:var(--sd-text); font-weight:800; }
-  .av-grid{ display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:1rem; align-items:start; }
-  .av-main{ display:flex; flex-direction:column; gap:1rem; min-width:0; }
-  .av-side{ position:sticky; top:1rem; display:flex; flex-direction:column; gap:1rem; min-width:0; }
-  .av-card{ background:var(--sd-row); border:1px solid var(--sd-line); border-radius:1.1rem; padding:1.15rem 1.2rem; }
-  .av-step{ display:flex; align-items:center; gap:.6rem; font-weight:800; font-size:.95rem; margin-bottom:1rem; color:var(--sd-text); }
-  .av-step span{ width:24px; height:24px; border-radius:50%; background:linear-gradient(135deg,#34d399,#a3e635); color:#052e1c; font-size:.75rem; font-weight:800; display:flex; align-items:center; justify-content:center; }
-  .av-chips{ display:flex; flex-wrap:wrap; gap:.45rem; }
-  .av-chips button{ display:inline-flex; flex-direction:column; align-items:flex-start; gap:.05rem; padding:.55rem .9rem; border-radius:.75rem; border:1px solid var(--sd-line); background:var(--sd-field); color:var(--sd-text); font-weight:700; font-size:.84rem; cursor:pointer; text-align:left; transition:border-color .15s ease, background .15s ease; }
-  .av-chips button small{ font-size:.68rem; color:var(--sd-muted); font-weight:600; }
-  .av-chips button:hover{ border-color:rgba(52,211,153,.6); }
-  .av-chips button.is-on{ border-color:#34d399; background:rgba(52,211,153,.14); }
-  .av-subs{ display:flex; flex-direction:column; gap:.4rem; max-height:260px; overflow:auto; padding-right:.2rem; }
-  .av-sub{ display:flex; align-items:center; gap:.7rem; padding:.55rem .75rem; border-radius:.75rem; border:1px solid var(--sd-line); background:var(--sd-field); color:var(--sd-text); cursor:pointer; text-align:left; transition:border-color .15s ease, background .15s ease; }
-  .av-sub:hover{ border-color:rgba(52,211,153,.6); }
-  .av-sub.is-on{ border-color:#34d399; background:rgba(52,211,153,.12); color:var(--c-green); }
-  .av-sub-ic{ width:30px; height:30px; flex:none; border-radius:.6rem; background:var(--sd-ghost); color:var(--sd-muted); font-size:.68rem; font-weight:800; display:flex; align-items:center; justify-content:center; overflow:hidden; }
-  .av-sub-ic img{ width:100%; height:100%; object-fit:cover; }
-  .av-sub-name{ flex:1; min-width:0; font-weight:700; font-size:.86rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .av-sub-n{ font-size:.72rem; color:var(--sd-muted); white-space:nowrap; }
-  .av-addsub{ margin-top:.7rem; display:inline-flex; align-items:center; gap:.4rem; font-size:.8rem; font-weight:700; color:var(--c-green); background:transparent; border:1px dashed rgba(52,211,153,.55); border-radius:.65rem; padding:.45rem .8rem; cursor:pointer; }
-  .av-addsub:hover{ background:rgba(52,211,153,.1); }
-  .av-newsub{ margin-top:.7rem; display:flex; gap:.45rem; flex-wrap:wrap; }
-  .av-newsub .sd-input{ flex:1; min-width:180px; }
-  .av-two{ display:grid; grid-template-columns:1fr 1fr; gap:0 1rem; }
-  .av-range{ text-transform:none; letter-spacing:0; font-weight:600; opacity:.8; }
-  .av-hint{ font-size:.72rem; color:var(--sd-muted); margin-top:.4rem; line-height:1.4; }
-  .av-err{ font-size:.76rem; color:var(--c-red); font-weight:700; margin-top:.4rem; }
-  .av-note{ font-size:.78rem; color:var(--sd-muted); line-height:1.5; margin-top:.7rem; }
-  .av-stepper{ display:flex; gap:.4rem; }
-  .av-stepper .sd-input{ text-align:center; -moz-appearance:textfield; }
-  .av-stepper .sd-input::-webkit-outer-spin-button, .av-stepper .sd-input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
-  .av-stepper button{ width:40px; flex:none; border-radius:.55rem; border:1px solid var(--sd-line); background:var(--sd-field); color:var(--sd-text); font-size:1.1rem; font-weight:700; cursor:pointer; }
-  .av-stepper button:disabled{ opacity:.4; cursor:not-allowed; }
-  .av-quick{ display:flex; gap:.35rem; margin-top:.5rem; }
-  .av-quick button{ font-size:.72rem; font-weight:700; padding:.28rem .7rem; border-radius:999px; border:1px solid var(--sd-line); background:var(--sd-field); color:var(--sd-muted); cursor:pointer; }
-  .av-quick button.is-on{ background:rgba(52,211,153,.16); border-color:rgba(52,211,153,.5); color:var(--c-green); }
-  .av-quick button:disabled{ opacity:.4; cursor:not-allowed; }
-  .av-seg{ display:grid; grid-template-columns:1fr 1fr; gap:.3rem; padding:.3rem; border-radius:.85rem; background:var(--sd-field); border:1px solid var(--sd-line); margin-bottom:.9rem; }
-  .av-seg button{ display:flex; align-items:center; justify-content:center; gap:.45rem; padding:.6rem .5rem; border-radius:.65rem; border:0; background:transparent; color:var(--sd-muted); font-size:.82rem; font-weight:700; cursor:pointer; }
-  .av-seg button.is-on{ background:var(--sd-row); color:var(--sd-text); box-shadow:0 1px 6px rgba(0,0,0,.14); }
-  .av-url{ position:relative; display:flex; align-items:center; }
-  .av-url > svg{ position:absolute; left:.9rem; color:var(--sd-muted); pointer-events:none; }
-  .av-url .sd-input{ padding-left:2.6rem; padding-right:2.4rem; }
-  .av-url-x{ position:absolute; right:.6rem; width:24px; height:24px; border-radius:50%; border:0; background:var(--sd-ghost); color:var(--sd-muted); display:flex; align-items:center; justify-content:center; cursor:pointer; }
-  .av-file{ position:relative; display:flex; align-items:center; gap:.7rem; padding:.75rem 2.8rem .75rem .85rem; border-radius:.8rem; border:1px solid rgba(52,211,153,.45); background:rgba(52,211,153,.1); }
-  .av-file-ic{ width:28px; height:28px; border-radius:50%; background:#34d399; color:#052e1c; display:flex; align-items:center; justify-content:center; flex:none; }
-  .av-file-name{ font-size:.85rem; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .av-drop{ display:flex; flex-direction:column; align-items:center; gap:.3rem; text-align:center; padding:1.7rem 1rem; border:1.5px dashed rgba(52,211,153,.55); border-radius:1rem; background:rgba(52,211,153,.05); cursor:pointer; transition:background .15s ease, border-color .15s ease; }
-  .av-drop:hover, .av-drop.drag{ background:rgba(52,211,153,.14); border-color:#34d399; }
-  .av-drop b{ font-size:.88rem; }
-  .av-drop > span:last-of-type{ font-size:.75rem; color:var(--sd-muted); }
-  .av-drop-ic{ width:44px; height:44px; border-radius:.9rem; background:linear-gradient(135deg,#6ee7b7,#34d399); color:#fff; display:flex; align-items:center; justify-content:center; margin-bottom:.3rem; }
-  .av-submitbar{ display:flex; align-items:center; justify-content:space-between; gap:.8rem; flex-wrap:wrap; padding:.8rem .95rem; background:var(--sd-row); border:1px solid var(--sd-line); border-radius:1rem; position:sticky; bottom:.6rem; z-index:4; box-shadow:0 -6px 20px rgba(0,0,0,.07); }
-  .av-where{ font-size:.8rem; color:var(--sd-muted); min-width:0; }
-  .av-where b{ color:var(--sd-text); }
-  .av-btn{ display:inline-flex; align-items:center; justify-content:center; gap:.4rem; font-size:.8rem; font-weight:700; padding:.55rem .9rem; border-radius:.65rem; border:1px solid var(--sd-line); background:var(--sd-field); color:var(--sd-text); cursor:pointer; }
-  .av-btn-pri{ background:linear-gradient(135deg,#34d399,#a3e635); border-color:transparent; color:#052e1c; }
-  .av-btn-pri:hover{ filter:brightness(1.07); }
-  .av-btn-lg{ padding:.7rem 1.3rem; font-size:.88rem; border-radius:.75rem; }
-  .av-btn-sm{ padding:.3rem .6rem; font-size:.72rem; }
-  .av-prev{ background:var(--sd-row); border:1px solid var(--sd-line); border-radius:1.1rem; overflow:hidden; }
-  .av-thumb{ position:relative; aspect-ratio:16/9; background:var(--sd-field); display:flex; align-items:center; justify-content:center; overflow:hidden; }
-  .av-thumb img, .av-thumb video{ width:100%; height:100%; object-fit:cover; display:block; }
-  .av-thumb-ph{ color:var(--sd-muted); opacity:.6; }
-  .av-dur{ position:absolute; right:.5rem; bottom:.5rem; background:rgba(0,0,0,.75); color:#fff; font-size:.7rem; font-weight:700; padding:.1rem .45rem; border-radius:.4rem; }
-  .av-prev-body{ padding:.8rem .95rem .95rem; }
-  .av-prev-pos{ font-size:.68rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--c-green); }
-  .av-prev-title{ font-weight:800; font-size:.95rem; margin-top:.2rem; line-height:1.3; word-break:break-word; }
-  .av-prev-meta{ font-size:.75rem; color:var(--sd-muted); margin-top:.25rem; }
-  .av-order, .av-recent{ padding:.95rem 1rem; }
-  .av-order-h{ display:flex; align-items:center; justify-content:space-between; font-size:.86rem; margin-bottom:.6rem; }
-  .av-order-h span{ font-size:.72rem; color:var(--sd-muted); background:var(--sd-ghost); padding:.1rem .5rem; border-radius:999px; }
-  .av-order-list{ display:flex; flex-direction:column; gap:.25rem; max-height:280px; overflow:auto; }
-  .av-row{ display:flex; align-items:center; gap:.6rem; padding:.4rem .55rem; border-radius:.55rem; border:1px solid transparent; background:transparent; color:var(--sd-text); font-size:.8rem; text-align:left; cursor:pointer; }
-  button.av-row:hover{ background:var(--sd-field); border-color:var(--sd-line); }
-  .av-row-n{ width:22px; height:22px; flex:none; border-radius:.45rem; background:var(--sd-ghost); color:var(--sd-muted); font-size:.7rem; font-weight:800; display:flex; align-items:center; justify-content:center; }
-  .av-row-t{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600; }
-  .av-row small{ color:var(--sd-muted); font-size:.7rem; }
-  .av-row-new{ background:rgba(52,211,153,.14); border-color:rgba(52,211,153,.5); }
-  .av-row-new .av-row-n{ background:#34d399; color:#052e1c; }
-  .av-row-new em{ font-style:normal; font-size:.66rem; font-weight:800; color:var(--c-green); text-transform:uppercase; }
-  .av-tip{ font-size:.72rem; color:var(--sd-muted); margin-top:.6rem; line-height:1.4; }
-  .av-rec{ display:flex; align-items:center; gap:.6rem; padding:.45rem 0; border-top:1px solid var(--sd-line); }
-  .av-rec:first-of-type{ border-top:0; }
-  .av-rec-ic{ width:20px; height:20px; flex:none; border-radius:50%; background:rgba(34,197,94,.18); color:var(--c-green); display:flex; align-items:center; justify-content:center; }
-  .av-rec-b{ flex:1; min-width:0; font-size:.8rem; font-weight:700; }
-  .av-rec-b div{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .av-rec-b small{ display:block; font-size:.68rem; color:var(--sd-muted); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  @media (max-width: 960px){
-    .av-grid{ grid-template-columns:1fr; }
-    .av-side{ position:static; order:-1; }
-    .av-prev{ display:none; }
-    .av-two{ grid-template-columns:1fr; }
-    .av-submitbar{ bottom:5.2rem; }
-    .av-submitbar .av-btn-lg{ flex:1; }
-  }
 
-  /* ===== Darslik qo'shish — v2 qo'shimchalari ===== */
-  .av-tabs{ display:inline-flex; gap:.3rem; padding:.3rem; margin-bottom:1rem; background:var(--sd-row); border:1px solid var(--sd-line); border-radius:.9rem; }
-  .av-tabs button{ display:inline-flex; align-items:center; gap:.45rem; padding:.55rem 1rem; border-radius:.65rem; border:0; background:transparent; color:var(--sd-muted); font-size:.84rem; font-weight:800; cursor:pointer; }
-  .av-tabs button.is-on{ background:linear-gradient(135deg,#34d399,#a3e635); color:#052e1c; }
-  .av-tabs em{ font-style:normal; font-size:.6rem; font-weight:800; text-transform:uppercase; letter-spacing:.05em; padding:.1rem .4rem; border-radius:999px; background:rgba(0,0,0,.12); }
-  .av-ta{ resize:vertical; min-height:130px; font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:.8rem; line-height:1.6; white-space:pre; overflow:auto; }
-  .av-opts{ display:grid; grid-template-columns:1fr 1fr; gap:.6rem; margin-top:.9rem; }
-  .av-opt{ display:flex; align-items:flex-start; gap:.6rem; padding:.65rem .75rem; border:1px solid var(--sd-line); border-radius:.7rem; background:var(--sd-field); cursor:pointer; }
-  .av-opt input{ width:16px; height:16px; margin-top:.15rem; accent-color:#10b981; flex:none; }
-  .av-opt b{ display:block; font-size:.8rem; color:var(--sd-text); }
-  .av-opt small{ display:block; font-size:.7rem; color:var(--sd-muted); margin-top:.1rem; }
-  .av-parsed{ margin-top:1rem; border:1px solid var(--sd-line); border-radius:.85rem; overflow:hidden; }
-  .av-parsed-h{ display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; padding:.6rem .8rem; background:var(--sd-field); font-size:.82rem; border-bottom:1px solid var(--sd-line); }
-  .av-parsed-list{ max-height:250px; overflow:auto; }
-  .av-prow{ display:flex; align-items:center; gap:.65rem; padding:.5rem .8rem; border-top:1px solid var(--sd-line); }
-  .av-prow:first-child{ border-top:0; }
-  .av-prow.is-skip{ opacity:.55; }
-  .av-prow-b{ flex:1; min-width:0; }
-  .av-prow-b div{ font-size:.8rem; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .av-prow-b small{ display:block; font-size:.68rem; color:var(--sd-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .av-tag{ font-size:.66rem; font-weight:800; padding:.15rem .5rem; border-radius:999px; white-space:nowrap; }
-  .av-tag-ok{ background:rgba(34,197,94,.15); color:var(--c-green); }
-  .av-tag-warn{ background:rgba(245,158,11,.16); color:var(--c-amber); }
-  .av-tag-bad{ background:rgba(209,59,79,.14); color:var(--c-red); }
-  .av-warn{ display:flex; align-items:flex-start; gap:.5rem; margin-top:.7rem; padding:.55rem .75rem; border-radius:.7rem; font-size:.78rem; line-height:1.45; background:rgba(245,158,11,.1); border:1px solid rgba(245,158,11,.3); color:var(--c-amber); font-weight:600; }
-  .av-warn svg{ flex:none; margin-top:.15rem; }
-  .av-kbd{ display:inline-block; margin-left:.4rem; font-size:.66rem; font-weight:700; padding:.08rem .4rem; border-radius:.35rem; border:1px solid var(--sd-line); background:var(--sd-field); color:var(--sd-muted); }
-  .av-progress{ flex:1; min-width:180px; }
-  .av-progress-t{ font-size:.8rem; color:var(--sd-muted); margin-bottom:.35rem; }
-  .av-progress-t b{ color:var(--sd-text); }
-  .av-progress-bar{ height:8px; border-radius:999px; background:var(--sd-ghost); overflow:hidden; }
-  .av-progress-bar span{ display:block; height:100%; background:linear-gradient(90deg,#34d399,#a3e635); transition:width .25s ease; }
-  .av-btn-stop{ color:var(--c-red); border-color:rgba(209,59,79,.35); pointer-events:auto; }
-  .av-btn-danger{ background:rgba(209,59,79,.14); border-color:rgba(209,59,79,.4); color:var(--c-red); }
-  .av-busy .av-main > .av-card, .av-busy .av-side, .av-busy .av-tabs{ pointer-events:none; opacity:.6; }
-  /* bo'limdagi darslar — boshqarish */
-  .av-row{ position:relative; gap:.35rem; padding:.25rem .3rem; border:1px solid transparent; border-radius:.6rem; }
-  .av-row:hover{ background:var(--sd-field); border-color:var(--sd-line); }
-  .av-row.is-drag{ opacity:.45; }
-  .av-row.is-over{ border-color:#34d399; background:rgba(52,211,153,.1); }
-  .av-grip{ color:var(--sd-muted); opacity:.5; cursor:grab; display:flex; flex:none; }
-  .av-row-main{ flex:1; min-width:0; display:flex; align-items:center; gap:.6rem; background:transparent; border:0; padding:.2rem .1rem; color:var(--sd-text); font-size:.8rem; text-align:left; cursor:pointer; }
-  .av-row-acts{ display:none; gap:.15rem; flex:none; }
-  .av-row:hover .av-row-acts{ display:flex; }
-  .av-ico{ width:24px; height:24px; border-radius:.45rem; border:1px solid var(--sd-line); background:var(--sd-row); color:var(--sd-muted); display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none; }
-  .av-ico:hover{ color:var(--sd-text); }
-  .av-ico:disabled{ opacity:.35; cursor:not-allowed; }
-  .av-ico-ok{ background:rgba(34,197,94,.15); color:var(--c-green); border-color:rgba(34,197,94,.4); }
-  .av-ico-del:hover{ color:var(--c-red); border-color:rgba(209,59,79,.4); }
-  .av-row-input{ flex:1; min-width:0; padding:.3rem .5rem !important; font-size:.8rem !important; }
-  .av-row-del{ color:var(--c-red); font-weight:700; }
-  .av-ins{ display:flex; align-items:center; gap:.5rem; margin:.15rem 0; }
-  .av-ins span{ flex:1; height:2px; border-radius:2px; background:linear-gradient(90deg,#34d399,#a3e635); }
-  .av-ins em{ font-style:normal; font-size:.68rem; font-weight:800; color:var(--c-green); white-space:nowrap; }
-  @media (max-width: 960px){
-    .av-opts{ grid-template-columns:1fr; }
-    .av-row-acts{ display:flex; }
-    .av-tabs{ display:flex; } .av-tabs button{ flex:1; justify-content:center; padding:.55rem .4rem; }
-  }
+
+
+
+  /* ===== Statistika sahifasi ===== */
+  .st-page{ container:st / inline-size; }
+  .st-kpis{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin-bottom:18px; }
+  html body .st-kpis .v2-st{ grid-column:auto; cursor:default; }
+  .st-grid{ display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:18px; }
+  .st-grid > section{ min-width:0; padding:22px 24px; }
+  .st-s12{ grid-column:span 12; } .st-s8{ grid-column:span 8; } .st-s4{ grid-column:span 4; }
+  @container st (max-width:1100px){ .st-s8,.st-s4{ grid-column:span 12; } }
+  .st-dl{ font:700 12.5px inherit; font-family:inherit; padding:8px 14px; border-radius:99px; border:1px solid rgba(52,211,153,.45); background:rgba(52,211,153,.12); color:inherit; cursor:pointer; }
+  .st-dl:hover{ background:rgba(52,211,153,.24); }
+  .st-seg{ display:flex; gap:4px; padding:3px; border-radius:99px; border:1px solid rgba(128,140,134,.28); }
+  .st-seg button{ border:0; background:transparent; color:inherit; font:700 12px inherit; font-family:inherit; padding:6px 12px; border-radius:99px; cursor:pointer; opacity:.7; }
+  .st-seg button.on{ background:#34d399; color:#052e1c; opacity:1; }
+  .st-bars{ display:flex; align-items:stretch; gap:6px; height:230px; margin-top:18px; }
+  .st-bars-s{ height:170px; }
+  .st-bar{ flex:1; min-width:0; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; position:relative; }
+  .st-bar i{ display:block; width:100%; max-width:34px; border-radius:8px 8px 3px 3px; background:rgba(52,211,153,.45); transition:height .5s ease; }
+  .st-bar.cur i{ background:#34d399; }
+  .st-bar em{ font-style:normal; font-size:11px; opacity:.6; margin-top:7px; }
+  .st-bv{ font-size:10.5px; font-weight:700; opacity:.8; margin-bottom:5px; white-space:nowrap; }
+  .st-stack{ display:flex; gap:3px; height:14px; border-radius:99px; overflow:hidden; margin:14px 0 16px; }
+  .st-stack i{ display:block; }
+  .st-hb{ margin-top:14px; }
+  .st-hbt{ display:flex; justify-content:space-between; gap:10px; font-size:13px; }
+  .st-hbt span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; opacity:.85; }
+  .st-hbr{ height:7px; border-radius:99px; background:rgba(128,140,134,.2); margin-top:6px; overflow:hidden; }
+  .st-hbr i{ display:block; height:100%; border-radius:99px; transition:width .5s ease; }
+  .st-tw{ overflow-x:auto; margin-top:6px; }
+  .st-tw table{ width:100%; min-width:640px; }
+  .st-pr{ width:90px; height:6px; border-radius:99px; background:rgba(128,140,134,.2); overflow:hidden; display:inline-block; vertical-align:middle; }
+  .st-pr i{ display:block; height:100%; background:#34d399; }
+  .st-tw small{ margin-left:8px; opacity:.7; }
+
+  /* Statistika sahifasi uslublari (faqat .st-page ichida — Dashboardga ta'sir qilmaydi) */
+  .st-page .v2-top{ display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
+  .st-page .v2-top h1{ font-size:clamp(24px,2.4vw,32px); font-weight:800; letter-spacing:-.02em; line-height:1.1; }
+  .st-page .v2-top p{ margin-top:6px; font-size:13.5px; opacity:.6; }
+  .st-page .v2-chips{ display:flex; gap:8px; flex-wrap:wrap; }
+  .st-page .v2-c{ border-radius:20px; }
+  .st-page .v2-st{ min-height:0; padding:20px 22px; text-align:left; gap:0; }
+  .st-page .v2-sth{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .st-page .v2-st .v2-ico{ position:static; width:42px; height:42px; border-radius:13px; display:flex; align-items:center; justify-content:center; box-shadow:none !important; }
+  .st-page .v2-st .v2-v{ font-size:clamp(28px,2.6vw,38px); line-height:1; font-weight:800; }
+  .st-page .v2-st .v2-l{ margin-top:8px; font-weight:700; }
+  .st-page .v2-hint{ margin-top:6px; font-size:12.5px; opacity:.62; }
+  .st-page .v2-st:hover{ transform:none; }
+
+  .st-tabs{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:18px; padding:5px; border-radius:16px; border:1px solid rgba(128,140,134,.25); width:fit-content; max-width:100%; }
+  .st-tabs button{ border:0; background:transparent; color:inherit; font:700 14px inherit; font-family:inherit; padding:10px 18px; border-radius:12px; cursor:pointer; opacity:.7; }
+  .st-tabs button.on{ background:#34d399; color:#052e1c; opacity:1; }
+  .st-sum{ padding:20px 24px; font-size:15.5px; line-height:1.7; margin-bottom:18px; }
+  .st-bigs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px; margin-bottom:18px; }
+  .st-big{ padding:22px 24px; }
+  .st-bigh{ display:flex; align-items:center; gap:12px; }
+  .st-bigi{ width:42px; height:42px; border-radius:13px; display:flex; align-items:center; justify-content:center; flex:none; }
+  .st-bigl{ font-size:14px; font-weight:700; opacity:.8; }
+  .st-bigv{ font-size:clamp(30px,3vw,42px); font-weight:800; line-height:1.1; margin:16px 0 8px; letter-spacing:-.02em; }
+  .st-big p{ font-size:13px; opacity:.65; line-height:1.5; }
+  .st-sec{ padding:22px 24px; margin-bottom:18px; min-width:0; }
+  .st-two{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+  .st-two .st-sec{ margin-bottom:18px; }
+  @container st (max-width:900px){ .st-two{ grid-template-columns:minmax(0,1fr); } }
+  .st-li{ display:flex; justify-content:space-between; gap:12px; padding:12px 0; border-top:1px solid rgba(128,140,134,.2); font-size:14px; }
+  .st-li:first-of-type{ border-top:0; }
+  .st-actions{ margin-top:2px; }
+  .st-sub{ display:block; margin:3px 0 0 !important; }
+
+  /* ===== Statistika — ixcham ko'rinish ===== */
+  .sc{ container:sc / inline-size; font-size:13.5px; }
+  .sc-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .sc-head h1{ display:inline; font-size:22px; font-weight:800; letter-spacing:-.01em; }
+  .sc-head span{ margin-left:10px; opacity:.55; font-size:13px; }
+  .sc-btns{ display:flex; gap:6px; }
+  .sc-btns button{ font:700 12px inherit; font-family:inherit; padding:7px 12px; border-radius:10px; border:1px solid rgba(128,140,134,.3); background:transparent; color:inherit; cursor:pointer; }
+  .sc-btns button:hover{ background:rgba(52,211,153,.14); }
+  .sc-tiles{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-bottom:12px; }
+  .sc-tile{ padding:14px 16px; border-radius:16px !important; border-left:3px solid var(--c) !important; display:flex; flex-direction:column; gap:2px; }
+  .sc-tile span{ font-size:12px; opacity:.65; font-weight:600; }
+  .sc-tile b{ font-size:24px; font-weight:800; line-height:1.15; }
+  .sc-tile small{ font-size:12px; opacity:.55; }
+  .sc-cols{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.3fr); gap:12px; margin-bottom:12px; }
+  .sc-box{ padding:16px 18px; border-radius:16px !important; min-width:0; }
+  .sc-box h2{ font-size:14px; font-weight:800; margin-bottom:10px; }
+  .sc-box h2 small{ font-weight:600; opacity:.5; margin-left:6px; font-size:12px; }
+  .sc-bars{ display:flex; gap:8px; height:120px; align-items:flex-end; }
+  .sc-bars > div{ flex:1; min-width:0; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; }
+  .sc-bars i{ display:block; width:100%; max-width:30px; border-radius:6px 6px 2px 2px; background:rgba(52,211,153,.4); }
+  .sc-bars .cur i{ background:#34d399; }
+  .sc-bars u{ text-decoration:none; font-size:10.5px; font-weight:700; opacity:.75; margin-bottom:4px; white-space:nowrap; }
+  .sc-bars em{ font-style:normal; font-size:11px; opacity:.55; margin-top:5px; }
+  .sc-dots{ display:flex; flex-wrap:wrap; gap:6px 16px; margin-top:12px; padding-top:10px; border-top:1px solid rgba(128,140,134,.2); font-size:12.5px; }
+  .sc-dots span{ display:inline-flex; align-items:center; gap:6px; }
+  .sc-dots i{ width:8px; height:8px; border-radius:50%; display:inline-block; }
+  .sc-t{ width:100%; border-collapse:collapse; font-size:13px; }
+  .sc-t th{ text-align:left; font-size:11px; font-weight:700; opacity:.55; padding:0 8px 6px 0; }
+  .sc-t td{ padding:7px 8px 7px 0; border-top:1px solid rgba(128,140,134,.18); }
+  .sc-t th:nth-child(n+2), .sc-t td:nth-child(n+2){ text-align:right; }
+  .sc-attn{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
+  .sc-li{ display:flex; justify-content:space-between; gap:10px; padding:6px 0; border-top:1px solid rgba(128,140,134,.18); }
+  .sc-li:first-of-type{ border-top:0; }
+  .sc-li span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .sc-chips{ display:flex; flex-wrap:wrap; gap:6px; }
+  .sc-chips span{ padding:5px 10px; border-radius:99px; border:1px solid rgba(128,140,134,.3); font-size:12.5px; }
+  .sc-chips b{ margin-left:4px; }
+  .sc-empty{ opacity:.55; font-size:13px; }
+  @container sc (max-width:900px){ .sc-cols{ grid-template-columns:minmax(0,1fr); } .sc-attn{ grid-template-columns:minmax(0,1fr); gap:14px; } .sc-tiles{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @container sc (max-width:420px){ .sc-t th:nth-child(3), .sc-t td:nth-child(3){ display:none; } }
 
 /* ===== Kurs ichi: accordion sidebar + video ko'rish ===== */
 .cs-layout{display:grid;grid-template-columns:360px minmax(0,1fr);gap:1.5rem;align-items:start}
@@ -4913,7 +4860,6 @@ function StaffApp({ me, staff, setStaff, categories, setCategories, students, se
     { id: 'overview', label: 'Dashboard', icon: Icon.home },
     { id: 'students', label: "O'quvchilar", icon: Icon.users },
     { id: 'courses', label: 'Kurslar', icon: Icon.book },
-    ...(canEdit ? [{ id: 'add-video', label: "Darslik qo'shish", icon: Icon.video }] : []),
     { id: 'statistics', label: 'Statistika', icon: Icon.chart },
     { id: 'payments', label: "To'lovlar", icon: Icon.warn },
     { id: 'blocked', label: 'Bloklanganlar', icon: Icon.lock, badge: blockedStudentCount },
@@ -4963,10 +4909,6 @@ function StaffApp({ me, staff, setStaff, categories, setCategories, students, se
             quickAdd={quickAddCourse} onQuickAddDone={() => setQuickAddCourse(false)} />
         )}
 
-        {page === 'add-video' && canEdit && (
-          <AddVideoQuick categories={categories} setCategories={setCategories} notify={notify} />
-        )}
-
         {page === 'statistics' && (
           <StatisticsPage stats={stats} revenue={revenue} students={students} categories={categories} />
         )}
@@ -5003,573 +4945,119 @@ function StaffApp({ me, staff, setStaff, categories, setCategories, students, se
 }
 
 /* =========================================================================
-   YANGI VIDEO DARSLIK QO'SHISH (quick add lesson)
-   ========================================================================= */
-function AddVideoQuick({ categories, setCategories, notify }) {
-  const [catId, setCatId] = useState(categories[0] ? categories[0].id : '');
-  const cat = categories.find((c) => c.id === catId) || null;
-  const [subId, setSubId] = useState(cat && cat.subtopics[0] ? cat.subtopics[0].id : '');
-  const sub = cat ? (cat.subtopics.find((s) => s.id === subId) || null) : null;
-  const [tab, setTab] = useState('single');          // single | bulk
-  const [num, setNum] = useState('');
-  const [title, setTitle] = useState('');
-  const [duration, setDuration] = useState('');
-  const [mode, setMode] = useState('link');          // link | file
-  const [videoUrl, setVideoUrl] = useState('');
-  const [fileName, setFileName] = useState('');
-  const [tried, setTried] = useState(false);
-  const [newSubOpen, setNewSubOpen] = useState(false);
-  const [newSubName, setNewSubName] = useState('');
-  const [recent, setRecent] = useState([]);
-  /* ko'plab havola rejimi */
-  const [bulkText, setBulkText] = useState('');
-  const [autoMeta, setAutoMeta] = useState(true);
-  const [skipDup, setSkipDup] = useState(true);
-  const [prefix, setPrefix] = useState('Dars');
-  const [busy, setBusy] = useState(null);            // { done, total }
-  /* bo'limdagi darslarni boshqarish */
-  const [editId, setEditId] = useState(null);
-  const [editText, setEditText] = useState('');
-  const [delId, setDelId] = useState(null);
-  const [dragIdx, setDragIdx] = useState(null);
-  const [overIdx, setOverIdx] = useState(null);
-  const titleRef = useRef(null);
-  const cancelRef = useRef(false);
-  const catsRef = useRef(categories); catsRef.current = categories;
-  const ytSt = useYtAuto(tab === 'single' && mode === 'link' ? videoUrl : '', (m) => { setDuration(fmtDur(m.duration)); setTitle((t) => t || m.title); });
-
-  const lessons = sub ? sub.lessons : [];
-  const total = lessons.length;
-  const pos = Math.min(Math.max(parseInt(num, 10) || total + 1, 1), total + 1);
-  const vid = mode === 'link' ? ytId(videoUrl) : null;
-  const totalLessons = categories.reduce((n, c) => n + c.subtopics.reduce((m, s) => m + s.lessons.length, 0), 0);
-  const totalSubs = categories.reduce((n, c) => n + c.subtopics.length, 0);
-
-  /* davomiylik yig'indisi */
-  const toSec = (d) => { const p = String(d || '').split(':').map((x) => parseInt(x, 10) || 0); return p.length === 3 ? p[0] * 3600 + p[1] * 60 + p[2] : p.length === 2 ? p[0] * 60 + p[1] : 0; };
-  const fmtTotal = (sec) => { const h = Math.floor(sec / 3600), m = Math.round((sec % 3600) / 60); return h ? `${h} soat ${m} daq` : `${m} daq`; };
-  const subSec = lessons.reduce((t, l) => t + toSec(l.duration), 0);
-
-  /* takroriy videolarni aniqlash (butun kurs bo'yicha) */
-  const keyOf = (u) => ytId(u) || String(u || '').trim();
-  const existing = new Map();
-  if (cat) cat.subtopics.forEach((s) => s.lessons.forEach((l) => { if (!/^blob:/.test(l.videoUrl || '')) existing.set(keyOf(l.videoUrl), l.title); }));
-  const dupTitle = tab === 'single' && mode === 'link' && videoUrl.trim() ? existing.get(keyOf(videoUrl)) : null;
-
-  const err = {};
-  if (!cat) err.cat = 'Kursni tanlang';
-  else if (!sub) err.sub = "Bo'limni tanlang yoki yangi bo'lim yarating";
-  if (tab === 'single') {
-    if (!title.trim()) err.title = 'Dars nomini kiriting';
-    if (!videoUrl.trim()) err.video = mode === 'file' ? 'Video faylni tanlang' : 'Video havolasini kiriting';
-    else if (mode === 'link' && !isVideoLink(videoUrl)) err.video = "Havola noto'g'ri. Masalan: https://youtu.be/dQw4w9WgXcQ";
-    if (duration.trim() && !/^\d{1,3}:\d{2}(:\d{2})?$/.test(duration.trim())) err.duration = 'Format: 12:34';
-  }
-  const ok = Object.keys(err).length === 0;
-  const show = (k) => (tried && err[k] ? <div className="av-err">{err[k]}</div> : null);
-
-  /* ko'plab havolalarni tahlil qilish: "Nom | havola" yoki faqat havola */
-  const seen = new Set();
-  const parsed = tab !== 'bulk' ? [] : bulkText.split('\n').map((l) => l.trim()).filter(Boolean).map((line) => {
-    let t = '', u = line;
-    const bar = line.indexOf('|');
-    if (bar > 0) { t = line.slice(0, bar).trim(); u = line.slice(bar + 1).trim(); }
-    const valid = isVideoLink(u);
-    const key = keyOf(u);
-    const dup = valid && (existing.has(key) ? 'kursda bor' : seen.has(key) ? 'takror' : '');
-    if (valid) seen.add(key);
-    return { t, u, valid, dup, skip: !valid || (skipDup && !!dup) };
-  });
-  const bulkItems = parsed.filter((p) => !p.skip);
-  const bulkBad = parsed.filter((p) => !p.valid).length;
-  const bulkDup = parsed.filter((p) => p.valid && p.dup).length;
-
-  const pickCat = (id) => {
-    const c = categories.find((x) => x.id === id);
-    setCatId(id); setSubId(c && c.subtopics[0] ? c.subtopics[0].id : ''); setNum(''); setNewSubOpen(false); setEditId(null); setDelId(null);
-  };
-  const pickSub = (id) => { setSubId(id); setNum(''); setEditId(null); setDelId(null); };
-  const switchMode = (m) => { setMode(m); setVideoUrl(''); setFileName(''); };
-
-  const patchLessons = (fn, cId, sId) => setCategories(catsRef.current.map((c) => c.id !== (cId || cat.id) ? c : {
-    ...c, subtopics: c.subtopics.map((s) => s.id !== (sId || sub.id) ? s : { ...s, lessons: fn(s.lessons) }),
-  }));
-
-  const addSection = () => {
-    const name = newSubName.trim();
-    if (!cat) return;
-    if (!name) { notify("Bo'lim nomini kiriting", 'danger'); return; }
-    const id = uid('s');
-    setCategories(categories.map((c) => c.id !== cat.id ? c : { ...c, subtopics: [...c.subtopics, { id, name, image: '', posters: [], lessons: [] }] }));
-    setSubId(id); setNum(''); setNewSubName(''); setNewSubOpen(false);
-    notify(`«${name}» bo'limi yaratildi`);
-    // API: POST /api/admin/topics/  (categoryId, name)
-  };
-
-  const onPickFile = (file) => {
-    if (!file) return;
-    if (file.type && !/^video\//.test(file.type)) { notify('Faqat video fayl tanlang (mp4, webm...)', 'danger'); return; }
-    const url = URL.createObjectURL(file);   // demo: brauzer xotirasida; haqiqiy loyihada serverga upload qilinadi
-    const v = document.createElement('video');
-    v.preload = 'metadata';
-    v.onloadedmetadata = () => { const t = Math.round(v.duration || 0); if (t) setDuration((d) => d || `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`); };
-    v.src = url;
-    setVideoUrl(url); setFileName(file.name);
-    setTitle((t) => t || file.name.replace(/\.[^.]+$/, ''));
-  };
-
-  const pushRecent = (ids, label, at) => setRecent((r) => [{ key: ids[0], ids, catId: cat.id, subId: sub.id, title: label, where: `${cat.name} · ${sub.name} · ${at}` }, ...r].slice(0, 6));
-
-  const submit = () => {
-    if (busy) return;
-    setTried(true);
-    if (!ok) { notify(Object.values(err)[0], 'danger'); return; }
-    const lesson = { id: uid('l'), title: title.trim(), duration: duration.trim() || '00:00', videoUrl: videoUrl.trim() };
-    patchLessons((ls) => { const arr = [...ls]; arr.splice(pos - 1, 0, lesson); return arr; });
-    pushRecent([lesson.id], lesson.title, `${pos}-dars`);
-    notify(`Dars ${pos}-o'ringa joylandi`);
-    setTitle(''); setDuration(''); setVideoUrl(''); setFileName(''); setTried(false);
-    setNum(String(pos + 1));   // keyingi dars uchun joy tayyor
-    setTimeout(() => { if (titleRef.current) titleRef.current.focus(); }, 60);
-    // API: POST /api/admin/lessons/  (categoryId, topicId, order, title, duration, videoUrl | file)
-  };
-
-  const submitBulk = async () => {
-    if (busy) return;
-    setTried(true);
-    if (!cat || !sub) { notify(err.cat || err.sub, 'danger'); return; }
-    if (!bulkItems.length) { notify(parsed.length ? "Qo'shiladigan to'g'ri havola yo'q" : 'Havolalarni kiriting', 'danger'); return; }
-    const items = bulkItems.slice(); const at = pos; const cId = cat.id, sId = sub.id, cName = cat.name, sName = sub.name;
-    cancelRef.current = false;
-    setBusy({ done: 0, total: items.length });
-    const out = [];
-    for (let k = 0; k < items.length; k++) {
-      if (cancelRef.current) break;
-      const it = items[k]; let t = it.t, d = '00:00';
-      const id = ytId(it.u);
-      if (id && autoMeta) {
-        try { const m = await ytMeta(id); d = fmtDur(m.duration); if (!t) t = m.title; } catch (e) { /* internet yo'q — standart nom */ }
-      }
-      if (!t) t = `${prefix.trim() || 'Dars'} ${at + k}`;
-      out.push({ id: uid('l'), title: t, duration: d, videoUrl: it.u });
-      setBusy({ done: k + 1, total: items.length });
-    }
-    setBusy(null);
-    if (!out.length) { notify("To'xtatildi — hech narsa qo'shilmadi", 'danger'); return; }
-    patchLessons((ls) => { const arr = [...ls]; arr.splice(Math.min(at - 1, arr.length), 0, ...out); return arr; }, cId, sId);
-    setRecent((r) => [{ key: out[0].id, ids: out.map((x) => x.id), catId: cId, subId: sId, title: `${out.length} ta dars`, where: `${cName} · ${sName} · ${at}–${at + out.length - 1}-darslar` }, ...r].slice(0, 6));
-    notify(`${out.length} ta dars ${at}-o'rindan boshlab joylandi`);
-    setBulkText(''); setTried(false); setNum(String(at + out.length));
-    // API: POST /api/admin/lessons/bulk/  (categoryId, topicId, startOrder, lessons[])
-  };
-
-  const undo = (r) => {
-    patchLessons((ls) => ls.filter((l) => !r.ids.includes(l.id)), r.catId, r.subId);
-    setRecent((rs) => rs.filter((x) => x.key !== r.key));
-    notify('Bekor qilindi', 'danger');
-    // API: DELETE /api/admin/lessons/{id}/
-  };
-
-  /* ---- bo'limdagi darslarni boshqarish ---- */
-  const moveLesson = (from, to) => {
-    if (to < 0 || to >= total || from === to) return;
-    patchLessons((ls) => { const a = [...ls]; const [x] = a.splice(from, 1); a.splice(to, 0, x); return a; });
-    notify(`Dars ${to + 1}-o'ringa ko'chirildi`);
-    // API: PATCH /api/admin/lessons/{id}/  (order)
-  };
-  const saveRename = () => {
-    const t = editText.trim();
-    if (!t) { notify('Dars nomi bo\'sh bo\'lmasin', 'danger'); return; }
-    patchLessons((ls) => ls.map((l) => l.id === editId ? { ...l, title: t } : l));
-    setEditId(null); notify('Dars nomi yangilandi');
-    // API: PATCH /api/admin/lessons/{id}/  (title)
-  };
-  const confirmDelete = (id) => {
-    patchLessons((ls) => ls.filter((l) => l.id !== id));
-    setDelId(null); setRecent((rs) => rs.filter((r) => !r.ids.includes(id)));
-    notify("Dars o'chirildi", 'danger');
-    // API: DELETE /api/admin/lessons/{id}/
-  };
-
-  const onKey = (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); if (tab === 'bulk') submitBulk(); else submit(); }
-  };
-
-  if (categories.length === 0) {
-    return (
-      <div className="av-page">
-        <div className="av-head"><div><h1>Yangi darslik joylash</h1><p>Avval «Kurslar» bo'limida kamida bitta kurs yarating.</p></div></div>
-      </div>
-    );
-  }
-
-  const thumb = vid
-    ? <img src={`https://i.ytimg.com/vi/${vid}/hqdefault.jpg`} alt="" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-    : (videoUrl && (mode === 'file' || isVideoLink(videoUrl))) ? <video src={videoUrl} muted preload="metadata" />
-    : <span className="av-thumb-ph"><Icon.video width="26" height="26" /></span>;
-
-  const insBar = (
-    <div key="ins" className="av-ins"><span /><em>{tab === 'bulk' && bulkItems.length > 1 ? `${pos}–${pos + bulkItems.length - 1}-o'ringa` : `${pos}-o'ringa`} yangi dars{tab === 'bulk' && bulkItems.length > 1 ? 'lar' : ''} tushadi</em><span /></div>
-  );
-
-  return (
-    <div className={`av-page ${busy ? 'av-busy' : ''}`} onKeyDown={onKey}>
-      <div className="av-head">
-        <div>
-          <h1>Yangi darslik joylash</h1>
-          <p>Kurs va bo'limni tanlang, so'ng bitta dars yoki ko'plab havolalarni birdaniga qo'shing.</p>
-        </div>
-        <div className="av-stats">
-          <span><b>{categories.length}</b> kurs</span>
-          <span><b>{totalSubs}</b> bo'lim</span>
-          <span><b>{totalLessons}</b> dars</span>
-        </div>
-      </div>
-
-      <div className="av-tabs">
-        <button type="button" className={tab === 'single' ? 'is-on' : ''} onClick={() => { setTab('single'); setTried(false); }}><Icon.video width="14" height="14" /> Bitta dars</button>
-        <button type="button" className={tab === 'bulk' ? 'is-on' : ''} onClick={() => { setTab('bulk'); setTried(false); }}><Icon.layers width="14" height="14" /> Ko'plab havolalar <em>tez</em></button>
-      </div>
-
-      <div className="av-grid">
-        <div className="av-main">
-          {/* 1 — kurs va bo'lim */}
-          <section className="av-card">
-            <div className="av-step"><span>1</span> Kurs va bo'lim</div>
-            <label className="sd-label">Kurs</label>
-            <div className="av-chips">
-              {categories.map((c) => (
-                <button key={c.id} type="button" className={c.id === catId ? 'is-on' : ''} onClick={() => pickCat(c.id)}>
-                  {c.name}<small>{c.subtopics.length} bo'lim</small>
-                </button>
-              ))}
-            </div>
-            {show('cat')}
-
-            <label className="sd-label" style={{ marginTop: '1.1rem' }}>Bo'lim</label>
-            {cat && cat.subtopics.length > 0 && (
-              <div className="av-subs">
-                {cat.subtopics.map((s) => (
-                  <button key={s.id} type="button" className={`av-sub ${s.id === subId ? 'is-on' : ''}`} onClick={() => pickSub(s.id)}>
-                    <span className="av-sub-ic">{s.image ? <img src={s.image} alt="" /> : s.name.slice(0, 2).toUpperCase()}</span>
-                    <span className="av-sub-name">{s.name}</span>
-                    <span className="av-sub-n">{s.lessons.length} ta dars</span>
-                    {s.id === subId && <Icon.check width="14" height="14" />}
-                  </button>
-                ))}
-              </div>
-            )}
-            {cat && cat.subtopics.length === 0 && <p className="av-note">Bu kursda hali bo'lim yo'q — pastdan birinchi bo'limni yarating.</p>}
-            {show('sub')}
-
-            {newSubOpen ? (
-              <div className="av-newsub">
-                <input autoFocus className="sd-input" placeholder="Yangi bo'lim nomi" value={newSubName}
-                  onChange={(e) => setNewSubName(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') addSection(); if (e.key === 'Escape') setNewSubOpen(false); }} />
-                <button type="button" className="av-btn av-btn-pri" onClick={addSection}><Icon.check width="13" height="13" /> Yaratish</button>
-                <button type="button" className="av-btn" onClick={() => { setNewSubOpen(false); setNewSubName(''); }}>Bekor</button>
-              </div>
-            ) : (
-              <button type="button" className="av-addsub" onClick={() => setNewSubOpen(true)}><Icon.plus width="13" height="13" /> Yangi bo'lim yaratish</button>
-            )}
-          </section>
-
-          {tab === 'single' ? (
-            <React.Fragment>
-              {/* 2 — dars ma'lumotlari */}
-              <section className="av-card">
-                <div className="av-step"><span>2</span> Dars ma'lumotlari</div>
-                <div className="sd-field">
-                  <label className="sd-label">Dars nomi</label>
-                  <input ref={titleRef} className="sd-input" placeholder="Masalan: Flexbox asoslari" value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === 'Enter') submit(); }} />
-                  {show('title')}
-                </div>
-                <div className="av-two">
-                  <div className="sd-field">
-                    <label className="sd-label">Davomiyligi</label>
-                    <input className="sd-input" placeholder="12:34" value={duration} onChange={(e) => setDuration(e.target.value)} />
-                    {ytSt ? <div className="av-hint">{ytStatusText(ytSt)}</div> : <div className="av-hint">Bo'sh qolsa — 00:00. YouTube havolasidan avtomatik aniqlanadi.</div>}
-                    {show('duration')}
-                  </div>
-                  <div className="sd-field">
-                    <label className="sd-label">Nechanchi dars {sub ? <span className="av-range">(1–{total + 1})</span> : null}</label>
-                    <div className="av-stepper">
-                      <button type="button" disabled={!sub || pos <= 1} onClick={() => setNum(String(pos - 1))} aria-label="Oldinga">−</button>
-                      <input type="number" min="1" max={total + 1} className="sd-input" placeholder={`Oxiriga: ${total + 1}`} value={num} onChange={(e) => setNum(e.target.value)} />
-                      <button type="button" disabled={!sub || pos >= total + 1} onClick={() => setNum(String(pos + 1))} aria-label="Orqaga">+</button>
-                    </div>
-                    <div className="av-quick">
-                      <button type="button" className={pos === 1 && total > 0 ? 'is-on' : ''} disabled={!sub || total === 0} onClick={() => setNum('1')}>Boshiga</button>
-                      <button type="button" className={pos === total + 1 ? 'is-on' : ''} disabled={!sub} onClick={() => setNum('')}>Oxiriga</button>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* 3 — video */}
-              <section className="av-card">
-                <div className="av-step"><span>3</span> Video</div>
-                <div className="av-seg">
-                  <button type="button" className={mode === 'link' ? 'is-on' : ''} onClick={() => switchMode('link')}><Icon.arrowRight width="14" height="14" style={{ transform: 'rotate(-45deg)' }} /> Havola (YouTube / mp4)</button>
-                  <button type="button" className={mode === 'file' ? 'is-on' : ''} onClick={() => switchMode('file')}><Icon.image width="14" height="14" /> Fayldan yuklash</button>
-                </div>
-
-                {mode === 'link' ? (
-                  <div className="av-url">
-                    <Icon.video width="15" height="15" />
-                    <input className="sd-input" placeholder="https://youtu.be/... yoki https://.../video.mp4" value={videoUrl}
-                      onChange={(e) => setVideoUrl(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') submit(); }} />
-                    {videoUrl && <button type="button" className="av-url-x" onClick={() => setVideoUrl('')} aria-label="Tozalash"><Icon.close width="12" height="12" /></button>}
-                  </div>
-                ) : fileName ? (
-                  <div className="av-file">
-                    <span className="av-file-ic"><Icon.check width="15" height="15" /></span>
-                    <span className="av-file-name" title={fileName}>{fileName}</span>
-                    <button type="button" className="av-url-x" onClick={() => { setVideoUrl(''); setFileName(''); }} aria-label="Olib tashlash"><Icon.close width="12" height="12" /></button>
-                  </div>
-                ) : (
-                  <label className="av-drop"
-                    onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add('drag'); }}
-                    onDragLeave={(e) => e.currentTarget.classList.remove('drag')}
-                    onDrop={(e) => { e.preventDefault(); e.currentTarget.classList.remove('drag'); onPickFile(e.dataTransfer.files[0]); }}>
-                    <span className="av-drop-ic"><Icon.video width="22" height="22" /></span>
-                    <b>Video faylni tanlang yoki shu yerga tashlang</b>
-                    <span>mp4, webm va boshqa video formatlar</span>
-                    <input type="file" accept="video/*" style={{ display: 'none' }} onChange={(e) => { onPickFile(e.target.files[0]); e.target.value = ''; }} />
-                  </label>
-                )}
-                {dupTitle && <div className="av-warn"><Icon.warn width="14" height="14" /> Bu video shu kursda allaqachon bor: «{dupTitle}». Baribir qo'shish mumkin.</div>}
-                {mode === 'file' && <p className="av-note">Demo rejimida fayl brauzer xotirasida saqlanadi (sahifa yangilansa yo'qoladi). Doimiy saqlash uchun YouTube havolasidan foydalaning yoki backendga ulang.</p>}
-                {show('video')}
-              </section>
-            </React.Fragment>
-          ) : (
-            <section className="av-card">
-              <div className="av-step"><span>2</span> Havolalarni joylang</div>
-              <label className="sd-label">Har qatorga bitta havola</label>
-              <textarea className="sd-textarea av-ta" rows="7" disabled={!!busy}
-                placeholder={"https://youtu.be/aaaaaaaaaaa\nFlexbox asoslari | https://youtu.be/bbbbbbbbbbb\nhttps://youtu.be/ccccccccccc"}
-                value={bulkText} onChange={(e) => setBulkText(e.target.value)} />
-              <div className="av-hint">Nom bergingiz kelsa: <b>Nom | havola</b> shaklida yozing. Nom yozilmasa, YouTube'dan olinadi yoki «{prefix.trim() || 'Dars'} N» deb qo'yiladi.</div>
-
-              <div className="av-opts">
-                <label className="av-opt"><input type="checkbox" checked={autoMeta} onChange={(e) => setAutoMeta(e.target.checked)} /><span><b>Nom va davomiylikni YouTube'dan olish</b><small>Har bir video uchun ~3–5 soniya ketadi</small></span></label>
-                <label className="av-opt"><input type="checkbox" checked={skipDup} onChange={(e) => setSkipDup(e.target.checked)} /><span><b>Takroriy videolarni o'tkazib yuborish</b><small>Kursda bor yoki ro'yxatda qaytarilgan</small></span></label>
-              </div>
-              <div className="sd-field" style={{ marginTop: '.9rem', maxWidth: 260 }}>
-                <label className="sd-label">Standart nom boshi</label>
-                <input className="sd-input" value={prefix} onChange={(e) => setPrefix(e.target.value)} placeholder="Dars" />
-              </div>
-
-              <div className="av-two" style={{ marginTop: '.4rem' }}>
-                <div className="sd-field">
-                  <label className="sd-label">Boshlanish o'rni {sub ? <span className="av-range">(1–{total + 1})</span> : null}</label>
-                  <div className="av-stepper">
-                    <button type="button" disabled={!sub || pos <= 1} onClick={() => setNum(String(pos - 1))} aria-label="Oldinga">−</button>
-                    <input type="number" min="1" max={total + 1} className="sd-input" placeholder={`Oxiriga: ${total + 1}`} value={num} onChange={(e) => setNum(e.target.value)} />
-                    <button type="button" disabled={!sub || pos >= total + 1} onClick={() => setNum(String(pos + 1))} aria-label="Orqaga">+</button>
-                  </div>
-                </div>
-                <div className="sd-field">
-                  <label className="sd-label">Tezkor</label>
-                  <div className="av-quick" style={{ marginTop: 0 }}>
-                    <button type="button" disabled={!sub || total === 0} className={pos === 1 && total > 0 ? 'is-on' : ''} onClick={() => setNum('1')}>Boshiga</button>
-                    <button type="button" disabled={!sub} className={pos === total + 1 ? 'is-on' : ''} onClick={() => setNum('')}>Oxiriga</button>
-                  </div>
-                </div>
-              </div>
-
-              {parsed.length > 0 && (
-                <div className="av-parsed">
-                  <div className="av-parsed-h">
-                    <b>{bulkItems.length} ta dars qo'shiladi</b>
-                    {bulkBad > 0 && <span className="av-tag av-tag-bad">{bulkBad} ta noto'g'ri</span>}
-                    {bulkDup > 0 && <span className="av-tag av-tag-warn">{bulkDup} ta takror</span>}
-                  </div>
-                  <div className="av-parsed-list">
-                    {(() => { let k = 0; return parsed.map((p, i) => {
-                      const n = p.skip ? null : pos + k++;
-                      return (
-                        <div key={i} className={`av-prow ${p.skip ? 'is-skip' : ''}`}>
-                          <span className="av-row-n">{n || '—'}</span>
-                          <div className="av-prow-b">
-                            <div>{p.t || (autoMeta && ytId(p.u) ? "Nomi YouTube'dan olinadi" : `${prefix.trim() || 'Dars'} ${n || ''}`)}</div>
-                            <small>{p.u}</small>
-                          </div>
-                          {!p.valid ? <span className="av-tag av-tag-bad">Noto'g'ri havola</span> : p.dup ? <span className="av-tag av-tag-warn">{skipDup ? `O'tkazib yuboriladi (${p.dup})` : p.dup}</span> : <span className="av-tag av-tag-ok">Tayyor</span>}
-                        </div>
-                      );
-                    }); })()}
-                  </div>
-                </div>
-              )}
-              {tried && parsed.length === 0 && <div className="av-err">Kamida bitta havola kiriting</div>}
-            </section>
-          )}
-
-          <div className="av-submitbar">
-            {busy ? (
-              <React.Fragment>
-                <div className="av-progress">
-                  <div className="av-progress-t">Joylanmoqda… <b>{busy.done}/{busy.total}</b></div>
-                  <div className="av-progress-bar"><span style={{ width: `${(busy.done / busy.total) * 100}%` }} /></div>
-                </div>
-                <button type="button" className="av-btn av-btn-lg av-btn-stop" onClick={() => { cancelRef.current = true; }}>To'xtatish</button>
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                <div className="av-where">{cat && sub ? <React.Fragment><b>{cat.name}</b> · {sub.name} · <b>{tab === 'bulk' && bulkItems.length > 1 ? `${pos}–${pos + bulkItems.length - 1}-darslar` : `${pos}-dars`}</b> bo'ladi <span className="av-kbd">Ctrl + Enter</span></React.Fragment> : 'Kurs va bo\'limni tanlang'}</div>
-                {tab === 'bulk'
-                  ? <button type="button" className="av-btn av-btn-pri av-btn-lg" onClick={submitBulk}><Icon.plus width="14" height="14" /> {bulkItems.length ? `${bulkItems.length} ta darsni joylash` : 'Darslarni joylash'}</button>
-                  : <button type="button" className="av-btn av-btn-pri av-btn-lg" onClick={submit}><Icon.plus width="14" height="14" /> Darsni joylash</button>}
-              </React.Fragment>
-            )}
-          </div>
-        </div>
-
-        <aside className="av-side">
-          {tab === 'single' && (
-            <div className="av-prev">
-              <div className="av-thumb">{thumb}{duration.trim() && <span className="av-dur">{duration.trim()}</span>}</div>
-              <div className="av-prev-body">
-                <div className="av-prev-pos">{sub ? `${pos}-dars` : '—'}</div>
-                <div className="av-prev-title">{title.trim() || 'Dars nomi shu yerda ko\'rinadi'}</div>
-                <div className="av-prev-meta">{cat ? cat.name : ''}{sub ? ` · ${sub.name}` : ''}</div>
-              </div>
-            </div>
-          )}
-
-          <div className="av-card av-order">
-            <div className="av-order-h"><b>Bo'limdagi darslar</b><span>{total} ta{subSec ? ` · ${fmtTotal(subSec)}` : ''}</span></div>
-            {!sub ? <p className="av-note">Bo'lim tanlang.</p> : (
-              <React.Fragment>
-                <div className="av-order-list">
-                  {lessons.map((l, i) => (
-                    <React.Fragment key={l.id}>
-                      {i === pos - 1 && insBar}
-                      <div className={`av-row ${dragIdx === i ? 'is-drag' : ''} ${overIdx === i && dragIdx !== null && dragIdx !== i ? 'is-over' : ''}`}
-                        draggable={editId !== l.id && delId !== l.id}
-                        onDragStart={(e) => { setDragIdx(i); e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', String(i)); } catch (x) {} }}
-                        onDragOver={(e) => { e.preventDefault(); if (overIdx !== i) setOverIdx(i); }}
-                        onDrop={(e) => { e.preventDefault(); if (dragIdx !== null) moveLesson(dragIdx, i); setDragIdx(null); setOverIdx(null); }}
-                        onDragEnd={() => { setDragIdx(null); setOverIdx(null); }}>
-                        <span className="av-grip" title="Sudrab tartibini o'zgartiring"><Icon.dots width="14" height="14" /></span>
-                        {editId === l.id ? (
-                          <React.Fragment>
-                            <input autoFocus className="sd-input av-row-input" value={editText} onChange={(e) => setEditText(e.target.value)}
-                              onKeyDown={(e) => { if (e.key === 'Enter') saveRename(); if (e.key === 'Escape') setEditId(null); }} />
-                            <button type="button" className="av-ico av-ico-ok" title="Saqlash" onClick={saveRename}><Icon.check width="12" height="12" /></button>
-                            <button type="button" className="av-ico" title="Bekor" onClick={() => setEditId(null)}><Icon.close width="11" height="11" /></button>
-                          </React.Fragment>
-                        ) : delId === l.id ? (
-                          <React.Fragment>
-                            <span className="av-row-t av-row-del">«{l.title}» o'chirilsinmi?</span>
-                            <button type="button" className="av-btn av-btn-sm av-btn-danger" onClick={() => confirmDelete(l.id)}>Ha</button>
-                            <button type="button" className="av-btn av-btn-sm" onClick={() => setDelId(null)}>Yo'q</button>
-                          </React.Fragment>
-                        ) : (
-                          <React.Fragment>
-                            <button type="button" className="av-row-main" title="Yangi dars shu darsning oldiga qo'yiladi" onClick={() => setNum(String(i + 1))}>
-                              <span className="av-row-n">{i + 1}</span><span className="av-row-t">{l.title}</span><small>{l.duration}</small>
-                            </button>
-                            <span className="av-row-acts">
-                              <button type="button" className="av-ico" title="Yuqoriga" disabled={i === 0} onClick={() => moveLesson(i, i - 1)}><Icon.chevron width="12" height="12" style={{ transform: 'rotate(180deg)' }} /></button>
-                              <button type="button" className="av-ico" title="Pastga" disabled={i === total - 1} onClick={() => moveLesson(i, i + 1)}><Icon.chevron width="12" height="12" /></button>
-                              <button type="button" className="av-ico" title="Nomini o'zgartirish" onClick={() => { setEditId(l.id); setEditText(l.title); setDelId(null); }}><Icon.edit width="12" height="12" /></button>
-                              <button type="button" className="av-ico av-ico-del" title="O'chirish" onClick={() => { setDelId(l.id); setEditId(null); }}><Icon.trash width="12" height="12" /></button>
-                            </span>
-                          </React.Fragment>
-                        )}
-                      </div>
-                    </React.Fragment>
-                  ))}
-                  {pos === total + 1 && insBar}
-                </div>
-                <p className="av-tip">Darsni bossangiz — yangi dars uning oldiga tushadi. Tartibni sudrab yoki ↑↓ bilan o'zgartiring.</p>
-              </React.Fragment>
-            )}
-          </div>
-
-          {recent.length > 0 && (
-            <div className="av-card av-recent">
-              <div className="av-order-h"><b>Hozir qo'shilganlar</b><span>{recent.length}</span></div>
-              {recent.map((r) => (
-                <div key={r.key} className="av-rec">
-                  <span className="av-rec-ic"><Icon.check width="12" height="12" /></span>
-                  <div className="av-rec-b"><div>{r.title}</div><small>{r.where}</small></div>
-                  <button type="button" className="av-btn av-btn-sm" onClick={() => undo(r)}>Bekor qilish</button>
-                </div>
-              ))}
-            </div>
-          )}
-        </aside>
-      </div>
-    </div>
-  );
-}
-
-/* =========================================================================
    STATISTIKA
    ========================================================================= */
 function StatisticsPage({ stats, revenue, students, categories }) {
-  return (
-    <div>
-      <h1 className="font-display text-3xl text-ink mb-1">Statistika</h1>
-      <p className="text-slate text-sm mb-6">Markaz bo'yicha umumiy ko'rsatkichlar.</p>
+  const [range, setRange] = useState(12);
+  const [tab, setTab] = useState('all');
+  const D = useMemo(() => {
+    const cp = curPeriod(), nowIdx = periodIndex(cp.m, cp.y);
+    const allPays = [];
+    students.forEach((st) => (st.payments || []).forEach((x) => allPays.push({ ...x, student: st.name })));
+    const byIdx = {};
+    allPays.forEach((x) => { const i = periodIndex(x.month, x.year); byIdx[i] = (byIdx[i] || 0) + (Number(x.amount) || 0); });
+    const months = [];
+    for (let k = 23; k >= 0; k--) { const i = nowIdx - k; months.push({ i, label: MONTH_NAMES[((i % 12) + 12) % 12].slice(0, 3), full: MONTH_NAMES[((i % 12) + 12) % 12] + ' ' + Math.floor(i / 12), v: byIdx[i] || 0 }); }
+    const bills = students.map((st) => ({ st, b: studentBilling(st, categories) }));
+    let paidN = 0, partN = 0, noneN = 0, expected = 0, collected = 0, debt = 0;
+    bills.forEach(({ b }) => { if (!(b.total > 0)) return; expected += b.total; collected += b.paid; debt += b.debt; if (b.paid >= b.total) paidN++; else if (b.paid > 0) partN++; else noneN++; });
+    const entries = studentBlockEntries(students, categories);
+    const reasons = {}, blockedByCat = {};
+    entries.forEach((e) => { blockedByCat[e.catId] = (blockedByCat[e.catId] || 0) + 1; e.reasons.forEach((r) => { reasons[r.type] = (reasons[r.type] || 0) + 1; }); });
+    let enrollTotal = 0; const enr = {};
+    students.forEach((st) => Object.values(st.access || {}).forEach((a) => { if (a && a.active) { enrollTotal++; if (a.enrolledAt) { const d = new Date(a.enrolledAt); if (!isNaN(d)) { const i = d.getFullYear() * 12 + d.getMonth(); enr[i] = (enr[i] || 0) + 1; } } } }));
+    const courses = categories.map((c) => {
+      const lessons = c.subtopics.flatMap((x) => x.lessons);
+      const enrolled = students.filter((st) => st.access && st.access[c.id] && st.access[c.id].active);
+      let done = 0; enrolled.forEach((st) => lessons.forEach((l) => { if (st.progress && st.progress[l.id] && st.progress[l.id].completed) done++; }));
+      const possible = enrolled.length * lessons.length;
+      const rv = revenue.byCategory.find((x) => x.id === c.id) || {};
+      return { id: c.id, name: c.name, price: c.monthlyPrice || 0, secs: c.subtopics.length, lessons: lessons.length, enrolled: enrolled.length, pct: possible ? Math.round((done / possible) * 100) : 0, blocked: blockedByCat[c.id] || 0, amount: rv.amount || 0, overdue: rv.overdueCount || 0 };
+    });
+    const act = students.map((st) => ({ id: st.id, name: st.name, n: Object.values(st.progress || {}).filter((x) => x && x.completed).length })).sort((x, y) => y.n - x.n);
+    const debtors = bills.filter((x) => x.b.debt > 0).sort((x, y) => y.b.debt - x.b.debt).slice(0, 5);
+    const growth = []; for (let k = 5; k >= 0; k--) { const i = nowIdx - k; growth.push({ label: MONTH_NAMES[((i % 12) + 12) % 12].slice(0, 3), v: enr[i] || 0 }); }
+    return { allPays, months, paidN, partN, noneN, expected, collected, debt, entries, reasons, courses, act, debtors, growth, enrollTotal,
+      lessonsDone: act.reduce((t, x) => t + x.n, 0), thisMonth: byIdx[nowIdx] || 0, allTime: allPays.reduce((t, x) => t + (Number(x.amount) || 0), 0), cp };
+  }, [students, categories, revenue]);
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[
-          ['O\'quvchilar', stats.students, Icon.users, '#059669', 'rgba(5,150,105,.12)'],
-          ['Kategoriyalar', stats.categories, Icon.layers, '#6D3FA0', 'rgba(109,63,160,.12)'],
-          ['Darslar', stats.lessonsCount, Icon.book, '#022c22', 'rgba(2,44,34,.08)'],
-          ['Jami tushum', fmtMoneyShort(revenue.total), Icon.chart, '#9C7A22', 'rgba(52,211,153,.14)'],
-        ].map(([label, val, Ic, fg, bg]) => (
-          <div key={label} className="stat-modern" style={{ '--sc-fg': fg, '--sc-bg': bg }}>
-            <div className="stat-icon"><Ic width="20" height="20" /></div>
-            <div className="stat-value">{val}</div>
-            <div className="stat-label">{label}</div>
-          </div>
+  const csv = (name, rows) => {
+    const esc = (v) => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+    const blob = new Blob(['\ufeff' + rows.map((r) => r.map(esc).join(',')).join('\n')], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+  };
+  const exportCourses = () => csv('kurslar-statistikasi.csv', [['Kurs', 'Oylik narx', "Bo'limlar", 'Darslar', "O'quvchilar", "O'zlashtirish %", 'Bloklangan', 'Kutilgan tushum'], ...D.courses.map((c) => [c.name, c.price, c.secs, c.lessons, c.enrolled, c.pct, c.blocked, c.amount])]);
+  const exportPays = () => csv('tolovlar.csv', [["O'quvchi", 'Kurs / izoh', 'Summa', "Qo'shimcha", 'Oy', 'Yil', 'Sana'], ...D.allPays.map((x) => [x.student, x.courseName || '', x.amount || 0, x.extra || 0, x.month, x.year, x.date || ''])]);
+
+  const rate = D.expected > 0 ? Math.round((D.collected / D.expected) * 100) : 0;
+  const compl = (() => { let all = 0; D.courses.forEach((c) => { all += c.enrolled * c.lessons; }); return all ? Math.round((D.lessonsDone / all) * 100) : 0; })();
+  const last6 = D.months.slice(-6), m6 = Math.max(1, ...last6.map((x) => x.v));
+  const RS = { payment: "To'lov", manual: "Qo'lda", frozen: 'Muzlatilgan', attendance: 'Dars qoldirgan' };
+  const top = D.act.filter((x) => x.n > 0).slice(0, 3);
+  const tiles = [
+    ["Shu oy yig'ildi", fmtMoneyShort(D.thisMonth), `${rate}% reja`, '#34d399'],
+    ['Qarz', fmtMoneyShort(D.debt), `${D.noneN + D.partN} kishi`, '#fb7185'],
+    ["O'quvchilar", stats.students, `${D.entries.length} bloklangan`, '#38bdf8'],
+    ["O'zlashtirish", compl + '%', `${D.lessonsDone}/${D.courses.reduce((n, c) => n + c.enrolled * c.lessons, 0)} dars`, '#a78bfa'],
+  ];
+  return (
+    <div className="v2 st-page sc">
+      <div className="sc-head">
+        <div><h1>Statistika</h1><span>{D.cp.m} {D.cp.y}</span></div>
+        <div className="sc-btns"><button type="button" onClick={exportPays}>↓ To'lovlar</button><button type="button" onClick={exportCourses}>↓ Kurslar</button></div>
+      </div>
+
+      <div className="sc-tiles">
+        {tiles.map(([l, v, h, c]) => (
+          <div key={l} className="v2-c sc-tile" style={{ '--c': c }}><span>{l}</span><b>{v}</b><small>{h}</small></div>
         ))}
       </div>
 
-      <div className="mt-6 bg-card rounded-xl border border-line p-5">
-        <h3 className="font-semibold text-ink mb-3 flex items-center gap-2"><Icon.chart width="15" height="15" className="text-forest" /> Kategoriyalar bo'yicha tushum</h3>
-        <ComboBarLineChart height={260}
-          data={revenue.byCategory.map((c) => ({ label: c.name, bar: c.payers, line: c.amount }))}
-          barLabel="To'lovchi o'quvchilar soni" lineLabel="Tushum (so'm)" />
+      <div className="sc-cols">
+        <section className="v2-c sc-box">
+          <h2>Tushum <small>oxirgi 6 oy</small></h2>
+          <div className="sc-bars">
+            {last6.map((m, i) => (
+              <div key={m.i} className={i === 5 ? 'cur' : ''} title={m.full + ': ' + fmtMoney(m.v)}>
+                <u>{m.v ? fmtMoneyShort(m.v) : '0'}</u><i style={{ height: Math.max(m.v ? 4 : 2, (m.v / m6) * 100) + '%' }} /><em>{m.label}</em>
+              </div>
+            ))}
+          </div>
+          <div className="sc-dots">
+            <span><i style={{ background: '#34d399' }} />To'lagan <b>{D.paidN}</b></span>
+            <span><i style={{ background: '#fbbf24' }} />Qisman <b>{D.partN}</b></span>
+            <span><i style={{ background: '#fb7185' }} />To'lamagan <b>{D.noneN}</b></span>
+          </div>
+        </section>
+
+        <section className="v2-c sc-box">
+          <h2>Kurslar <small>{D.courses.length} ta</small></h2>
+          {D.courses.length === 0 ? <p className="sc-empty">Hali kurslar yo'q.</p> : (
+            <table className="sc-t">
+              <thead><tr><th>Kurs</th><th>O'quvchi</th><th>Dars</th><th>O'zlash.</th><th>Oylik</th></tr></thead>
+              <tbody>{D.courses.map((c) => (
+                <tr key={c.id}><td><b>{c.name}</b></td><td>{c.enrolled}</td><td>{c.lessons}</td><td>{c.pct}%</td><td>{fmtMoneyShort(c.amount)}</td></tr>
+              ))}</tbody>
+            </table>
+          )}
+        </section>
       </div>
 
-      <div className="mt-6 bg-card rounded-xl border border-line p-5 overflow-x-auto">
-        <h3 className="font-semibold text-ink mb-3">Kategoriyalar kesimida tafsilot</h3>
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-left text-xs text-slate uppercase tracking-wide border-b border-line">
-              <th className="py-2 pr-3">Kategoriya</th>
-              <th className="py-2 pr-3">Narx</th>
-              <th className="py-2 pr-3">To'lovchi</th>
-              <th className="py-2 pr-3">Muddati o'tgan</th>
-              <th className="py-2 pr-3">Tushum</th>
-            </tr>
-          </thead>
-          <tbody>
-            {revenue.byCategory.map((c) => (
-              <tr key={c.id} className="border-b border-line last:border-b-0">
-                <td className="py-2 pr-3 text-ink font-medium">{c.name}</td>
-                <td className="py-2 pr-3 text-slate">{fmtMoney(c.price)}</td>
-                <td className="py-2 pr-3 text-slate">{c.payers}</td>
-                <td className="py-2 pr-3">{c.overdueCount > 0 ? <span className="pill pill-warn">{c.overdueCount}</span> : <span className="text-slate">0</span>}</td>
-                <td className="py-2 pr-3 text-ink font-semibold">{fmtMoney(c.amount)}</td>
-              </tr>
-            ))}
-            {revenue.byCategory.length === 0 && (
-              <tr><td colSpan="5" className="py-4 text-slate text-sm">Hali ma'lumot yo'q.</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      <section className="v2-c sc-box sc-attn">
+        <div>
+          <h2>Qarzdorlar <small>top 3</small></h2>
+          {D.debtors.length === 0 ? <p className="sc-empty">Yo'q 🎉</p> : D.debtors.slice(0, 3).map(({ st, b }) => <div key={st.id} className="sc-li"><span>{st.name}</span><b>{fmtMoney(b.debt)}</b></div>)}
+        </div>
+        <div>
+          <h2>Bloklanish sababi</h2>
+          {D.entries.length === 0 ? <p className="sc-empty">Bloklangan yo'q 🎉</p> : <div className="sc-chips">{Object.entries(RS).filter(([k]) => D.reasons[k]).map(([k, l]) => <span key={k}>{l} <b>{D.reasons[k]}</b></span>)}</div>}
+        </div>
+        <div>
+          <h2>Eng faol <small>top 3</small></h2>
+          {top.length === 0 ? <p className="sc-empty">Hali yo'q</p> : top.map((x) => <div key={x.id} className="sc-li"><span>{x.name}</span><b>{x.n} dars</b></div>)}
+        </div>
+      </section>
     </div>
   );
 }
@@ -9656,7 +9144,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App />);
     var compiled = Babel.transform(source, {
       presets: [
         ['react', { runtime: 'classic' }],
-        ['env', { targets: { browsers: ['last 2 bversions'] } }],
+        ['env', { targets: { browsers: ['last 2 versions'] } }],
       ],
       filename: 'app.jsx',
     }).code;
