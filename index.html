@@ -3343,6 +3343,83 @@ html body .v2-chart{ width:100%; min-width:0; }
 /* Dark/Light almashganda hamma narsa bir zumda o'zgaradi (kechikish yo'q) */
 html.theme-switching *, html.theme-switching *::before, html.theme-switching *::after { transition: none !important; }
 </style>
+<style id="edu-stats-v3">
+.sx{ font-size:14px; }
+.sx-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+.sx-head h1{ font-size:clamp(24px,2.4vw,30px); }
+.sx-head p{ margin-top:4px; font-size:13px; color:var(--mut); font-weight:600; }
+.sx-ctl{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+.sx select,.sx-in{ font:600 13px inherit; font-family:inherit; color:var(--ink); background:var(--glass); border:1px solid var(--bd); border-radius:12px; padding:9px 12px; outline:none; }
+.sx select option{ color:#0d1f17; }
+.sx-in{ flex:1; min-width:180px; }
+.sx-seg{ display:flex; gap:3px; padding:3px; border-radius:99px; border:1px solid var(--bd); background:var(--glass); }
+.sx-seg button{ border:0; background:transparent; color:var(--mut); font:700 12px inherit; font-family:inherit; padding:6px 13px; border-radius:99px; cursor:pointer; }
+.sx-seg button.on{ background:#34d399; color:#052e1c; }
+.sx-tabs{ display:flex; gap:4px; padding:4px; border-radius:14px; border:1px solid var(--bd); background:var(--glass); width:fit-content; max-width:100%; overflow-x:auto; margin-bottom:16px; }
+.sx-tabs button{ border:0; background:transparent; color:var(--mut); font:700 13.5px inherit; font-family:inherit; padding:9px 18px; border-radius:10px; cursor:pointer; white-space:nowrap; }
+.sx-tabs button.on{ background:#34d399; color:#052e1c; }
+.sx-kpis{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-bottom:14px; }
+.sx-kpis.k4{ grid-template-columns:repeat(4,minmax(0,1fr)); }
+.sx-k{ padding:16px 18px !important; border-radius:18px !important; display:flex; flex-direction:column; gap:4px; border-left:3px solid var(--c) !important; }
+.sx-kh{ display:flex; justify-content:space-between; align-items:center; font-size:12.5px; font-weight:700; color:var(--mut); }
+.sx-kh i{ width:30px; height:30px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:var(--c); background:color-mix(in srgb,var(--c) 16%,transparent); }
+.sx-k b{ font-size:clamp(20px,2vw,26px); font-weight:800; line-height:1.15; }
+.sx-k small{ font-size:12px; color:var(--mut); }
+.sx-d{ font-style:normal; font-weight:800; font-size:11.5px; margin-left:4px; }
+.sx-d.up{ color:#10b981; } .sx-d.dn{ color:#f43f5e; }
+.sx-row{ display:grid; gap:14px; margin-bottom:14px; }
+.sx-row.r83{ grid-template-columns:minmax(0,2fr) minmax(0,1fr); } .sx-row.r3{ grid-template-columns:repeat(3,minmax(0,1fr)); } .sx-row.r2{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+.sx-box{ padding:18px 20px !important; border-radius:18px !important; min-width:0; }
+.sx-box h2{ font-size:15px; font-weight:800; margin-bottom:12px; } .sx-box h2 small{ font-weight:600; color:var(--mut); margin-left:6px; font-size:12px; }
+.sx-bh{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; } .sx-bh h2{ margin:0; }
+.sx-seg.s button{ padding:4px 11px; }
+.sx-ch{ position:relative; width:100%; } .sx-ch svg{ display:block; overflow:visible; }
+.sx-gl{ stroke:var(--line); stroke-width:1; } .sx-tx{ fill:var(--mut); font-size:10.5px; font-weight:600; font-family:Manrope,system-ui,sans-serif; }
+.sx-bar{ transition:opacity .15s; transform-origin:bottom; animation:sxGrow .6s ease both; }
+@keyframes sxGrow{ from{ transform:scaleY(.02); } }
+.sx-tip{ position:absolute; transform:translate(-50%,-100%); background:var(--dot); color:var(--ink); border:1px solid var(--bd); border-radius:10px; padding:7px 11px; font-size:12px; box-shadow:var(--sh); pointer-events:none; white-space:nowrap; display:flex; flex-direction:column; gap:2px; z-index:3; }
+.sx-tip span{ color:var(--mut); font-size:11px; }
+.sx-foot{ display:flex; flex-wrap:wrap; gap:6px 20px; margin-top:10px; padding-top:10px; border-top:1px solid var(--line); font-size:12.5px; color:var(--mut); } .sx-foot b{ color:var(--ink); margin-left:4px; }
+.sx-dn{ width:100%; max-width:190px; display:block; margin:4px auto 10px; }
+.sx-dtr{ fill:none; stroke:var(--line); stroke-width:16; } .sx-dseg{ animation:sxDash .9s ease both; }
+@keyframes sxDash{ from{ stroke-dasharray:0 var(--circ); } }
+.sx-dv{ fill:var(--ink); font-size:24px; font-weight:800; font-family:Sora,Manrope,sans-serif; }
+.sx-dots{ display:flex; flex-wrap:wrap; justify-content:center; gap:6px 14px; font-size:12.5px; } .sx-dots span{ display:inline-flex; align-items:center; gap:6px; } .sx-dots i{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+.sx-li{ display:flex; justify-content:space-between; gap:10px; padding:9px 0; border-top:1px solid var(--line); font-size:13.5px; } .sx-li:first-of-type{ border-top:0; } .sx-li span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.sx .bad{ color:#f43f5e; } .sx .ok{ color:#10b981; }
+.sx-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; } .sx-chips span{ padding:4px 10px; border-radius:99px; border:1px solid var(--bd); font-size:12px; } .sx-chips b{ margin-left:4px; }
+.sx-em{ color:var(--mut); font-size:13px; padding:4px 0; }
+.sx-hb{ margin:12px 0; } .sx-hb>div{ display:flex; justify-content:space-between; gap:10px; font-size:13px; } .sx-hb>div span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--mut); font-weight:600; }
+.sx-hb>i{ display:block; height:8px; border-radius:99px; background:var(--line); margin-top:6px; overflow:hidden; } .sx-hb u{ display:block; height:100%; border-radius:99px; background:#34d399; transition:width .5s ease; }
+.sx-btn{ font:700 12px inherit; font-family:inherit; color:var(--ink); background:transparent; border:1px solid var(--bd); border-radius:10px; padding:7px 12px; cursor:pointer; } .sx-btn:hover{ background:rgba(52,211,153,.16); border-color:#34d399; }
+.sx-tw{ overflow-x:auto; } .sx-t{ width:100%; min-width:520px; border-collapse:collapse; font-size:13px; }
+.sx-t th{ text-align:left; font-size:11.5px; font-weight:700; color:var(--mut); padding:0 10px 8px 0; white-space:nowrap; } .sx-t td{ padding:10px 10px 10px 0; border-top:1px solid var(--line); vertical-align:middle; }
+.sx-sort{ cursor:pointer; user-select:none; } .sx-sort.on{ color:#34d399; }
+.sx-pr{ display:inline-block; width:80px; height:7px; border-radius:99px; background:var(--line); overflow:hidden; vertical-align:middle; margin-right:6px; } .sx-pr i{ display:block; height:100%; background:#34d399; }
+.sx-mut{ color:var(--mut); } .sx-tag{ padding:3px 9px; border-radius:99px; font-size:11.5px; font-weight:700; } .sx-tag.ok{ background:rgba(16,185,129,.16); color:#10b981; } .sx-tag.warn{ background:rgba(251,191,36,.2); color:#d99a06; } .sx-tag.bad{ background:rgba(244,63,94,.16); color:#f43f5e; }
+.sx-fl{ display:flex; gap:10px; flex-wrap:wrap; margin:6px 0 12px; align-items:center; }
+.sx-chipsel{ display:flex; gap:6px; flex-wrap:wrap; } .sx-chipsel button{ font:700 12px inherit; font-family:inherit; color:var(--mut); background:transparent; border:1px solid var(--bd); border-radius:99px; padding:6px 12px; cursor:pointer; } .sx-chipsel button.on{ background:#34d399; border-color:#34d399; color:#052e1c; } .sx-chipsel b{ margin-left:6px; opacity:.8; }
+.sx-pgn{ display:flex; justify-content:center; align-items:center; gap:14px; margin-top:12px; font-size:13px; color:var(--mut); } .sx-pgn button{ width:32px; height:32px; border-radius:10px; border:1px solid var(--bd); background:transparent; color:var(--ink); cursor:pointer; } .sx-pgn button:disabled{ opacity:.35; cursor:default; }
+.sx-cards{ display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:14px; }
+.sx-cc{ padding:16px 18px !important; border-radius:18px !important; cursor:pointer; display:flex !important; flex-direction:column; gap:10px; text-align:left; } .sx-cc.sel{ border-color:#34d399 !important; box-shadow:0 0 0 1px #34d399; }
+.sx-cc>.sx-bh b{ font-size:15px; } .sx-pill{ font-size:11.5px; font-weight:700; padding:3px 9px; border-radius:99px; background:rgba(52,211,153,.16); color:#10b981; }
+.sx-cm{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; } .sx-cm div{ display:flex; flex-direction:column; } .sx-cm b{ font-size:20px; } .sx-cm small{ font-size:11.5px; color:var(--mut); } .sx-cc .sx-hb{ margin:0; }
+@media (max-width:1000px){ .sx-row.r83,.sx-row.r3,.sx-row.r2{ grid-template-columns:minmax(0,1fr); } .sx-kpis,.sx-kpis.k4{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:520px){ .sx-kpis,.sx-kpis.k4{ grid-template-columns:minmax(0,1fr); } .sx-ctl,.sx-ctl select{ width:100%; } .sx-seg{ width:100%; justify-content:space-between; } }
+
+.sx-k{ position:relative; overflow:hidden; padding:20px 22px !important; border-radius:22px !important; gap:6px !important; border:1px solid var(--bd) !important; background:linear-gradient(145deg,color-mix(in srgb,var(--c) 15%,var(--glass)),var(--glass) 62%) !important; transition:transform .25s,box-shadow .25s !important; }
+.sx-k::after{ content:''; position:absolute; right:-46px; top:-46px; width:150px; height:150px; border-radius:50%; background:radial-gradient(circle,color-mix(in srgb,var(--c) 38%,transparent),transparent 70%); pointer-events:none; }
+.sx-k:hover{ transform:translateY(-3px); box-shadow:0 20px 40px -20px var(--c) !important; }
+.sx-kh{ justify-content:flex-start !important; gap:11px; position:relative; z-index:1; }
+.sx-kh span{ flex:1; font-size:13px; }
+.sx-kh i{ width:40px; height:40px; border-radius:13px; flex:none; color:#fff; background:linear-gradient(135deg,var(--c),color-mix(in srgb,var(--c) 55%,#000)); box-shadow:0 8px 18px -8px var(--c); }
+.sx-kh .sx-d{ margin:0; padding:4px 10px; border-radius:99px; background:color-mix(in srgb,currentColor 14%,transparent); }
+.sx-k b{ position:relative; z-index:1; margin-top:12px; font-size:clamp(24px,2.4vw,33px) !important; letter-spacing:-.025em; }
+.sx-k small{ position:relative; z-index:1; }
+.sx-kp{ height:7px; border-radius:99px; background:var(--line); margin-top:12px; overflow:hidden; position:relative; z-index:1; }
+.sx-kp u{ display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,var(--c),color-mix(in srgb,var(--c) 55%,#fff)); }
+.sx-sp{ display:block; width:100%; height:36px; margin-top:10px; position:relative; z-index:1; }
+</style>
 <script type="text/plain" id="app-source">
 const { useState, useMemo, useRef, useEffect, useLayoutEffect } = React;
 
@@ -4947,117 +5024,219 @@ function StaffApp({ me, staff, setStaff, categories, setCategories, students, se
 /* =========================================================================
    STATISTIKA
    ========================================================================= */
-function StatisticsPage({ stats, revenue, students, categories }) {
-  const [range, setRange] = useState(12);
-  const [tab, setTab] = useState('all');
-  const D = useMemo(() => {
-    const cp = curPeriod(), nowIdx = periodIndex(cp.m, cp.y);
-    const allPays = [];
-    students.forEach((st) => (st.payments || []).forEach((x) => allPays.push({ ...x, student: st.name })));
-    const byIdx = {};
-    allPays.forEach((x) => { const i = periodIndex(x.month, x.year); byIdx[i] = (byIdx[i] || 0) + (Number(x.amount) || 0); });
-    const months = [];
-    for (let k = 23; k >= 0; k--) { const i = nowIdx - k; months.push({ i, label: MONTH_NAMES[((i % 12) + 12) % 12].slice(0, 3), full: MONTH_NAMES[((i % 12) + 12) % 12] + ' ' + Math.floor(i / 12), v: byIdx[i] || 0 }); }
-    const bills = students.map((st) => ({ st, b: studentBilling(st, categories) }));
-    let paidN = 0, partN = 0, noneN = 0, expected = 0, collected = 0, debt = 0;
-    bills.forEach(({ b }) => { if (!(b.total > 0)) return; expected += b.total; collected += b.paid; debt += b.debt; if (b.paid >= b.total) paidN++; else if (b.paid > 0) partN++; else noneN++; });
-    const entries = studentBlockEntries(students, categories);
-    const reasons = {}, blockedByCat = {};
-    entries.forEach((e) => { blockedByCat[e.catId] = (blockedByCat[e.catId] || 0) + 1; e.reasons.forEach((r) => { reasons[r.type] = (reasons[r.type] || 0) + 1; }); });
-    let enrollTotal = 0; const enr = {};
-    students.forEach((st) => Object.values(st.access || {}).forEach((a) => { if (a && a.active) { enrollTotal++; if (a.enrolledAt) { const d = new Date(a.enrolledAt); if (!isNaN(d)) { const i = d.getFullYear() * 12 + d.getMonth(); enr[i] = (enr[i] || 0) + 1; } } } }));
-    const courses = categories.map((c) => {
-      const lessons = c.subtopics.flatMap((x) => x.lessons);
-      const enrolled = students.filter((st) => st.access && st.access[c.id] && st.access[c.id].active);
-      let done = 0; enrolled.forEach((st) => lessons.forEach((l) => { if (st.progress && st.progress[l.id] && st.progress[l.id].completed) done++; }));
-      const possible = enrolled.length * lessons.length;
-      const rv = revenue.byCategory.find((x) => x.id === c.id) || {};
-      return { id: c.id, name: c.name, price: c.monthlyPrice || 0, secs: c.subtopics.length, lessons: lessons.length, enrolled: enrolled.length, pct: possible ? Math.round((done / possible) * 100) : 0, blocked: blockedByCat[c.id] || 0, amount: rv.amount || 0, overdue: rv.overdueCount || 0 };
-    });
-    const act = students.map((st) => ({ id: st.id, name: st.name, n: Object.values(st.progress || {}).filter((x) => x && x.completed).length })).sort((x, y) => y.n - x.n);
-    const debtors = bills.filter((x) => x.b.debt > 0).sort((x, y) => y.b.debt - x.b.debt).slice(0, 5);
-    const growth = []; for (let k = 5; k >= 0; k--) { const i = nowIdx - k; growth.push({ label: MONTH_NAMES[((i % 12) + 12) % 12].slice(0, 3), v: enr[i] || 0 }); }
-    return { allPays, months, paidN, partN, noneN, expected, collected, debt, entries, reasons, courses, act, debtors, growth, enrollTotal,
-      lessonsDone: act.reduce((t, x) => t + x.n, 0), thisMonth: byIdx[nowIdx] || 0, allTime: allPays.reduce((t, x) => t + (Number(x.amount) || 0), 0), cp };
-  }, [students, categories, revenue]);
+const sxNice = (m) => { if (m <= 0) return 4; const p = Math.pow(10, Math.floor(Math.log10(m))); const f = m / p; return [1, 1.2, 1.6, 2, 2.4, 2.8, 3.2, 4, 4.8, 6, 8, 10].find((x) => f <= x + 1e-9) * p; };
+const sxDelta = (c, p) => (p ? { up: c >= p, v: Math.round(Math.abs((c - p) / p) * 100) } : (c ? { up: true, v: null } : null));
+const SxDelta = ({ d }) => (d ? <em className={'sx-d ' + (d.up ? 'up' : 'dn')}>{d.up ? '▲' : '▼'} {d.v == null ? 'yangi' : d.v + '%'}</em> : null);
+const sxCsv = (name, rows) => {
+  const esc = (v) => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const blob = new Blob(['\ufeff' + rows.map((r) => r.map(esc).join(',')).join('\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+};
+const useBoxWidth = (ref) => {
+  const [w, setW] = useState(600);
+  useEffect(() => {
+    const el = ref.current; if (!el) return undefined;
+    const read = () => setW(Math.max(240, Math.round(el.getBoundingClientRect().width)));
+    read();
+    if (typeof ResizeObserver === 'undefined') { window.addEventListener('resize', read); return () => window.removeEventListener('resize', read); }
+    const ro = new ResizeObserver(read); ro.observe(el); return () => ro.disconnect();
+  }, []);
+  return w;
+};
 
-  const csv = (name, rows) => {
-    const esc = (v) => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
-    const blob = new Blob(['\ufeff' + rows.map((r) => r.map(esc).join(',')).join('\n')], { type: 'text/csv;charset=utf-8' });
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1500);
-  };
-  const exportCourses = () => csv('kurslar-statistikasi.csv', [['Kurs', 'Oylik narx', "Bo'limlar", 'Darslar', "O'quvchilar", "O'zlashtirish %", 'Bloklangan', 'Kutilgan tushum'], ...D.courses.map((c) => [c.name, c.price, c.secs, c.lessons, c.enrolled, c.pct, c.blocked, c.amount])]);
-  const exportPays = () => csv('tolovlar.csv', [["O'quvchi", 'Kurs / izoh', 'Summa', "Qo'shimcha", 'Oy', 'Yil', 'Sana'], ...D.allPays.map((x) => [x.student, x.courseName || '', x.amount || 0, x.extra || 0, x.month, x.year, x.date || ''])]);
-
-  const rate = D.expected > 0 ? Math.round((D.collected / D.expected) * 100) : 0;
-  const compl = (() => { let all = 0; D.courses.forEach((c) => { all += c.enrolled * c.lessons; }); return all ? Math.round((D.lessonsDone / all) * 100) : 0; })();
-  const last6 = D.months.slice(-6), m6 = Math.max(1, ...last6.map((x) => x.v));
-  const RS = { payment: "To'lov", manual: "Qo'lda", frozen: 'Muzlatilgan', attendance: 'Dars qoldirgan' };
-  const top = D.act.filter((x) => x.n > 0).slice(0, 3);
-  const tiles = [
-    ["Shu oy yig'ildi", fmtMoneyShort(D.thisMonth), `${rate}% reja`, '#34d399'],
-    ['Qarz', fmtMoneyShort(D.debt), `${D.noneN + D.partN} kishi`, '#fb7185'],
-    ["O'quvchilar", stats.students, `${D.entries.length} bloklangan`, '#38bdf8'],
-    ["O'zlashtirish", compl + '%', `${D.lessonsDone}/${D.courses.reduce((n, c) => n + c.enrolled * c.lessons, 0)} dars`, '#a78bfa'],
-  ];
+function SxChart({ data, kind, h = 230, fmt = fmtMoneyShort, full = fmtMoney, color = '#34d399', int }) {
+  const ref = useRef(null); const w = useBoxWidth(ref); const [hi, setHi] = useState(-1);
+  const gid = useRef('sxg' + Math.random().toString(36).slice(2, 7)).current;
+  const L = 44, R = 8, T = 12, B = 26, iw = w - L - R, ih = h - T - B, n = data.length;
+  const mx0 = Math.max(0, ...data.map((d) => d.v));
+  const max = int ? Math.max(4, Math.ceil(mx0 / 4) * 4) : sxNice(mx0);
+  const st = iw / Math.max(1, n), bw = Math.min(36, st * 0.6);
+  const X = (i) => L + st * i + st / 2, Y = (v) => T + ih - (v / max) * ih;
+  const line = data.map((d, i) => (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(d.v).toFixed(1)).join(' ');
+  const area = line + ' L' + X(n - 1) + ' ' + (T + ih) + ' L' + X(0) + ' ' + (T + ih) + ' Z';
+  const mv = (e) => { const c = e.touches ? e.touches[0] : e; const r = ref.current.getBoundingClientRect(); setHi(Math.max(0, Math.min(n - 1, Math.floor((c.clientX - r.left - L) / st)))); };
+  const every = Math.ceil(n / Math.max(1, Math.floor(iw / 46)));
+  const hd = hi >= 0 ? data[hi] : null;
   return (
-    <div className="v2 st-page sc">
-      <div className="sc-head">
-        <div><h1>Statistika</h1><span>{D.cp.m} {D.cp.y}</span></div>
-        <div className="sc-btns"><button type="button" onClick={exportPays}>↓ To'lovlar</button><button type="button" onClick={exportCourses}>↓ Kurslar</button></div>
-      </div>
+    <div ref={ref} className="sx-ch" style={{ height: h }}>
+      <svg width={w} height={h} onMouseMove={mv} onTouchMove={mv} onMouseLeave={() => setHi(-1)} role="img" aria-label="Grafik">
+        <defs><linearGradient id={gid} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={color} stopOpacity=".38" /><stop offset="1" stopColor={color} stopOpacity="0" /></linearGradient></defs>
+        {[0, 1, 2, 3, 4].map((t) => { const v = (max * t) / 4, y = Y(v); return <g key={t}><line x1={L} x2={w - R} y1={y} y2={y} className="sx-gl" /><text x={L - 6} y={y + 3} textAnchor="end" className="sx-tx">{fmt(v)}</text></g>; })}
+        {kind === 'line' ? (
+          <g><path d={area} fill={`url(#${gid})`} /><path d={line} fill="none" stroke={color} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
+            {data.map((d, i) => <circle key={i} cx={X(i)} cy={Y(d.v)} r={hi === i ? 5 : 3} fill={color} />)}</g>
+        ) : data.map((d, i) => { const y = Y(d.v); return <rect key={i} x={X(i) - bw / 2} y={d.v ? y : T + ih - 2} width={bw} height={d.v ? T + ih - y : 2} rx="5" fill={color} opacity={hi < 0 || hi === i ? 1 : 0.4} className="sx-bar" />; })}
+        {data.map((d, i) => (i % every === 0 ? <text key={'x' + i} x={X(i)} y={h - 8} textAnchor="middle" className="sx-tx">{d.label}</text> : null))}
+      </svg>
+      {hd && <div className="sx-tip" style={{ left: Math.max(70, Math.min(w - 70, X(hi))), top: Math.max(0, Y(hd.v) - 10) }}><b>{full(hd.v)}</b><span>{hd.full}</span></div>}
+    </div>
+  );
+}
+function SxDonut({ seg, center, sub }) {
+  const tot = seg.reduce((t, s) => t + s.v, 0), r = 52, C = 2 * Math.PI * r; let off = 0;
+  return (
+    <svg viewBox="0 0 140 140" className="sx-dn" role="img" aria-label="Diagramma"><circle cx="70" cy="70" r={r} className="sx-dtr" />
+      {tot > 0 && seg.map((s) => { const len = (C * s.v) / tot; const el = <circle key={s.l} cx="70" cy="70" r={r} fill="none" stroke={s.c} strokeWidth="16" strokeDasharray={`${Math.max(0, len - 2)} ${C}`} strokeDashoffset={-off} transform="rotate(-90 70 70)" style={{ '--circ': C }} className="sx-dseg" />; off += len; return el; })}
+      <text x="70" y="68" textAnchor="middle" className="sx-dv">{center}</text><text x="70" y="86" textAnchor="middle" className="sx-tx">{sub}</text>
+    </svg>
+  );
+}
+const SxHB = ({ rows, empty }) => { const mx = Math.max(1, ...rows.map((r) => r.v)); return rows.length ? rows.map((r) => (<div key={r.l} className="sx-hb"><div><span>{r.l}</span><b>{r.t}</b></div><i><u style={{ width: Math.max(2, (r.v / mx) * 100) + '%', background: r.c || '#34d399' }} /></i></div>)) : <p className="sx-em">{empty}</p>; };
 
-      <div className="sc-tiles">
-        {tiles.map(([l, v, h, c]) => (
-          <div key={l} className="v2-c sc-tile" style={{ '--c': c }}><span>{l}</span><b>{v}</b><small>{h}</small></div>
-        ))}
-      </div>
+const SxSpark = ({ v, c }) => { const m = Math.max(1, ...v), pts = v.map((x, i) => ((i * 100) / Math.max(1, v.length - 1)).toFixed(1) + ',' + (30 - (x / m) * 26).toFixed(1)).join(' '); return <svg viewBox="0 0 100 32" preserveAspectRatio="none" className="sx-sp"><polyline points={pts + ' 100,32 0,32'} fill={c} opacity=".16" /><polyline points={pts} fill="none" stroke={c} strokeWidth="2.2" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" /></svg>; };
+function StatisticsPage({ stats, revenue, students, categories }) {
+  const [tab, setTab] = useState('all'); const [range, setRange] = useState(6); const [cid, setCid] = useState('all'); const [kind, setKind] = useState('bar');
+  const [q, setQ] = useState(''); const [flt, setFlt] = useState('all'); const [sort, setSort] = useState(['prog', -1]); const [pg, setPg] = useState(0); const [allDebt, setAllDebt] = useState(false);
+  const D = useMemo(() => {
+    const cp = curPeriod(), now = periodIndex(cp.m, cp.y), ti = todayISO();
+    const cats = cid === 'all' ? categories : categories.filter((c) => c.id === cid), catIds = new Set(cats.map((c) => c.id));
+    const lessonsOf = (c) => c.subtopics.flatMap((x) => x.lessons), isDone = (s, l) => !!(s.progress && s.progress[l.id] && s.progress[l.id].completed);
+    const sts = cid === 'all' ? students : students.filter((s) => s.access && s.access[cid] && s.access[cid].active);
+    const ml = (i) => ({ i, label: MONTH_NAMES[((i % 12) + 12) % 12].slice(0, 3), full: MONTH_NAMES[((i % 12) + 12) % 12] + ' ' + Math.floor(i / 12) });
+    const pays = []; sts.forEach((s) => (s.payments || []).forEach((p) => { if (cid === 'all' || p.catId === cid) pays.push({ ...p, student: s.name, idx: periodIndex(p.month, p.year) }); }));
+    const byIdx = {}, cnt = {}; pays.forEach((p) => { byIdx[p.idx] = (byIdx[p.idx] || 0) + (Number(p.amount) || 0); cnt[p.idx] = (cnt[p.idx] || 0) + 1; });
+    const series = (from, n, map) => Array.from({ length: n }, (_, k) => ({ ...ml(from + k), v: map[from + k] || 0, c: cnt[from + k] || 0 }));
+    const months = series(now - range + 1, range, byIdx), prevMonths = series(now - 2 * range + 1, range, byIdx);
+    const sum = (a) => a.reduce((t, x) => t + x.v, 0), inR = (p) => p.idx > now - range && p.idx <= now;
+    const bills = sts.map((s) => { const b = studentBilling(s, categories), cs = cid === 'all' ? b.courses : b.courses.filter((c) => c.catId === cid); const total = cid === 'all' ? b.total : cs.reduce((t, c) => t + c.fee, 0), paid = cid === 'all' ? b.paid : cs.reduce((t, c) => t + c.paid, 0); return { s, total, paid, debt: Math.max(0, total - paid) }; });
+    let paidN = 0, partN = 0, noneN = 0, expected = 0, collected = 0, debt = 0;
+    bills.forEach((b) => { if (!(b.total > 0)) return; expected += b.total; collected += b.paid; debt += b.debt; if (b.paid >= b.total) paidN++; else if (b.paid > 0) partN++; else noneN++; });
+    const ents = studentBlockEntries(sts, categories).filter((e) => cid === 'all' || e.catId === cid), blockedSet = new Set(ents.map((e) => e.student.id)), reasons = {};
+    ents.forEach((e) => e.reasons.forEach((r) => { reasons[r.type] = (reasons[r.type] || 0) + 1; }));
+    const lessonIds = new Set(cats.flatMap((c) => lessonsOf(c).map((l) => l.id))), enr = {}, comp = {}, lastAct = {}, mIdx = (iso) => { const d = new Date(iso); return isNaN(d) ? null : d.getFullYear() * 12 + d.getMonth(); };
+    sts.forEach((s) => {
+      Object.entries(s.access || {}).forEach(([k, a]) => { if (a && a.active && catIds.has(k) && a.enrolledAt) { const i = mIdx(a.enrolledAt); if (i != null) enr[i] = (enr[i] || 0) + 1; } });
+      Object.entries(s.progress || {}).forEach(([lid, p]) => { if (p && p.completed && lessonIds.has(lid) && p.completedAt) { const i = mIdx(p.completedAt); if (i != null) comp[i] = (comp[i] || 0) + 1; if (!lastAct[s.id] || p.completedAt > lastAct[s.id]) lastAct[s.id] = p.completedAt; } });
+    });
+    const rows = sts.map((s, k) => { let poss = 0, done = 0; cats.forEach((c) => { const a = s.access && s.access[c.id]; if (a && a.active) { const ls = lessonsOf(c); poss += ls.length; ls.forEach((l) => { if (isDone(s, l)) done++; }); } }); const la = lastAct[s.id] || '';
+      return { s, id: s.id, name: s.name || '', done, poss, prog: poss ? Math.round((done / poss) * 100) : 0, debt: bills[k].debt, last: la, days: la ? Math.round((new Date(ti) - new Date(la)) / 864e5) : null, blocked: blockedSet.has(s.id), nc: Object.values(s.access || {}).filter((a) => a && a.active).length }; });
+    const courses = cats.map((c) => { const ls = lessonsOf(c), en = sts.filter((s) => s.access && s.access[c.id] && s.access[c.id].active); let done = 0; en.forEach((s) => ls.forEach((l) => { if (isDone(s, l)) done++; }));
+      const poss = en.length * ls.length, rev = pays.filter((p) => p.catId === c.id && inR(p)).reduce((t, p) => t + (Number(p.amount) || 0), 0);
+      const subs = c.subtopics.map((x) => { let d = 0; en.forEach((s) => x.lessons.forEach((l) => { if (isDone(s, l)) d++; })); const p = en.length * x.lessons.length; return { name: x.name, n: x.lessons.length, pct: p ? Math.round((d / p) * 100) : 0 }; });
+      return { id: c.id, name: c.name, price: c.monthlyPrice || 0, lessons: ls.length, enrolled: en.length, pct: poss ? Math.round((done / poss) * 100) : 0, blocked: ents.filter((e) => e.catId === c.id).length, rev, subs, done, poss }; });
+    const other = cid === 'all' ? pays.filter((p) => inR(p) && !catIds.has(p.catId)).reduce((t, p) => t + (Number(p.amount) || 0), 0) : 0;
+    const dm = (map) => series(now - range + 1, range, map), done = rows.reduce((t, r) => t + r.done, 0), poss = rows.reduce((t, r) => t + r.poss, 0);
+    return { cp, months, tot: sum(months), prevTot: sum(prevMonths), thisM: byIdx[now] || 0, prevM: byIdx[now - 1] || 0, extra: pays.filter(inR).reduce((t, p) => t + (Number(p.extra) || 0), 0), nPays: pays.filter(inR).length,
+      best: months.reduce((b, m) => (m.v > b.v ? m : b), months[0]), paidN, partN, noneN, expected, collected, debt, ents, blockedSet, reasons, rows, courses, other, bills, pays,
+      enrM: dm(enr), compM: dm(comp), newThis: enr[now] || 0, newPrev: enr[now - 1] || 0, compThis: comp[now] || 0, compPrev: comp[now - 1] || 0, done, poss, compl: poss ? Math.round((done / poss) * 100) : 0, spark: series(now - 5, 6, byIdx) };
+  }, [students, categories, range, cid]);
 
-      <div className="sc-cols">
-        <section className="v2-c sc-box">
-          <h2>Tushum <small>oxirgi 6 oy</small></h2>
-          <div className="sc-bars">
-            {last6.map((m, i) => (
-              <div key={m.i} className={i === 5 ? 'cur' : ''} title={m.full + ': ' + fmtMoney(m.v)}>
-                <u>{m.v ? fmtMoneyShort(m.v) : '0'}</u><i style={{ height: Math.max(m.v ? 4 : 2, (m.v / m6) * 100) + '%' }} /><em>{m.label}</em>
-              </div>
-            ))}
-          </div>
-          <div className="sc-dots">
-            <span><i style={{ background: '#34d399' }} />To'lagan <b>{D.paidN}</b></span>
-            <span><i style={{ background: '#fbbf24' }} />Qisman <b>{D.partN}</b></span>
-            <span><i style={{ background: '#fb7185' }} />To'lamagan <b>{D.noneN}</b></span>
-          </div>
+  const rate = D.expected > 0 ? Math.round((D.collected / D.expected) * 100) : 0, nDebtors = D.bills.filter((b) => b.debt > 0).length;
+  const debtors = D.bills.filter((b) => b.debt > 0).sort((a, b) => b.debt - a.debt);
+  const top = [...D.rows].filter((r) => r.done > 0).sort((a, b) => b.done - a.done).slice(0, 5);
+  const idle = D.rows.filter((r) => r.poss > 0 && (r.days == null || r.days > 14)).length;
+  const RS = { payment: "To'lov", manual: "Qo'lda", frozen: 'Muzlatilgan', attendance: 'Nazorat' };
+  const pick = (v) => { setCid(v); setPg(0); };
+  const kpis = [
+    ["Shu oy tushum", fmtMoney(D.thisM), 'o\'tgan oyga nisbatan', '#34d399', sxDelta(D.thisM, D.prevM), Icon.cash, null, D.spark.map((x) => x.v)],
+    [`${range} oylik tushum`, fmtMoney(D.tot), `${D.nPays} ta to'lov`, '#38bdf8', sxDelta(D.tot, D.prevTot), Icon.chart, null, D.months.map((x) => x.v)],
+    ["Yig'ish darajasi", rate + '%', `${fmtMoneyShort(D.collected)} / ${fmtMoneyShort(D.expected)}`, '#a78bfa', null, Icon.check, rate],
+    ['Joriy qarz', fmtMoney(D.debt), `${nDebtors} ta o'quvchi`, '#fb7185', null, Icon.warn, D.expected > 0 ? Math.round((D.debt / D.expected) * 100) : 0],
+    ["O'quvchilar", String(D.rows.length), `bu oy +${D.newThis} yangi`, '#fbbf24', sxDelta(D.newThis, D.newPrev), Icon.users, null, D.enrM.map((x) => x.v)],
+    ["O'zlashtirish", D.compl + '%', `${D.done}/${D.poss} dars`, '#34d399', sxDelta(D.compThis, D.compPrev), Icon.book, D.compl],
+  ];
+  const exportPays = () => sxCsv('tolovlar.csv', [["O'quvchi", 'Kurs / izoh', 'Summa', "Qo'shimcha", 'Oy', 'Yil', 'Sana'], ...D.pays.map((x) => [x.student, x.courseName || '', x.amount || 0, x.extra || 0, x.month, x.year, x.date || ''])]);
+  const exportCourses = () => sxCsv('kurslar-statistikasi.csv', [['Kurs', 'Oylik narx', 'Darslar', "O'quvchilar", "O'zlashtirish %", 'Bloklangan', `${range} oylik tushum`], ...D.courses.map((c) => [c.name, c.price, c.lessons, c.enrolled, c.pct, c.blocked, c.rev])]);
+  const exportStu = () => sxCsv('oquvchilar.csv', [["O'quvchi", 'Kurslar', 'Tugatilgan darslar', 'Jami darslar', "O'zlashtirish %", 'Qarz', 'Oxirgi faollik', 'Bloklangan'], ...D.rows.map((r) => [r.name, r.nc, r.done, r.poss, r.prog, r.debt, r.last, r.blocked ? 'Ha' : "Yo'q"])]);
+
+  const sk = sort[0], sd = sort[1], qq = q.trim().toLowerCase();
+  const fl = D.rows.filter((r) => (flt === 'all' || (flt === 'debt' && r.debt > 0) || (flt === 'blk' && r.blocked) || (flt === 'act' && r.days != null && r.days <= 14) || (flt === 'idle' && r.poss > 0 && (r.days == null || r.days > 14))) && (!qq || r.name.toLowerCase().includes(qq)))
+    .sort((a, b) => (sk === 'name' ? a.name.localeCompare(b.name) : sk === 'days' ? (a.days == null ? 9999 : a.days) - (b.days == null ? 9999 : b.days) : a[sk] - b[sk]) * sd);
+  const pages = Math.max(1, Math.ceil(fl.length / 10)), page = Math.min(pg, pages - 1), shown = fl.slice(page * 10, page * 10 + 10);
+  const th = (k, l) => <th onClick={() => { setSort([k, sk === k ? -sd : (k === 'name' || k === 'days' ? 1 : -1)]); setPg(0); }} className={'sx-sort' + (sk === k ? ' on' : '')}>{l}{sk === k ? (sd > 0 ? ' ↑' : ' ↓') : ''}</th>;
+  const Chip = ({ id, l, n }) => <button type="button" className={flt === id ? 'on' : ''} onClick={() => { setFlt(id); setPg(0); }}>{l}{n != null && <b>{n}</b>}</button>;
+  const rangeOpts = [[3, '3 oy'], [6, '6 oy'], [12, '1 yil'], [24, '2 yil']];
+  const mrows = [...D.months].reverse().map((m, i, a) => ({ ...m, d: a[i + 1] ? sxDelta(m.v, a[i + 1].v) : null }));
+  const avg = Math.round(D.tot / range);
+
+  return (
+    <div className="v2 sx">
+      <div className="sx-head">
+        <div><h1>Statistika</h1><p>{D.cp.m} {D.cp.y} holatiga ko'ra{cid !== 'all' ? ' · ' + (categories.find((c) => c.id === cid) || {}).name : ''}</p></div>
+        <div className="sx-ctl">
+          <select value={cid} onChange={(e) => pick(e.target.value)} aria-label="Kurs"><option value="all">Barcha kurslar</option>{categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select>
+          <div className="sx-seg">{rangeOpts.map(([v, l]) => <button key={v} type="button" className={range === v ? 'on' : ''} onClick={() => setRange(v)}>{l}</button>)}</div>
+        </div>
+      </div>
+      <div className="sx-tabs" role="tablist">{[['all', 'Umumiy'], ['fin', 'Moliya'], ['crs', 'Kurslar'], ['stu', "O'quvchilar"]].map(([id, l]) => <button key={id} type="button" role="tab" aria-selected={tab === id} className={tab === id ? 'on' : ''} onClick={() => setTab(id)}>{l}</button>)}</div>
+
+      {tab === 'all' && (<>
+        <div className="sx-kpis">{kpis.map(([l, v, s, c, d, Ic, pc, sp]) => (
+          <div key={l} className="v2-c sx-k" style={{ '--c': c }}><div className="sx-kh"><i><Ic width="18" height="18" /></i><span>{l}</span><SxDelta d={d} /></div><b>{v}</b><small>{s}</small>{sp ? <SxSpark v={sp} c={c} /> : pc != null ? <div className="sx-kp"><u style={{ width: Math.min(100, Math.max(3, pc)) + '%' }} /></div> : null}</div>
+        ))}</div>
+        <div className="sx-row r83">
+          <section className="v2-c sx-box">
+            <div className="sx-bh"><h2>Tushum <small>{range} oy</small></h2><div className="sx-seg s"><button type="button" className={kind === 'bar' ? 'on' : ''} onClick={() => setKind('bar')}>Ustun</button><button type="button" className={kind === 'line' ? 'on' : ''} onClick={() => setKind('line')}>Chiziq</button></div></div>
+            <SxChart data={D.months} kind={kind} />
+            <div className="sx-foot"><span>Jami <b>{fmtMoney(D.tot)}</b></span><span>O'rtacha <b>{fmtMoney(avg)}</b>/oy</span><span>Eng yaxshi <b>{D.best && D.best.v ? D.best.full : '—'}</b></span></div>
+          </section>
+          <section className="v2-c sx-box">
+            <h2>To'lov holati <small>joriy oy</small></h2>
+            <SxDonut seg={[{ l: 'p', v: D.paidN, c: '#34d399' }, { l: 'q', v: D.partN, c: '#fbbf24' }, { l: 'n', v: D.noneN, c: '#fb7185' }]} center={rate + '%'} sub="yig'ildi" />
+            <div className="sx-dots"><span><i style={{ background: '#34d399' }} />To'lagan <b>{D.paidN}</b></span><span><i style={{ background: '#fbbf24' }} />Qisman <b>{D.partN}</b></span><span><i style={{ background: '#fb7185' }} />To'lamagan <b>{D.noneN}</b></span></div>
+          </section>
+        </div>
+        <div className="sx-row r3">
+          <section className="v2-c sx-box"><h2>Yangi yozilganlar <small>{range} oy</small></h2><SxChart data={D.enrM} h={170} color="#38bdf8" int fmt={(v) => String(Math.round(v))} full={(v) => v + ' ta'} /></section>
+          <section className="v2-c sx-box"><h2>Tugatilgan darslar <small>{range} oy</small></h2><SxChart data={D.compM} h={170} color="#a78bfa" int fmt={(v) => String(Math.round(v))} full={(v) => v + ' ta dars'} /></section>
+          <section className="v2-c sx-box sx-attn"><h2>Diqqat markazida</h2>
+            <div className="sx-li"><span>Qarzdorlar</span><b className={nDebtors ? 'bad' : 'ok'}>{nDebtors}</b></div>
+            <div className="sx-li"><span>Bloklangan o'quvchilar</span><b className={D.blockedSet.size ? 'bad' : 'ok'}>{D.blockedSet.size}</b></div>
+            <div className="sx-li"><span>14 kundan beri nofaol</span><b className={idle ? 'bad' : 'ok'}>{idle}</b></div>
+            <div className="sx-chips">{Object.entries(RS).filter(([k]) => D.reasons[k]).map(([k, l]) => <span key={k}>{l} <b>{D.reasons[k]}</b></span>)}</div>
+            {!nDebtors && !D.blockedSet.size && !idle && <p className="sx-em">Hammasi joyida 🎉</p>}
+          </section>
+        </div>
+        <div className="sx-row r2">
+          <section className="v2-c sx-box"><h2>Eng faol o'quvchilar</h2>{top.length ? top.map((r, i) => <div key={r.id} className="sx-li"><span>{['🥇', '🥈', '🥉', '4.', '5.'][i]} {r.name}</span><b>{r.done} dars</b></div>) : <p className="sx-em">Hali dars tugatilmagan.</p>}</section>
+          <section className="v2-c sx-box"><h2>Kurslar bo'yicha tushum <small>{range} oy</small></h2><SxHB rows={D.courses.filter((c) => c.rev > 0).sort((a, b) => b.rev - a.rev).map((c) => ({ l: c.name, v: c.rev, t: fmtMoney(c.rev) }))} empty="Tanlangan davrda tushum yo'q." /></section>
+        </div>
+      </>)}
+
+      {tab === 'fin' && (<>
+        <div className="sx-kpis k4">{[["Davr tushumi", fmtMoney(D.tot), sxDelta(D.tot, D.prevTot)], ["O'rtacha oylik", fmtMoney(avg), null], ["Qo'shimcha to'lovlar", fmtMoney(D.extra), null], ["Kutilgan / yig'ilgan", `${fmtMoneyShort(D.expected)} / ${fmtMoneyShort(D.collected)}`, null]].map(([l, v, d]) => <div key={l} className="v2-c sx-k" style={{ '--c': '#34d399' }}><div className="sx-kh"><span>{l}</span></div><b>{v}</b><small><SxDelta d={d} /></small></div>)}</div>
+        <div className="sx-row r2">
+          <section className="v2-c sx-box">
+            <div className="sx-bh"><h2>Oylar kesimida</h2><button type="button" className="sx-btn" onClick={exportPays}>↓ To'lovlar CSV</button></div>
+            <div className="sx-tw"><table className="sx-t"><thead><tr><th>Oy</th><th>Tushum</th><th>To'lov</th><th>O'zgarish</th></tr></thead><tbody>{mrows.map((m) => <tr key={m.i}><td>{m.full}</td><td><b>{fmtMoney(m.v)}</b></td><td>{m.c}</td><td><SxDelta d={m.d} /></td></tr>)}</tbody></table></div>
+          </section>
+          <section className="v2-c sx-box">
+            <h2>Kurslar bo'yicha tushum <small>{range} oy</small></h2>
+            <SxHB rows={[...D.courses.filter((c) => c.rev > 0).map((c) => ({ l: c.name, v: c.rev, t: fmtMoney(c.rev) })), ...(D.other > 0 ? [{ l: "Boshqa (umumiy to'lovlar)", v: D.other, t: fmtMoney(D.other), c: '#94a3b8' }] : [])].sort((a, b) => b.v - a.v)} empty="Tanlangan davrda tushum yo'q." />
+            <h2 style={{ marginTop: 22 }}>Qarzdorlar <small>{nDebtors} ta · {fmtMoney(D.debt)}</small></h2>
+            {debtors.length ? (allDebt ? debtors : debtors.slice(0, 6)).map((b) => <div key={b.s.id} className="sx-li"><span>{b.s.name}</span><b className="bad">{fmtMoney(b.debt)}</b></div>) : <p className="sx-em">Qarzdor yo'q 🎉</p>}
+            {debtors.length > 6 && <button type="button" className="sx-btn" style={{ marginTop: 10 }} onClick={() => setAllDebt(!allDebt)}>{allDebt ? "Kamroq ko'rsatish" : `Hammasini ko'rsatish (${debtors.length})`}</button>}
+          </section>
+        </div>
+      </>)}
+
+      {tab === 'crs' && (<>
+        <div className="sx-bh" style={{ marginBottom: 12 }}><h2 style={{ margin: 0 }}>Kurslar <small>{D.courses.length} ta</small></h2><button type="button" className="sx-btn" onClick={exportCourses}>↓ Kurslar CSV</button></div>
+        {D.courses.length === 0 ? <p className="v2-c sx-box sx-em">Hali kurslar yo'q.</p> : <div className="sx-cards">{D.courses.map((c) => (
+          <button key={c.id} type="button" className={'v2-c sx-cc' + (cid === c.id ? ' sel' : '')} onClick={() => pick(cid === c.id ? 'all' : c.id)} title="Batafsil / filtr">
+            <div className="sx-bh"><b>{c.name}</b><span className="sx-pill">{c.price ? fmtMoneyShort(c.price) + '/oy' : 'bepul'}</span></div>
+            <div className="sx-cm"><div><b>{c.enrolled}</b><small>o'quvchi</small></div><div><b>{c.lessons}</b><small>dars</small></div><div><b className={c.blocked ? 'bad' : ''}>{c.blocked}</b><small>bloklangan</small></div></div>
+            <div className="sx-hb"><div><span>O'zlashtirish</span><b>{c.pct}%</b></div><i><u style={{ width: Math.max(2, c.pct) + '%' }} /></i></div>
+            <small className="sx-mut">{range} oylik tushum: <b>{fmtMoney(c.rev)}</b></small>
+          </button>))}</div>}
+        {cid !== 'all' && D.courses[0] && (
+          <section className="v2-c sx-box" style={{ marginTop: 14 }}><h2>Bo'limlar bo'yicha o'zlashtirish <small>{D.courses[0].name}</small></h2>
+            <SxHB rows={D.courses[0].subs.map((x) => ({ l: `${x.name} (${x.n} dars)`, v: x.pct, t: x.pct + '%', c: x.pct >= 70 ? '#34d399' : x.pct >= 35 ? '#fbbf24' : '#fb7185' }))} empty="Bo'limlar yo'q." /></section>
+        )}
+      </>)}
+
+      {tab === 'stu' && (
+        <section className="v2-c sx-box">
+          <div className="sx-bh"><h2>O'quvchilar <small>{fl.length} / {D.rows.length}</small></h2><button type="button" className="sx-btn" onClick={exportStu}>↓ O'quvchilar CSV</button></div>
+          <div className="sx-fl"><input className="sx-in" placeholder="Ism bo'yicha qidirish…" value={q} onChange={(e) => { setQ(e.target.value); setPg(0); }} />
+            <div className="sx-chipsel"><Chip id="all" l="Hammasi" n={D.rows.length} /><Chip id="debt" l="Qarzdor" n={nDebtors} /><Chip id="blk" l="Bloklangan" n={D.blockedSet.size} /><Chip id="act" l="Faol" /><Chip id="idle" l="Nofaol" n={idle} /></div></div>
+          {shown.length === 0 ? <p className="sx-em" style={{ padding: '18px 0' }}>{D.rows.length ? "Mos o'quvchi topilmadi." : "Hali o'quvchilar qo'shilmagan."}</p> : (
+            <div className="sx-tw"><table className="sx-t"><thead><tr>{th('name', "O'quvchi")}<th>Kurs</th>{th('prog', "O'zlashtirish")}{th('debt', 'Qarz')}{th('days', 'Oxirgi faollik')}<th>Holat</th></tr></thead>
+              <tbody>{shown.map((r) => <tr key={r.id}><td><b>{r.name}</b></td><td>{r.nc}</td><td><div className="sx-pr"><i style={{ width: Math.max(2, r.prog) + '%' }} /></div> {r.prog}% <small className="sx-mut">({r.done}/{r.poss})</small></td><td className={r.debt ? 'bad' : ''}>{r.debt ? fmtMoney(r.debt) : '—'}</td><td>{r.last ? (r.days === 0 ? 'Bugun' : r.days + ' kun oldin') : '—'}</td><td>{r.blocked ? <span className="sx-tag bad">Bloklangan</span> : r.debt ? <span className="sx-tag warn">Qarz</span> : <span className="sx-tag ok">Faol</span>}</td></tr>)}</tbody></table></div>)}
+          {pages > 1 && <div className="sx-pgn"><button type="button" disabled={page === 0} onClick={() => setPg(page - 1)}>←</button><span>{page + 1} / {pages}</span><button type="button" disabled={page >= pages - 1} onClick={() => setPg(page + 1)}>→</button></div>}
         </section>
-
-        <section className="v2-c sc-box">
-          <h2>Kurslar <small>{D.courses.length} ta</small></h2>
-          {D.courses.length === 0 ? <p className="sc-empty">Hali kurslar yo'q.</p> : (
-            <table className="sc-t">
-              <thead><tr><th>Kurs</th><th>O'quvchi</th><th>Dars</th><th>O'zlash.</th><th>Oylik</th></tr></thead>
-              <tbody>{D.courses.map((c) => (
-                <tr key={c.id}><td><b>{c.name}</b></td><td>{c.enrolled}</td><td>{c.lessons}</td><td>{c.pct}%</td><td>{fmtMoneyShort(c.amount)}</td></tr>
-              ))}</tbody>
-            </table>
-          )}
-        </section>
-      </div>
-
-      <section className="v2-c sc-box sc-attn">
-        <div>
-          <h2>Qarzdorlar <small>top 3</small></h2>
-          {D.debtors.length === 0 ? <p className="sc-empty">Yo'q 🎉</p> : D.debtors.slice(0, 3).map(({ st, b }) => <div key={st.id} className="sc-li"><span>{st.name}</span><b>{fmtMoney(b.debt)}</b></div>)}
-        </div>
-        <div>
-          <h2>Bloklanish sababi</h2>
-          {D.entries.length === 0 ? <p className="sc-empty">Bloklangan yo'q 🎉</p> : <div className="sc-chips">{Object.entries(RS).filter(([k]) => D.reasons[k]).map(([k, l]) => <span key={k}>{l} <b>{D.reasons[k]}</b></span>)}</div>}
-        </div>
-        <div>
-          <h2>Eng faol <small>top 3</small></h2>
-          {top.length === 0 ? <p className="sc-empty">Hali yo'q</p> : top.map((x) => <div key={x.id} className="sc-li"><span>{x.name}</span><b>{x.n} dars</b></div>)}
-        </div>
-      </section>
+      )}
     </div>
   );
 }
