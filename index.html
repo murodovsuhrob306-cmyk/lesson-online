@@ -1316,6 +1316,12 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
   .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.1rem; gap: .75rem; }
   .modal-close { width: 28px; height: 28px; border-radius: 999px; background: rgba(2,44,34,.06); color: #022c22; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; flex-shrink: 0; }
   .modal-close:hover { background: rgba(2,44,34,.12); }
+  .sd-modal, .bi-card { position: relative; }
+  .sd-x, .bi-x { position: absolute; top: .8rem; right: .8rem; width: 30px; height: 30px; border-radius: 999px; border: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; background: rgba(2,44,34,.07); color: inherit; z-index: 2; transition: background .15s, transform .15s; }
+  .sd-x:hover, .bi-x:hover { background: rgba(2,44,34,.14); transform: rotate(90deg); }
+  html.theme-dark .sd-x, html.theme-dark .bi-x { background: rgba(255,255,255,.09); }
+  html.theme-dark .sd-x:hover, html.theme-dark .bi-x:hover { background: rgba(255,255,255,.17); }
+  .sd-modal .sd-title { padding-right: 2.2rem; }
   html.theme-dark .modal-close { background: rgba(255,255,255,.08); color: #EAFBEF; }
   @media (max-width: 480px) { .modal-card { padding: 1.15rem; } .modal-card-lg { padding: 1.4rem; } }
   .profile-dropdown {
@@ -3423,6 +3429,247 @@ html body .pc-ai{ display:flex; align-items:flex-start; gap:14px; padding:14px 1
 @media (max-width:900px){ html body .pc-hero{ grid-template-columns:minmax(0,1fr); padding:20px; } }
 </style>
 
+<style id="edu-nx">
+/* ===== NX — Xodimlar + Ruxsatlar markazi: yangi avlod dizayni ===== */
+.nx{ --r:24px; }
+.nx button{ font-family:inherit; }
+.nx ::selection{ background:rgba(52,211,153,.35); }
+
+/* ---------- Hero ---------- */
+.nx-hero{ position:relative; overflow:hidden; isolation:isolate; display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:30px; align-items:center; padding:36px 38px; margin-bottom:22px; border-radius:34px; border:1px solid var(--bd);
+  background:color-mix(in srgb,var(--dot) 82%,transparent); box-shadow:var(--sh); }
+.nx-hero::before{ content:''; position:absolute; inset:0; z-index:-1; pointer-events:none; background:radial-gradient(460px circle at var(--mx,70%) var(--my,10%),color-mix(in srgb,var(--em) 18%,transparent),transparent 62%); }
+.nx-hero::after{ content:''; position:absolute; inset:0; z-index:-1; pointer-events:none; opacity:.5; background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px); background-size:44px 44px; -webkit-mask-image:radial-gradient(70% 90% at 80% 0%,#000,transparent 75%); mask-image:radial-gradient(70% 90% at 80% 0%,#000,transparent 75%); }
+.nx-aur{ position:absolute; inset:0; z-index:-2; overflow:hidden; pointer-events:none; }
+.nx-aur i{ position:absolute; width:44vmax; height:44vmax; border-radius:50%; filter:blur(80px); opacity:.34; animation:nxFloat 20s ease-in-out infinite alternate; }
+.nx-aur i:nth-child(1){ left:-14vmax; top:-26vmax; background:#34d399; }
+.nx-aur i:nth-child(2){ right:-16vmax; top:-14vmax; background:#38bdf8; animation-delay:-7s; }
+.nx-aur i:nth-child(3){ right:18%; bottom:-34vmax; background:#a78bfa; animation-delay:-12s; opacity:.24; }
+.nx-hero.pc .nx-aur i:nth-child(1){ background:#f472b6; } .nx-hero.pc .nx-aur i:nth-child(3){ background:#fbbf24; }
+html:not(.theme-dark) .nx-aur i{ opacity:.2; }
+@keyframes nxFloat{ to{ transform:translate3d(7vmax,5vmax,0) scale(1.18); } }
+.nx-hero-l h1{ margin:14px 0 10px !important; font-size:clamp(36px,4.4vw,60px) !important; line-height:1.02 !important; letter-spacing:-.04em !important; }
+.nx-hero-l p{ color:var(--mut); font-weight:600; font-size:14.5px; line-height:1.6; max-width:540px; margin-bottom:22px; }
+.nx-acts{ display:flex; gap:10px; flex-wrap:wrap; }
+.nx-btn{ display:inline-flex; align-items:center; gap:8px; padding:12px 18px; border-radius:15px; border:1px solid var(--bd); background:color-mix(in srgb,var(--ink) 5%,transparent); color:var(--ink); font:700 13.5px Manrope,sans-serif; cursor:pointer; transition:transform .25s cubic-bezier(.2,.8,.2,1),background .2s,border-color .2s,box-shadow .25s; }
+.nx-btn:hover:not(:disabled){ transform:translateY(-3px); border-color:var(--em); background:color-mix(in srgb,var(--em) 11%,transparent); }
+.nx-btn:active:not(:disabled){ transform:translateY(0) scale(.97); }
+.nx-btn:disabled{ opacity:.38; cursor:not-allowed; }
+.nx-btn.pri{ border:0; color:#052e1c; font-weight:800; background:linear-gradient(135deg,#34d399,#a3e635); box-shadow:0 14px 34px -12px rgba(52,211,153,.9); }
+.nx-btn.pri:hover:not(:disabled){ box-shadow:0 20px 40px -12px rgba(52,211,153,1); background:linear-gradient(135deg,#6ee7b7,#bef264); }
+
+/* ---------- KPI plitkalari ---------- */
+.nx-kpis{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.nx-kpi{ position:relative; overflow:hidden; text-align:left; padding:18px 20px; border-radius:22px; border:1px solid var(--bd); background:color-mix(in srgb,var(--dot) 55%,transparent); backdrop-filter:blur(14px); color:var(--ink); cursor:pointer; transition:transform .3s cubic-bezier(.2,.8,.2,1),border-color .3s,box-shadow .3s; }
+.nx-kpi::after{ content:''; position:absolute; right:-34px; top:-34px; width:104px; height:104px; border-radius:50%; background:var(--c); filter:blur(38px); opacity:.32; transition:opacity .3s,transform .5s; }
+.nx-kpi:hover{ transform:translateY(-4px); border-color:var(--c); } .nx-kpi:hover::after{ opacity:.6; transform:scale(1.25); }
+.nx-kpi.on{ border-color:var(--c); box-shadow:0 0 0 1px var(--c) inset,0 18px 36px -22px var(--c); }
+.nx-kpi small{ display:flex; align-items:center; gap:8px; color:var(--mut); font-weight:700; font-size:12px; } .nx-kpi small i{ width:8px; height:8px; border-radius:50%; background:var(--c); box-shadow:0 0 10px var(--c); }
+.nx-kpi b{ display:block; margin-top:8px; font:800 38px Sora,sans-serif; letter-spacing:-.04em; line-height:1; }
+.nx-bar{ height:5px; border-radius:9px; background:var(--line); margin-top:14px; overflow:hidden; } .nx-bar u{ display:block; height:100%; border-radius:9px; background:linear-gradient(90deg,var(--c),color-mix(in srgb,var(--c) 55%,#fff)); transition:width .8s cubic-bezier(.2,.8,.2,1); }
+
+/* ---------- Toolbar ---------- */
+.nx-toolbar{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:20px; }
+.nx-search{ display:flex; align-items:center; gap:10px; flex:1 1 280px; min-width:220px; height:48px; padding:0 14px; border-radius:17px; border:1px solid var(--bd); background:var(--glass); backdrop-filter:blur(14px); color:var(--mut); transition:border-color .2s,box-shadow .25s; }
+.nx-search:focus-within{ border-color:var(--em); box-shadow:0 0 0 5px rgba(52,211,153,.13); color:var(--em); }
+.nx-search input{ flex:1; min-width:0; border:0; outline:0; background:transparent; color:var(--ink); font:600 14px Manrope,sans-serif; }
+.nx-search kbd{ font:800 11px Manrope,sans-serif; padding:3px 8px; border-radius:8px; border:1px solid var(--bd); color:var(--mut); }
+.nx-search.sm{ flex:0 1 260px; height:42px; }
+.nx-chips{ display:flex; gap:6px; flex-wrap:wrap; }
+.nx-chip{ display:inline-flex; align-items:center; gap:8px; padding:9px 14px; border-radius:99px; border:1px solid var(--bd); background:transparent; color:var(--mut); font:700 12.5px Manrope,sans-serif; cursor:pointer; transition:.25s cubic-bezier(.2,.8,.2,1); }
+.nx-chip i{ width:8px; height:8px; border-radius:50%; background:var(--c); transition:box-shadow .3s; } .nx-chip b{ opacity:.7; font-weight:800; }
+.nx-chip:hover{ transform:translateY(-2px); color:var(--ink); border-color:color-mix(in srgb,var(--c) 60%,var(--bd)); }
+.nx-chip.on{ color:var(--ink); border-color:var(--c); background:color-mix(in srgb,var(--c) 16%,transparent); box-shadow:0 10px 24px -14px var(--c); } .nx-chip.on i{ box-shadow:0 0 12px var(--c); }
+
+/* ---------- Segment (sirpanuvchi) ---------- */
+.nx-seg{ position:relative; display:grid; grid-template-columns:repeat(var(--n),1fr); padding:4px; border-radius:15px; border:1px solid var(--bd); background:var(--glass); }
+.nx-seg>i{ position:absolute; top:4px; bottom:4px; left:4px; width:calc((100% - 8px)/var(--n)); border-radius:11px; background:linear-gradient(135deg,var(--em),#a3e635); transform:translateX(calc(var(--i)*100%)); transition:transform .4s cubic-bezier(.3,1.3,.5,1); box-shadow:0 8px 20px -8px rgba(52,211,153,.8); }
+.nx-seg button{ position:relative; z-index:1; border:0; background:transparent; padding:8px 14px; color:var(--mut); font:800 12.5px Manrope,sans-serif; cursor:pointer; transition:color .2s; white-space:nowrap; }
+.nx-seg button.on{ color:#052e1c; }
+.nx-seg.wide{ width:100%; }
+
+/* ---------- Xodim kartalari ---------- */
+.nx-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:18px; }
+.nx-grid.list{ grid-template-columns:minmax(0,1fr); gap:10px; }
+.nx-card{ --c:#34d399; position:relative; display:flex; flex-direction:column; gap:15px; padding:22px; border-radius:28px; border:1px solid var(--bd); background:var(--glass); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); overflow:hidden; box-shadow:var(--sh);
+  transition:transform .4s cubic-bezier(.2,.8,.2,1),border-color .3s,box-shadow .4s,opacity .3s,filter .3s; animation:nxIn .65s cubic-bezier(.2,.8,.2,1) both; animation-delay:calc(var(--d,0)*55ms); }
+.nx-card>*{ position:relative; z-index:1; }
+.nx-card::before{ content:''; position:absolute; inset:0; z-index:0; pointer-events:none; opacity:0; transition:opacity .35s; background:radial-gradient(340px circle at var(--mx,50%) var(--my,0),color-mix(in srgb,var(--c) 22%,transparent),transparent 62%); }
+.nx-card::after{ content:''; position:absolute; left:18px; right:18px; top:0; height:3px; border-radius:0 0 6px 6px; background:linear-gradient(90deg,transparent,var(--c),transparent); }
+.nx-card:hover{ transform:translateY(-7px); border-color:color-mix(in srgb,var(--c) 55%,var(--bd)); box-shadow:0 34px 60px -30px color-mix(in srgb,var(--c) 80%,#000); } .nx-card:hover::before{ opacity:1; }
+.nx-card.off{ filter:grayscale(.85); opacity:.55; } .nx-card.off:hover{ opacity:.92; filter:grayscale(.3); }
+@keyframes nxIn{ from{ opacity:0; transform:translateY(26px) scale(.96); } }
+.nx-top{ display:flex; align-items:center; gap:14px; }
+.nx-av{ position:relative; display:grid; place-items:center; flex:none; width:56px; height:56px; border-radius:19px; color:#fff; font:800 18px Sora,sans-serif; box-shadow:0 16px 28px -14px rgba(0,0,0,.7),inset 0 0 0 1px rgba(255,255,255,.28); transition:transform .4s cubic-bezier(.3,1.4,.5,1); }
+.nx-card:hover .nx-av{ transform:rotate(-6deg) scale(1.08); }
+.nx-av.sm{ width:40px; height:40px; border-radius:14px; font-size:13px; } .nx-av.lg{ width:72px; height:72px; border-radius:24px; font-size:24px; }
+.nx-pres{ position:absolute; right:-4px; bottom:-4px; width:15px; height:15px; border-radius:50%; background:#34d399; border:3px solid var(--dot); box-shadow:0 0 0 0 rgba(52,211,153,.6); animation:nxPulse 2.2s infinite; } .nx-pres.off{ background:#64748b; animation:none; }
+@keyframes nxPulse{ 70%{ box-shadow:0 0 0 8px rgba(52,211,153,0); } 100%{ box-shadow:0 0 0 0 rgba(52,211,153,0); } }
+.nx-nm{ flex:1; min-width:0; } .nx-nm b{ display:flex; align-items:center; gap:8px; font:700 16px Sora,Manrope,sans-serif; letter-spacing:-.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.nx-nm em,.nx-sub-t em{ font-style:normal; font:800 10px Manrope,sans-serif; padding:2px 8px; border-radius:99px; background:rgba(52,211,153,.18); color:#10b981; }
+.nx-nm small{ display:block; margin-top:2px; color:var(--mut); font-weight:600; font-size:12.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.nx-role{ --c:#34d399; flex:none; font:800 11px Manrope,sans-serif; letter-spacing:.02em; padding:6px 12px; border-radius:99px; color:var(--c); background:color-mix(in srgb,var(--c) 15%,transparent); border:1px solid color-mix(in srgb,var(--c) 35%,transparent); white-space:nowrap; }
+.nx-acc{ display:flex; align-items:center; gap:14px; padding:12px 14px; border-radius:20px; background:color-mix(in srgb,var(--ink) 4%,transparent); border:1px solid var(--line); }
+.nx-acc-r{ flex:1; min-width:0; display:flex; flex-direction:column; gap:9px; }
+.nx-acc-h{ display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:700; color:var(--mut); } .nx-acc-h b{ color:var(--ink); font:800 13px Sora,sans-serif; }
+.nx-mods{ display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
+.nx-mod{ aspect-ratio:1; max-width:34px; border-radius:11px; display:grid; place-items:center; color:var(--mut); border:1px solid var(--line); opacity:.4; transition:transform .25s cubic-bezier(.3,1.5,.5,1),opacity .2s; }
+.nx-mod.l1{ opacity:1; color:var(--mc); background:color-mix(in srgb,var(--mc) 14%,transparent); border-color:color-mix(in srgb,var(--mc) 42%,transparent); }
+.nx-mod.l2{ opacity:1; color:#06210f; background:var(--mc); border-color:var(--mc); box-shadow:0 8px 18px -8px var(--mc); }
+.nx-mod:hover{ transform:translateY(-4px) scale(1.14); opacity:1; }
+.nx-info{ display:flex; flex-direction:column; gap:7px; font-size:12.5px; color:var(--mut); font-weight:600; } .nx-info span{ display:flex; align-items:center; gap:9px; }
+.nx-cred{ display:grid; gap:7px; }
+.nx-cr{ display:flex; align-items:center; gap:8px; padding:7px 8px 7px 14px; border-radius:15px; border:1px dashed color-mix(in srgb,var(--ink) 20%,transparent); background:color-mix(in srgb,var(--ink) 3%,transparent); transition:border-color .2s,background .2s; }
+.nx-cr:hover{ border-color:var(--c); background:color-mix(in srgb,var(--c) 7%,transparent); }
+.nx-cr small{ width:42px; flex:none; color:var(--mut); font:800 10px Manrope,sans-serif; letter-spacing:.08em; text-transform:uppercase; }
+.nx-cr code{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:600 13px ui-monospace,SFMono-Regular,Menlo,monospace; color:var(--ink); }
+.nx-ib{ flex:none; width:32px; height:32px; border-radius:11px; border:0; background:transparent; color:var(--mut); display:inline-grid; place-items:center; cursor:pointer; transition:background .2s,color .2s,transform .2s; }
+.nx-ib:hover{ background:color-mix(in srgb,var(--ink) 11%,transparent); color:var(--ink); transform:scale(1.1); } .nx-ib.dn:hover{ background:rgba(244,63,94,.15); color:#fb7185; }
+.nx-foot{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:auto; padding-top:14px; border-top:1px solid var(--line); }
+.nx-sw{ display:flex; align-items:center; gap:10px; font-size:12.5px; font-weight:800; color:var(--mut); } .nx-fa{ display:flex; align-items:center; gap:4px; }
+.nx-pill{ display:inline-flex; align-items:center; gap:7px; padding:8px 14px; border-radius:99px; border:1px solid var(--bd); background:transparent; color:var(--ink); font:800 12px Manrope,sans-serif; cursor:pointer; transition:.22s; }
+.nx-pill:hover{ background:var(--ink); color:var(--dot); border-color:var(--ink); transform:translateY(-2px); }
+.nx-grid.list .nx-card{ flex-direction:row; flex-wrap:wrap; align-items:center; gap:18px; padding:14px 20px; border-radius:22px; } .nx-grid.list .nx-card:hover{ transform:translateX(5px); }
+.nx-grid.list .nx-top{ flex:1.3; min-width:240px; } .nx-grid.list .nx-acc{ flex:1.4; min-width:270px; } .nx-grid.list .nx-info{ display:none; } .nx-grid.list .nx-cred{ flex:1.2; min-width:240px; } .nx-grid.list .nx-foot{ margin:0; padding:0; border:0; gap:18px; }
+.nx-empty{ display:flex; flex-direction:column; align-items:center; gap:8px; padding:60px 20px; border-radius:28px; border:1px dashed var(--bd); text-align:center; color:var(--mut); } .nx-empty span{ font-size:44px; } .nx-empty b{ color:var(--ink); font:700 18px Sora,sans-serif; } .nx-empty .nx-btn{ margin-top:10px; }
+.nx-note{ margin-top:16px; color:var(--mut); font-size:13px; font-weight:600; }
+
+/* ---------- Drawer (o'ngdan chiqadigan panel) ---------- */
+.nx-dw-back,.nx-dw-back *{ box-sizing:border-box; }
+.nx-dw-back{ --ink:#0d1f17; --mut:#5f776b; --line:rgba(13,31,23,.1); --bd:rgba(13,31,23,.14); --bg:#fff; --dot:#fff; --em:#10b981; --glass:rgba(13,31,23,.04);
+  position:fixed; inset:0; z-index:85; display:flex; justify-content:flex-end; background:rgba(2,10,7,.55); -webkit-backdrop-filter:blur(7px); backdrop-filter:blur(7px); animation:nxFade .3s both; font-family:Manrope,system-ui,sans-serif; }
+html.theme-dark .nx-dw-back{ --ink:#eef6f1; --mut:#8aa398; --line:rgba(255,255,255,.09); --bd:rgba(255,255,255,.14); --bg:#0c1511; --dot:#0c1511; --em:#34d399; --glass:rgba(255,255,255,.05); }
+@keyframes nxFade{ from{ opacity:0; } }
+.nx-dw{ width:100%; max-width:660px; height:100%; display:flex; flex-direction:column; background:var(--bg); color:var(--ink); border-left:1px solid var(--line); box-shadow:-40px 0 90px -30px rgba(0,0,0,.65); animation:nxSlide .45s cubic-bezier(.2,.9,.25,1) both; }
+@keyframes nxSlide{ from{ transform:translateX(70px); opacity:0; } }
+.nx-dw-h{ display:flex; justify-content:space-between; align-items:flex-start; gap:14px; padding:24px 28px 18px; border-bottom:1px solid var(--line); background:linear-gradient(180deg,color-mix(in srgb,var(--em) 9%,transparent),transparent); }
+.nx-dw-h h3{ font:800 24px Sora,sans-serif; letter-spacing:-.03em; } .nx-dw-h p{ margin-top:4px; color:var(--mut); font-size:13px; font-weight:600; }
+.nx-x{ flex:none; width:38px; height:38px; border-radius:13px; border:1px solid var(--line); background:var(--glass); color:var(--ink); display:grid; place-items:center; cursor:pointer; transition:transform .3s cubic-bezier(.3,1.4,.5,1),background .2s,color .2s; } .nx-x:hover{ transform:rotate(90deg) scale(1.08); background:#f43f5e; color:#fff; border-color:#f43f5e; }
+.nx-dw-b{ flex:1; overflow-y:auto; padding:22px 28px 30px; } .nx-dw-f{ display:flex; justify-content:flex-end; gap:10px; padding:16px 28px; border-top:1px solid var(--line); background:var(--bg); }
+.nx-f{ display:flex; flex-direction:column; gap:14px; }
+.nx-f label{ display:flex; flex-direction:column; gap:7px; font-size:12px; font-weight:800; color:var(--mut); }
+.nx-f input,.nx-f select{ width:100%; padding:12px 14px; border-radius:14px; border:1px solid var(--bd); background:var(--glass); color:var(--ink); font:600 14px Manrope,sans-serif; outline:0; transition:border-color .2s,box-shadow .2s; }
+.nx-f input:focus,.nx-f select:focus{ border-color:var(--em); box-shadow:0 0 0 4px color-mix(in srgb,var(--em) 18%,transparent); }
+.nx-2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.nx-sec{ display:flex; align-items:center; gap:10px; margin-top:10px; font:800 12px Manrope,sans-serif; letter-spacing:.08em; text-transform:uppercase; color:var(--ink); } .nx-sec small{ color:var(--em); font-weight:800; }
+.nx-n{ width:24px; height:24px; border-radius:9px; display:grid; place-items:center; font:800 12px Sora,sans-serif; color:#052e1c; background:linear-gradient(135deg,#34d399,#a3e635); }
+.nx-auto{ font-style:normal; text-transform:none; letter-spacing:0; font-size:11px; padding:3px 10px; border-radius:99px; color:#10b981; background:rgba(52,211,153,.15); border:1px solid rgba(52,211,153,.35); animation:nxGlow 2.4s ease-in-out infinite; }
+@keyframes nxGlow{ 50%{ box-shadow:0 0 18px rgba(52,211,153,.5); } }
+.nx-keybox{ display:flex; flex-direction:column; gap:12px; padding:16px; border-radius:20px; border:1px solid color-mix(in srgb,var(--em) 30%,var(--line)); background:linear-gradient(145deg,color-mix(in srgb,var(--em) 8%,transparent),transparent); }
+.nx-inp{ display:flex; align-items:center; gap:2px; padding-left:12px; border-radius:14px; border:1px solid var(--bd); background:var(--bg); color:var(--mut); transition:border-color .2s,box-shadow .2s; } .nx-inp:focus-within{ border-color:var(--em); box-shadow:0 0 0 4px color-mix(in srgb,var(--em) 18%,transparent); }
+.nx-inp b{ color:var(--em); font-weight:800; } .nx-inp input{ border:0 !important; background:transparent !important; box-shadow:none !important; font-family:ui-monospace,Menlo,monospace !important; padding-left:8px !important; }
+.nx-str{ display:flex; align-items:center; gap:6px; } .nx-str span{ flex:1; height:5px; border-radius:9px; background:var(--line); transition:background .3s; } .nx-str em{ font-style:normal; font-size:11px; font-weight:800; color:var(--mut); min-width:62px; text-align:right; }
+.nx-str[data-s="1"] span:nth-child(-n+1){ background:#fb7185; } .nx-str[data-s="2"] span:nth-child(-n+2){ background:#fbbf24; } .nx-str[data-s="3"] span:nth-child(-n+3){ background:#a3e635; } .nx-str[data-s="4"] span{ background:#34d399; }
+.nx-roles{ display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; }
+.nx-rc{ position:relative; text-align:left; display:flex; flex-direction:column; gap:5px; padding:14px 16px; border-radius:18px; border:1px solid var(--bd); background:var(--glass); color:var(--ink); cursor:pointer; transition:.25s cubic-bezier(.2,.8,.2,1); }
+.nx-rc i{ position:absolute; right:12px; top:12px; width:12px; height:12px; border-radius:50%; border:2px solid var(--bd); transition:.25s; }
+.nx-rc b{ font:800 14px Sora,sans-serif; } .nx-rc small{ font-size:11.5px; line-height:1.4; color:var(--mut); font-weight:600; }
+.nx-rc:hover:not(:disabled){ transform:translateY(-3px); border-color:var(--c); } .nx-rc:disabled{ opacity:.4; cursor:not-allowed; }
+.nx-rc.on{ border-color:var(--c); background:color-mix(in srgb,var(--c) 14%,transparent); box-shadow:0 14px 30px -18px var(--c); } .nx-rc.on i{ background:var(--c); border-color:var(--c); box-shadow:0 0 12px var(--c); }
+.nx-qa{ display:flex; gap:8px; flex-wrap:wrap; } .nx-hint{ font-size:12.5px; line-height:1.55; color:var(--mut); font-weight:600; margin:0; }
+.nx-link{ border:0; background:transparent; padding:0; color:var(--em); font:800 12.5px Manrope,sans-serif; cursor:pointer; } .nx-link:hover{ text-decoration:underline; }
+
+/* ---------- Ruxsat plitkalari ---------- */
+.nx-tiles{ display:grid; grid-template-columns:repeat(auto-fill,minmax(235px,1fr)); gap:14px; }
+.nx-tile{ --mc:#34d399; --hot:#fbbf24; position:relative; display:flex; flex-direction:column; gap:11px; padding:16px; border-radius:22px; border:1px solid var(--line); background:color-mix(in srgb,var(--ink) 3%,transparent); overflow:hidden; transition:border-color .3s,background .3s,transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s; }
+.nx-tile>*{ position:relative; z-index:1; }
+.nx-tile::before{ content:''; position:absolute; inset:0; z-index:0; pointer-events:none; opacity:0; transition:opacity .3s; background:radial-gradient(240px circle at var(--mx,50%) var(--my,0),color-mix(in srgb,var(--mc) 20%,transparent),transparent 65%); } .nx-tile:hover::before{ opacity:1; }
+.nx-tile:hover{ transform:translateY(-3px); }
+.nx-tile.l1{ border-color:color-mix(in srgb,var(--mc) 48%,transparent); background:color-mix(in srgb,var(--mc) 8%,transparent); }
+.nx-tile.l2{ border-color:color-mix(in srgb,var(--hot) 60%,transparent); background:color-mix(in srgb,var(--hot) 10%,transparent); box-shadow:0 18px 38px -24px var(--hot); }
+.nx-ico{ --mc:#34d399; flex:none; width:40px; height:40px; border-radius:14px; display:grid; place-items:center; color:var(--mc); background:color-mix(in srgb,var(--mc) 16%,transparent); transition:.3s; }
+.nx-tile.l2 .nx-ico{ background:var(--hot); color:#1a1200; transform:rotate(-8deg) scale(1.06); }
+.nx-tile-h{ display:flex; gap:12px; align-items:center; } .nx-tile-h b{ display:block; font:700 14px Sora,Manrope,sans-serif; } .nx-tile-h small{ display:block; margin-top:2px; font-size:11px; font-weight:800; color:var(--mut); transition:color .3s; }
+.nx-tile.l1 .nx-tile-h small{ color:var(--mc); } .nx-tile.l2 .nx-tile-h small{ color:var(--hot); }
+.nx-tile p{ margin:0; min-height:34px; font-size:11.5px; line-height:1.5; font-weight:600; color:var(--mut); }
+.nx-seg3{ position:relative; display:grid; grid-template-columns:repeat(var(--n),1fr); padding:3px; border-radius:13px; background:color-mix(in srgb,var(--ink) 8%,transparent); }
+.nx-seg3>i{ position:absolute; left:3px; top:3px; bottom:3px; width:calc((100% - 6px)/var(--n)); border-radius:10px; background:color-mix(in srgb,var(--ink) 15%,transparent); transform:translateX(calc(var(--i)*100%)); transition:transform .4s cubic-bezier(.3,1.35,.5,1),background .3s; }
+.nx-tile.l1 .nx-seg3>i{ background:var(--mc); box-shadow:0 6px 14px -6px var(--mc); } .nx-tile.l2 .nx-seg3>i{ background:var(--hot); box-shadow:0 6px 14px -6px var(--hot); }
+.nx-seg3 button{ position:relative; z-index:1; border:0; background:transparent; padding:8px 4px; color:var(--mut); font:800 11.5px Manrope,sans-serif; cursor:pointer; transition:color .25s; }
+.nx-seg3 button.on{ color:var(--ink); } .nx-tile.l1 .nx-seg3 button.on,.nx-tile.l2 .nx-seg3 button.on{ color:#06210f; }
+.nx-tile.dis{ opacity:.85; } .nx-tile.dis .nx-seg3 button{ cursor:not-allowed; }
+
+/* ---------- Ruxsatlar markazi ---------- */
+.nx-gauge{ display:grid; grid-template-columns:auto 1fr; gap:6px 22px; align-items:center; padding:22px 24px; border-radius:28px; border:1px solid var(--bd); background:color-mix(in srgb,var(--dot) 55%,transparent); backdrop-filter:blur(16px); }
+.nx-gauge-r{ filter:drop-shadow(0 12px 28px color-mix(in srgb,var(--em) 40%,transparent)); } .nx-gauge-r .pc-ring{ color:var(--ink); }
+.nx-gauge-t{ display:flex; flex-direction:column; gap:2px; } .nx-gauge-t small{ color:var(--mut); font-weight:700; font-size:12px; } .nx-gauge-t b{ font:800 28px Sora,sans-serif; letter-spacing:-.03em; } .nx-gauge-t span{ color:var(--mut); font-size:12.5px; font-weight:600; }
+.nx-mini3{ grid-column:1/-1; display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; } .nx-mini3 div{ display:flex; flex-direction:column; padding:11px 14px; border-radius:16px; background:color-mix(in srgb,var(--ink) 5%,transparent); } .nx-mini3 b{ font:800 22px Sora,sans-serif; } .nx-mini3 small{ color:var(--mut); font-size:11.5px; font-weight:700; }
+.nx-tabs{ position:relative; display:grid; grid-template-columns:repeat(var(--n),1fr); width:min(100%,680px); padding:5px; margin-bottom:22px; border-radius:21px; border:1px solid var(--bd); background:var(--glass); backdrop-filter:blur(16px); }
+.nx-tabs-i{ position:absolute; top:5px; bottom:5px; left:5px; width:calc((100% - 10px)/var(--n)); border-radius:16px; transform:translateX(calc(var(--i)*100%)); transition:transform .5s cubic-bezier(.3,1.25,.5,1); background:linear-gradient(135deg,color-mix(in srgb,var(--em) 30%,transparent),color-mix(in srgb,#38bdf8 24%,transparent)); border:1px solid color-mix(in srgb,var(--em) 50%,transparent); box-shadow:0 10px 26px -12px var(--em); }
+.nx-tabs button{ position:relative; z-index:1; display:flex; align-items:center; justify-content:center; gap:8px; padding:12px 8px; border:0; border-radius:16px; background:transparent; color:var(--mut); font:800 13.5px Manrope,sans-serif; cursor:pointer; transition:color .25s; } .nx-tabs button.on,.nx-tabs button:hover{ color:var(--ink); }
+.nx-tabs em{ font-style:normal; font-size:11px; font-weight:800; padding:2px 8px; border-radius:99px; background:var(--line); } .nx-tabs em.warn{ background:rgba(251,113,133,.22); color:#fb7185; }
+.nx-railbar{ display:flex; flex-direction:column; gap:12px; margin-bottom:18px; }
+.nx-railbar .nx-search{ flex:0 0 auto; width:min(100%,420px); }
+.nx-mxp .nx-search.sm{ flex:0 1 260px; }
+.nx-rail{ display:flex; align-items:stretch; gap:10px; overflow-x:auto; padding:6px 4px 14px; scroll-snap-type:x proximity; scrollbar-width:thin; }
+.nx-rail-lh{ flex:none; align-self:center; writing-mode:vertical-rl; transform:rotate(180deg); font:800 10.5px Manrope,sans-serif; letter-spacing:.14em; text-transform:uppercase; color:var(--mut); padding:0 4px; }
+.nx-sub{ --c:#34d399; flex:none; scroll-snap-align:start; display:flex; align-items:center; gap:12px; min-width:230px; padding:12px 14px; border-radius:20px; border:1px solid var(--bd); background:var(--glass); color:var(--ink); text-align:left; cursor:pointer; transition:transform .3s cubic-bezier(.2,.8,.2,1),border-color .25s,background .25s,box-shadow .3s; }
+.nx-sub:hover{ transform:translateY(-4px); border-color:color-mix(in srgb,var(--c) 55%,var(--bd)); }
+.nx-sub.on{ border-color:var(--c); background:color-mix(in srgb,var(--c) 14%,transparent); box-shadow:0 18px 36px -20px var(--c),0 0 0 1px var(--c) inset; }
+.nx-sub-t{ flex:1; min-width:0; display:flex; flex-direction:column; } .nx-sub-t b{ display:flex; align-items:center; gap:6px; font:700 13.5px Sora,Manrope,sans-serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .nx-sub-t small{ color:var(--mut); font-size:11.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.nx-sub-n{ display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:99px; background:var(--line); font:800 12px Manrope,sans-serif; } .nx-sub-n i{ width:7px; height:7px; border-radius:50%; }
+.nx-pcgrid{ display:grid; grid-template-columns:minmax(0,1.6fr) minmax(300px,1fr); gap:18px; align-items:start; }
+.nx-side{ display:flex; flex-direction:column; gap:16px; position:sticky; top:12px; }
+.nx-panel{ position:relative; padding:22px; border-radius:28px; border:1px solid var(--bd); background:var(--glass); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); box-shadow:var(--sh); animation:nxIn .6s cubic-bezier(.2,.8,.2,1) both; }
+.nx-ph{ display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap; margin-bottom:16px; } .nx-ph h2{ font:800 18px Sora,sans-serif; letter-spacing:-.02em; } .nx-ph p{ margin-top:3px; color:var(--mut); font-size:12.5px; font-weight:600; } .nx-ph.sm{ margin-bottom:12px; } .nx-ph.sm h2{ font-size:15px; }
+.nx-lockb{ display:inline-flex; align-items:center; gap:7px; padding:6px 12px; border-radius:99px; font:800 12px Manrope,sans-serif; color:#fbbf24; background:rgba(251,191,36,.14); border:1px solid rgba(251,191,36,.35); }
+.nx-info2{ font-size:13px; line-height:1.55; color:var(--mut); padding:12px 14px; border-radius:16px; background:color-mix(in srgb,var(--ink) 5%,transparent); margin-bottom:16px; } .nx-info2 b{ color:var(--ink); }
+.nx-id{ background:linear-gradient(150deg,color-mix(in srgb,var(--c) 18%,transparent),var(--glass) 70%); border-color:color-mix(in srgb,var(--c) 40%,var(--bd)); display:flex; flex-direction:column; gap:16px; }
+.nx-id-t{ display:flex; align-items:center; gap:14px; } .nx-id-t h2{ font:800 20px Sora,sans-serif; letter-spacing:-.02em; } .nx-id-t span{ color:var(--mut); font-size:12.5px; font-weight:600; }
+.nx-id-r{ display:flex; align-items:center; gap:16px; } .nx-badges{ display:flex; flex-wrap:wrap; gap:6px; }
+.nx-win{ padding:0; overflow:hidden; } .nx-win-bar{ display:flex; align-items:center; gap:6px; padding:12px 16px; border-bottom:1px solid var(--line); background:color-mix(in srgb,var(--ink) 4%,transparent); } .nx-win-bar i{ width:10px; height:10px; border-radius:50%; background:#fb7185; } .nx-win-bar i:nth-child(2){ background:#fbbf24; } .nx-win-bar i:nth-child(3){ background:#34d399; } .nx-win-bar span{ margin-left:8px; font-size:11.5px; font-weight:700; color:var(--mut); }
+.nx-win-b{ display:flex; flex-direction:column; gap:4px; padding:12px; }
+.nx-nav{ display:flex; justify-content:space-between; align-items:center; padding:9px 12px; border-radius:13px; font-size:13px; font-weight:700; color:var(--mut); opacity:.5; transition:.35s cubic-bezier(.2,.8,.2,1); } .nx-nav span{ display:flex; align-items:center; gap:10px; }
+.nx-nav.on{ opacity:1; color:var(--ink); background:color-mix(in srgb,var(--em) 13%,transparent); transform:translateX(4px); } .nx-nav.on svg{ color:var(--em); } .nx-nav em{ font-style:normal; font-size:10.5px; font-weight:800; padding:2px 9px; border-radius:99px; background:rgba(251,191,36,.2); color:#d99a06; }
+.nx-pre{ display:grid; grid-template-columns:1fr 1fr; gap:8px; } .nx-pre button{ text-align:left; display:flex; flex-direction:column; gap:3px; padding:12px; border-radius:16px; border:1px solid var(--bd); background:transparent; color:var(--ink); cursor:pointer; transition:.25s cubic-bezier(.2,.8,.2,1); }
+.nx-pre button:hover{ border-color:var(--em); background:color-mix(in srgb,var(--em) 10%,transparent); transform:translateY(-3px) rotate(-.6deg); } .nx-pre span{ font-size:20px; } .nx-pre b{ font-size:12.5px; } .nx-pre small{ font-size:10.5px; line-height:1.4; color:var(--mut); font-weight:600; }
+.nx-cp{ display:flex; flex-direction:column; gap:7px; margin-top:14px; font-size:12px; font-weight:800; color:var(--mut); } .nx-cp select{ padding:11px 12px; border-radius:13px; border:1px solid var(--bd); background:var(--glass); color:var(--ink); font:600 13px Manrope,sans-serif; } .nx-cp select option{ color:#0d1f17; } .nx-panel .nx-hint{ margin-top:10px; }
+
+/* ---------- Matritsa (heatmap) ---------- */
+.nx-leg{ display:flex; gap:16px; flex-wrap:wrap; margin-bottom:14px; font-size:12px; font-weight:700; color:var(--mut); } .nx-leg span{ display:inline-flex; align-items:center; gap:7px; } .nx-leg i{ width:12px; height:12px; border-radius:5px; }
+.nx-leg .l0,.nx-cell.l0{ --k:#64748b; } .nx-leg .l1,.nx-cell.l1{ --k:#34d399; } .nx-leg .l2,.nx-cell.l2{ --k:#fbbf24; } .nx-leg .l3,.nx-cell.l3{ --k:#fb7185; } .nx-leg i{ background:color-mix(in srgb,var(--k) 55%,transparent); border:1px solid var(--k); }
+.nx-mx-sc{ overflow:auto; max-height:70vh; border-radius:22px; border:1px solid var(--line); background:color-mix(in srgb,var(--dot) 40%,transparent); }
+.nx-mx{ min-width:calc(230px + var(--cols)*132px); }
+.nx-mx-row{ display:grid; grid-template-columns:minmax(230px,1.3fr) repeat(var(--cols),minmax(132px,1fr)); align-items:stretch; border-top:1px solid var(--line); transition:background .2s; } .nx-mx-row:first-child{ border-top:0; }
+.nx-mx-row:not(.hd):hover{ background:color-mix(in srgb,var(--ink) 5%,transparent); }
+.nx-mx-row.hd{ position:sticky; top:0; z-index:4; background:var(--dot); }
+.nx-mx-c0{ position:sticky; left:0; z-index:3; display:flex; align-items:center; gap:12px; padding:14px 16px; background:var(--dot); } .nx-mx-c0 b{ display:block; font-size:13.5px; } .nx-mx-c0 small{ display:block; margin-top:1px; font-size:11px; font-weight:600; color:var(--mut); }
+.nx-mx-row.hd .nx-mx-c0 small{ font:800 11px Manrope,sans-serif; letter-spacing:.1em; text-transform:uppercase; }
+.nx-mx-h{ --c:#34d399; display:flex; flex-direction:column; align-items:center; gap:4px; padding:14px 8px 12px; border-bottom:3px solid var(--c); background:linear-gradient(180deg,color-mix(in srgb,var(--c) 12%,transparent),transparent); text-align:center; } .nx-mx-h b{ max-width:100%; font:700 13px Sora,Manrope,sans-serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .nx-mx-h small{ color:var(--mut); font-size:10.5px; font-weight:600; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.nx-mx-q{ display:flex; gap:8px; margin-top:3px; } .nx-mx-q button{ border:0; background:transparent; padding:0; color:var(--em); font:800 10.5px Manrope,sans-serif; cursor:pointer; } .nx-mx-q button:hover{ text-decoration:underline; }
+.nx-mx-cell{ display:flex; align-items:center; justify-content:center; padding:10px 6px; }
+.nx-cell{ --k:#64748b; min-width:96px; padding:8px 12px; border-radius:12px; cursor:pointer; border:1px solid color-mix(in srgb,var(--k) 55%,transparent); background:color-mix(in srgb,var(--k) 15%,transparent); color:var(--ink); font:800 11.5px Manrope,sans-serif; transition:transform .25s cubic-bezier(.3,1.5,.5,1),background .25s,box-shadow .25s; }
+.nx-cell.l0{ opacity:.55; border-style:dashed; background:transparent; }
+.nx-cell:hover:not(:disabled){ transform:scale(1.12); background:color-mix(in srgb,var(--k) 30%,transparent); box-shadow:0 10px 22px -10px var(--k); opacity:1; } .nx-cell:active:not(:disabled){ transform:scale(.94); }
+.nx-cell:disabled{ cursor:default; }
+.nx-mx-empty{ padding:40px; text-align:center; color:var(--mut); font-weight:700; }
+
+/* ---------- Xavfsizlik va tarix ---------- */
+.nx-audit{ display:flex; flex-direction:column; gap:14px; max-width:900px; }
+.nx-ascore{ display:flex; align-items:center; gap:26px; padding:26px 30px; background:linear-gradient(135deg,color-mix(in srgb,var(--em) 14%,transparent),var(--glass) 60%); } .nx-ascore h2{ font:800 22px Sora,sans-serif; letter-spacing:-.02em; } .nx-ascore p{ margin-top:6px; color:var(--mut); font-size:13.5px; font-weight:600; }
+.nx-alist{ display:flex; flex-direction:column; gap:10px; }
+.nx-ai{ --k:#34d399; display:flex; align-items:flex-start; gap:14px; padding:16px 20px; border-radius:22px; border:1px solid var(--bd); border-left:4px solid var(--k); background:linear-gradient(90deg,color-mix(in srgb,var(--k) 9%,transparent),var(--glass) 45%); animation:nxIn .55s cubic-bezier(.2,.8,.2,1) both; animation-delay:calc(var(--d,0)*70ms); transition:transform .25s; } .nx-ai:hover{ transform:translateX(6px); }
+.nx-ai.warn{ --k:#fbbf24; } .nx-ai.bad{ --k:#fb7185; }
+.nx-ai>span{ flex:none; width:32px; height:32px; border-radius:11px; display:grid; place-items:center; font-weight:800; color:var(--k); background:color-mix(in srgb,var(--k) 18%,transparent); } .nx-ai>div{ flex:1; } .nx-ai b{ font-size:14px; } .nx-ai p{ margin:3px 0 0; font-size:12.5px; color:var(--mut); line-height:1.5; font-weight:600; } .nx-ai em{ font-style:normal; font-weight:800; color:var(--k); }
+.nx-tl{ position:relative; display:flex; flex-direction:column; padding-left:6px; } .nx-tl::before{ content:''; position:absolute; left:10px; top:8px; bottom:8px; width:2px; background:linear-gradient(var(--em),transparent); opacity:.4; }
+.nx-tl>div{ position:relative; display:flex; gap:16px; padding:11px 0; } .nx-tl i{ position:relative; z-index:1; flex:none; width:10px; height:10px; margin:6px 0 0 1px; border-radius:50%; background:var(--em); box-shadow:0 0 0 5px color-mix(in srgb,var(--em) 20%,transparent); } .nx-tl b{ display:block; font-size:13.5px; } .nx-tl small{ color:var(--mut); font-size:12px; font-weight:600; }
+
+/* ---------- "Xodim yaratildi" bileti ---------- */
+.nx-ticket{ position:relative; display:flex; flex-direction:column; gap:10px; padding:18px; border-radius:20px; border:1px dashed color-mix(in srgb,#34d399 60%,transparent); background:linear-gradient(145deg,rgba(52,211,153,.14),rgba(56,189,248,.08)); animation:nxIn .5s cubic-bezier(.2,.8,.2,1) both; }
+.nx-tk-h{ display:flex; justify-content:space-between; align-items:center; } .nx-tk-h span{ font:800 11px Manrope,sans-serif; letter-spacing:.1em; text-transform:uppercase; color:#10b981; } .nx-tk-h i{ width:9px; height:9px; border-radius:50%; background:#34d399; box-shadow:0 0 14px #34d399; }
+.nx-tk-r{ display:flex; align-items:center; gap:10px; padding:10px 10px 10px 14px; border-radius:14px; background:var(--fg); border:1px solid var(--fb); } .nx-tk-r small{ width:46px; color:var(--fm); font:800 10px Manrope,sans-serif; letter-spacing:.08em; text-transform:uppercase; } .nx-tk-r code{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; font:700 15px ui-monospace,Menlo,monospace; color:var(--fi); letter-spacing:.02em; }
+.nx-made .nx-ib{ color:var(--fm); } .nx-made .nx-ib:hover{ color:var(--fi); background:var(--fb); }
+
+/* ---------- Modal va boshqa oynalar: yumshoq animatsiya ---------- */
+.modal-card,.sd-modal{ animation:nxPop .4s cubic-bezier(.2,.9,.3,1.2) both; } @keyframes nxPop{ from{ opacity:0; transform:translateY(18px) scale(.95); } }
+.modal-backdrop{ -webkit-backdrop-filter:blur(5px); backdrop-filter:blur(5px); }
+
+@media (max-width:1100px){ .nx-pcgrid{ grid-template-columns:minmax(0,1fr); } .nx-side{ position:static; } }
+@media (max-width:900px){ .nx-hero{ grid-template-columns:minmax(0,1fr); padding:24px 20px; gap:22px; border-radius:26px; } }
+@media (max-width:640px){ .nx-grid{ grid-template-columns:minmax(0,1fr); } .nx-2{ grid-template-columns:minmax(0,1fr); } .nx-dw-h,.nx-dw-b,.nx-dw-f{ padding-left:18px; padding-right:18px; } .nx-tabs button span{ display:none; } .nx-ascore{ flex-direction:column; text-align:center; } .nx-gauge{ grid-template-columns:minmax(0,1fr); justify-items:center; text-align:center; } .nx-kpi b{ font-size:30px; } }
+@media (prefers-reduced-motion:reduce){ .nx *,.nx-dw,.nx-dw-back,.nx-card,.nx-aur i{ animation:none !important; transition:none !important; } }
+</style>
+
 <style id="no-zoom-lock">
 /* ZOOM TAQIQLANGAN: pinch-zoom, double-tap zoom va matn avtomatik kattalashishi o'chirilgan */
 html, body { touch-action: pan-x pan-y; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
@@ -3943,19 +4190,15 @@ function ToastStack({ toasts, onDismiss }) {
 }
 
 /* Markazda ochiladigan universal modal oyna: qorong'i fon + o'rtada karta.
-   Fonga bosilganda yoki × tugmasi bosilganda yopiladi. size: 'md' (default) | 'lg' (katta xabar oynasi uchun) */
+   Faqat × tugmasi (yoki ichidagi Yopish/Bekor qilish) bosilganda yopiladi. size: 'md' (default) | 'lg' (katta xabar oynasi uchun) */
 function Modal({ title, onClose, children, size = 'md' }) {
-  useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  /* Static modal: fon yoki Esc bilan YOPILMAYDI — faqat × yoki "Yopish/Bekor qilish" tugmalari bilan. */
   /* Portal orqali to'g'ridan-to'g'ri <body>ga chiqariladi — shunda modal qayerdan
      ochilishidan qat'iy nazar (scroll bo'ladigan yoki filter/transformga ega bo'lgan
      ota elementlar ichidan bo'lsa ham) doim butun ekran markazida to'liq ko'rinadi. */
   return ReactDOM.createPortal(
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className={`modal-card ${size === 'lg' ? 'modal-card-lg' : ''}`} onClick={(e) => e.stopPropagation()}>
+    <div className="modal-backdrop">
+      <div className={`modal-card ${size === 'lg' ? 'modal-card-lg' : ''}`} role="dialog" aria-modal="true">
         <div className="modal-head">
           <h3 className="font-display text-xl text-ink">{title}</h3>
           <button onClick={onClose} className="modal-close" aria-label="Yopish"><Icon.close width="16" height="16" /></button>
@@ -4825,16 +5068,11 @@ function BlockedIntroModal({ items, onFinish }) {
     anim.onfinish = () => onFinish(goBlocked);
   };
 
-  useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') close(false); };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
-
   const shown = items.slice(0, 4);
   return (
-    <div className="bi-backdrop" ref={backRef} onClick={() => close(false)}>
-      <div className="bi-card" ref={cardRef} role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+    <div className="bi-backdrop" ref={backRef}>
+      <div className="bi-card" ref={cardRef} role="dialog" aria-modal="true">
+        <button type="button" className="bi-x" onClick={() => close(false)} aria-label="Yopish"><Icon.close width="16" height="16" /></button>
         <div className="bi-icon"><Icon.lock width="26" height="26" /></div>
         <h3 className="bi-title font-display">Bloklangan o'quvchilar bor</h3>
         <p className="bi-text">Hozir <b>{items.length} ta</b> o'quvchining kursi bloklangan. Bu xabar muammo hal bo'lguncha bildirishnomalarda turadi.</p>
@@ -5599,6 +5837,128 @@ function PaymentsPage({ students, categories }) {
 /* =========================================================================
    RUXSATLAR MARKAZI — konsol, matritsa, xavfsizlik tekshiruvi, tarix, bekor qilish
    ========================================================================= */
+/* =========================================================================
+   NX — yangi dizayn uchun umumiy yordamchilar:
+   avtomatik login/parol, ruxsat plitkalari (Yopiq / Ko'rish / Boshqarish),
+   o'ng tomondan chiqadigan drawer (faqat × yoki tugmalar bilan yopiladi)
+   ========================================================================= */
+const NX_MODS = {
+  dashboard: { ic: 'home', c: '#34d399' }, students: { ic: 'users', c: '#38bdf8' }, courses: { ic: 'book', c: '#a78bfa' },
+  statistics: { ic: 'chart', c: '#22d3ee' }, payments: { ic: 'card', c: '#f472b6' }, blocked: { ic: 'lock', c: '#fb7185' }, staff: { ic: 'user', c: '#2dd4bf' },
+};
+const NX_LV = ['Yopiq', "Ko'rish", 'Boshqarish'];
+const nxEditKey = (g) => { const it = g.items.find(([k]) => !k.endsWith('.view')); return it ? it[0] : null; };
+const nxLevel = (perms, g) => { const e = nxEditKey(g); return e && perms.includes(e) ? 2 : perms.includes(g.id + '.view') ? 1 : 0; };
+const nxSetLevel = (perms, g, lvl) => {
+  const vk = g.id + '.view', ek = nxEditKey(g);
+  if (lvl === 0) return permToggle(perms, vk, false);
+  let p = permToggle(perms, vk, true);
+  if (lvl === 1) return ek ? permToggle(p, ek, false) : p;
+  return ek ? permToggle(p, ek, true) : p;
+};
+const nxSpot = (e) => {
+  const r = e.currentTarget.getBoundingClientRect();
+  e.currentTarget.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+  e.currentTarget.style.setProperty('--my', (e.clientY - r.top) + 'px');
+};
+function useCountUp(v, ms = 650) {
+  const [n, setN] = useState(0); const from = useRef(0);
+  useEffect(() => {
+    const a = from.current, b = v, t0 = performance.now(); let raf;
+    const step = (t) => { const k = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - k, 3); setN(Math.round(a + (b - a) * e)); if (k < 1) raf = requestAnimationFrame(step); else from.current = b; };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [v]);
+  return n;
+}
+
+/* ---------- Avtomatik login va parol ---------- */
+const NX_CYR = { а: 'a', б: 'b', в: 'v', г: 'g', д: 'd', е: 'e', ё: 'yo', ж: 'j', з: 'z', и: 'i', й: 'y', к: 'k', л: 'l', м: 'm', н: 'n', о: 'o', п: 'p', р: 'r', с: 's', т: 't', у: 'u', ф: 'f', х: 'x', ц: 's', ч: 'ch', ш: 'sh', щ: 'sh', ъ: '', ы: 'i', ь: '', э: 'e', ю: 'yu', я: 'ya', ў: 'o', қ: 'q', ғ: 'g', ҳ: 'h' };
+const nxSlug = (name) => String(name || '').toLowerCase()
+  .replace(/[а-яёўқғҳ]/g, (c) => (NX_CYR[c] != null ? NX_CYR[c] : ''))
+  .replace(/[ʻʼ'’`‘]/g, '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+  .replace(/[^a-z0-9]+/g, '.').replace(/^\.+|\.+$/g, '');
+const nxLogin = (name, staff, selfId) => {
+  const parts = nxSlug(name).split('.').filter(Boolean);
+  let base = parts.length > 1 ? parts[0] + '.' + parts[1] : (parts[0] || '');
+  if (!base) base = 'xodim' + (100 + Math.floor(Math.random() * 900));
+  const taken = (x) => staff.some((s) => String(s.username).toLowerCase() === x && s.id !== selfId);
+  let u = base, i = 1;
+  while (taken(u)) { i += 1; u = base + i; }
+  return u;
+};
+const nxRand = (m) => {
+  const a = new Uint32Array(1);
+  if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(a); else a[0] = Math.floor(Math.random() * 4294967295);
+  return a[0] % m;
+};
+const nxPass = (n = 10) => {
+  const U = 'ABCDEFGHJKLMNPQRSTUVWXYZ', L = 'abcdefghijkmnpqrstuvwxyz', D = '23456789', all = U + L + D;
+  const pick = (s) => s[nxRand(s.length)];
+  const out = [pick(U), pick(L), pick(D)];
+  while (out.length < n) out.push(pick(all));
+  for (let i = out.length - 1; i > 0; i--) { const j = nxRand(i + 1); const t = out[i]; out[i] = out[j]; out[j] = t; }
+  return out.join('');
+};
+const nxStrength = (pw) => {
+  const p = String(pw || ''); let s = 0;
+  if (p.length >= 6) s++; if (p.length >= 9) s++; if (/[A-Z]/.test(p) && /[a-z]/.test(p)) s++; if (/\d/.test(p)) s++;
+  return p ? Math.max(1, s) : 0;
+};
+const nxCopy = (txt, notify, label) => {
+  const done = () => { if (notify) notify((label || 'Matn') + ' nusxalandi'); };
+  const fb = () => {
+    try { const t = document.createElement('textarea'); t.value = txt; t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); done(); }
+    catch (e) { if (notify) notify("Nusxalab bo'lmadi", 'danger'); }
+  };
+  try {
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(txt).then(done, fb); else fb();
+  } catch (e) { fb(); }
+};
+
+/* ---------- Ruxsat plitkalari: har bir modul uchun Yopiq / Ko'rish / Boshqarish ---------- */
+function NxTiles({ perms, onChange, disabled }) {
+  return (
+    <div className="nx-tiles">{PERM_GROUPS.map((g) => {
+      const m = NX_MODS[g.id] || { ic: 'lock', c: '#34d399' }, lv = nxLevel(perms, g), ek = nxEditKey(g), Ic = Icon[m.ic] || Icon.lock;
+      const opts = ek ? [0, 1, 2] : [0, 1];
+      const desc = (g.items[lv === 2 && g.items[1] ? 1 : 0] || g.items[0])[2];
+      return (
+        <div key={g.id} className={'nx-tile l' + lv + (disabled ? ' dis' : '')} style={{ '--mc': m.c, '--hot': g.id === 'staff' ? '#fb7185' : '#fbbf24' }} onMouseMove={nxSpot}>
+          <div className="nx-tile-h"><span className="nx-ico"><Ic width="18" height="18" /></span><div><b>{g.label}</b><small>{NX_LV[lv]}</small></div></div>
+          <p>{desc}</p>
+          <div className="nx-seg3" style={{ '--n': opts.length, '--i': opts.indexOf(lv) }}><i />
+            {opts.map((o) => <button key={o} type="button" disabled={disabled} className={lv === o ? 'on' : ''} onClick={() => lv !== o && onChange(nxSetLevel(perms, g, o))}>{NX_LV[o]}</button>)}
+          </div>
+        </div>);
+    })}</div>
+  );
+}
+/* Karta ichidagi kichik modullar qatori */
+function NxMods({ perms }) {
+  return (
+    <div className="nx-mods">{PERM_GROUPS.map((g) => {
+      const m = NX_MODS[g.id] || { ic: 'lock', c: '#34d399' }, lv = nxLevel(perms, g), Ic = Icon[m.ic] || Icon.lock;
+      return <span key={g.id} className={'nx-mod l' + lv} style={{ '--mc': m.c }} title={g.label + ' · ' + NX_LV[lv]}><Ic width="14" height="14" /></span>;
+    })}</div>
+  );
+}
+
+/* O'ngdan chiqadigan panel. Fonga yoki Esc'ga YOPILMAYDI — faqat × yoki tugmalar. */
+function NxDrawer({ title, sub, onClose, children, footer }) {
+  return ReactDOM.createPortal(
+    <div className="nx-dw-back">
+      <aside className="nx-dw" role="dialog" aria-modal="true">
+        <header className="nx-dw-h"><div><h3>{title}</h3>{sub && <p>{sub}</p>}</div>
+          <button type="button" className="nx-x" onClick={onClose} aria-label="Yopish"><Icon.close width="16" height="16" /></button></header>
+        <div className="nx-dw-b">{children}</div>
+        {footer && <footer className="nx-dw-f">{footer}</footer>}
+      </aside>
+    </div>,
+    document.body
+  );
+}
+
 const riskOf = (perms) => { const w = perms.reduce((t, k) => t + (k === 'staff.manage' ? 4 : k.endsWith('.edit') ? 2 : (k === 'statistics.view' || k === 'staff.view') ? 1 : 0), 0); return w >= 8 ? ['Yuqori', '#fb7185'] : w >= 3 ? ["O'rta", '#fbbf24'] : ['Past', '#34d399']; };
 function PcRing({ v, max, c, size = 64, txt }) {
   const r = size / 2 - 6, C = 2 * Math.PI * r;
@@ -5661,95 +6021,114 @@ function PermissionsPage({ me, staff, setStaff, roleTpl, setRoleTpl, notify }) {
   const rk = riskOf(sel.perms), can2 = editable(sel);
   const doReset = () => { commit(null, { ...DEFAULT_ROLE_PERMS }, 'Teacher va Support shablonlari standart holatga qaytarildi'); setAskReset(false); notify('Shablonlar standartga qaytarildi'); };
 
+  const TABS = [['console', 'Konsol', Icon.user, null], ['matrix', 'Matritsa', Icon.layers, null], ['audit', 'Xavfsizlik', Icon.lock, issues || null], ['log', 'Tarix', Icon.clock, log.length || null]];
+  const tIdx = Math.max(0, TABS.findIndex((t) => t[0] === tab));
+  const grade = score >= 85 ? "A'lo" : score >= 60 ? 'Qoniqarli' : 'Xavfli';
+  const scoreN = useCountUp(score);
+  const mshow = PERM_GROUPS.filter((g) => !mq.trim() || (g.label + ' ' + g.items.map((i) => i[1] + ' ' + i[2]).join(' ')).toLowerCase().includes(mq.trim().toLowerCase()));
+  const cycle = (c, g) => { const mx = nxEditKey(g) ? 2 : 1, nx = (nxLevel(c.perms, g) + 1) % (mx + 1); writePerms(c, nxSetLevel(c.perms, g, nx), `${g.label}: ${NX_LV[nx]}`); };
+  const setAll = (c, lv) => writePerms(c, PERM_GROUPS.reduce((p, g) => nxSetLevel(p, g, g.id === 'staff' ? Math.min(lv, 1) : lv), c.perms), lv === 0 ? 'barcha huquqlar olindi' : lv === 1 ? "barcha modullar: Ko'rish" : 'barcha huquqlar berildi (jamoani boshqarishsiz)');
+  const avOf = (e, size) => <span className={'nx-av ' + (size || 'sm')} style={{ background: e.kind === 'role' ? `linear-gradient(135deg,${R(e).c},color-mix(in srgb,${R(e).c} 50%,#000))` : hdGrad(e.name) }}>{e.kind === 'role' ? <Icon.lock width={size === 'lg' ? 26 : 16} height={size === 'lg' ? 26 : 16} /> : hdIni(e.name)}</span>;
+
   return (
-    <div className="v2 hd pc">
-      <div className="pc-hero">
-        <div className="pc-hl">
+    <div className="v2 hd nx nx-pc">
+      <section className="nx-hero pc" onMouseMove={nxSpot}>
+        <div className="nx-aur" aria-hidden="true"><i /><i /><i /></div>
+        <div className="nx-hero-l">
           <span className="sx-eye"><i />Xavfsizlik markazi</span>
-          <h1>Ruxsatlar</h1>
+          <h1>Ruxsatlar <em>markazi</em></h1>
           <p>Kim nimani ko'rishi va o'zgartirishini boshqaring: rol shablonlari, Custom huquqlar, tayyor andozalar va xavfsizlik tekshiruvi.</p>
-          <div className="pc-ha">
-            <button type="button" className="sx-btn" disabled={!hist.length} onClick={undo}>↶ Bekor qilish{hist.length ? ` (${hist.length})` : ''}</button>
-            <button type="button" className="sx-btn" onClick={exportCsv}>↓ CSV</button>
-            <button type="button" className="sx-btn" onClick={() => setAskReset(true)}>↺ Shablonlarni tiklash</button>
+          <div className="nx-acts">
+            <button type="button" className="nx-btn" disabled={!hist.length} onClick={undo}>↶ Bekor qilish{hist.length ? ` (${hist.length})` : ''}</button>
+            <button type="button" className="nx-btn" onClick={exportCsv}>↓ CSV</button>
+            <button type="button" className="nx-btn" onClick={() => setAskReset(true)}>↺ Shablonlarni tiklash</button>
           </div>
         </div>
-        <div className="pc-hs">
-          <div className="pc-sc"><PcRing v={score} max={100} c={sc} size={92} txt={score} /><div><small>Xavfsizlik bahosi</small><b style={{ color: sc }}>{score >= 85 ? "A'lo" : score >= 60 ? "Qoniqarli" : 'Xavfli'}</b><span>{issues ? issues + ' ta ogohlantirish' : 'Muammo topilmadi'}</span></div></div>
-          <div className="pc-mini"><div><b>{staff.length}</b><small>xodim</small></div><div><b>{customs.length}</b><small>Custom</small></div><div><b>{staff.filter((u) => u.disabled).length}</b><small>nofaol</small></div></div>
+        <div className="nx-gauge">
+          <div className="nx-gauge-r"><PcRing v={score} max={100} c={sc} size={140} txt={scoreN} /></div>
+          <div className="nx-gauge-t"><small>Xavfsizlik bahosi</small><b style={{ color: sc }}>{grade}</b><span>{issues ? issues + ' ta ogohlantirish' : 'Muammo topilmadi'}</span></div>
+          <div className="nx-mini3"><div><b>{staff.length}</b><small>xodim</small></div><div><b>{customs.length}</b><small>Custom</small></div><div><b>{staff.filter((u) => u.disabled).length}</b><small>nofaol</small></div></div>
         </div>
-      </div>
-      <div className="sx-tabs" role="tablist">{[['console', 'Konsol', Icon.user, null], ['matrix', 'Matritsa', Icon.layers, null], ['audit', 'Xavfsizlik', Icon.lock, issues || null], ['log', 'Tarix', Icon.clock, log.length || null]].map(([id, l, Ic, c]) => <button key={id} type="button" role="tab" aria-selected={tab === id} className={tab === id ? 'on' : ''} onClick={() => setTab(id)}><Ic width="16" height="16" />{l}{c != null && <em className={id === 'audit' ? 'warn' : ''}>{c}</em>}</button>)}</div>
+      </section>
+
+      <nav className="nx-tabs" role="tablist" style={{ '--n': TABS.length, '--i': tIdx }}><i className="nx-tabs-i" />
+        {TABS.map(([id, l, Ic, c]) => <button key={id} type="button" role="tab" aria-selected={tab === id} className={tab === id ? 'on' : ''} onClick={() => setTab(id)}><Ic width="16" height="16" /><span>{l}</span>{c != null && <em className={id === 'audit' ? 'warn' : ''}>{c}</em>}</button>)}
+      </nav>
 
       {tab === 'console' && (
-        <div className="pc-grid">
-          <aside className="v2-c pc-list">
-            <div className="hd-search" style={{ marginBottom: 10 }}><Icon.search width="15" height="15" /><input placeholder="Rol yoki xodim…" value={q} onChange={(e) => setQ(e.target.value)} /></div>
-            {['role', 'user'].map((k) => (<React.Fragment key={k}><div className="pc-lh">{k === 'role' ? 'Rollar' : 'Xodimlar'}</div>
-              {list.filter((e) => e.kind === k).map((e) => { const r = riskOf(e.perms); return (
-                <button key={e.id} type="button" className={'pc-li' + (sel.id === e.id ? ' on' : '')} style={{ '--c': R(e).c }} onClick={() => setSelId(e.id)}>
-                  <span className="hd-av sm" style={{ background: e.kind === 'role' ? `linear-gradient(135deg,${R(e).c},color-mix(in srgb,${R(e).c} 55%,#000))` : hdGrad(e.name) }}>{e.kind === 'role' ? <Icon.lock width="15" height="15" /> : hdIni(e.name)}</span>
-                  <span className="pc-lt"><b>{e.name}{e.id === me.id && <em>siz</em>}</b><small>{e.sub}</small></span>
-                  <span className="pc-cnt" title={'Xavf: ' + r[0]}><i style={{ background: r[1] }} />{e.perms.length}</span>
-                </button>); })}</React.Fragment>))}
-          </aside>
-          <section className="pc-det">
-            <div className="v2-c pc-dh" style={{ '--c': R(sel).c }}>
-              <span className="hd-av" style={{ width: 56, height: 56, background: sel.kind === 'role' ? `linear-gradient(135deg,${R(sel).c},color-mix(in srgb,${R(sel).c} 55%,#000))` : hdGrad(sel.name) }}>{sel.kind === 'role' ? <Icon.lock width="22" height="22" /> : hdIni(sel.name)}</span>
-              <div className="pc-dt"><h2>{sel.name}</h2><span>{sel.sub}</span>
-                <div className="pc-badges"><span className="hd-role" style={{ '--c': R(sel).c }}>{R(sel).l}</span><span className="hd-role" style={{ '--c': rk[1] }}>Xavf: {rk[0]}</span>{sel.kind === 'user' && sel.user.disabled && <span className="hd-role" style={{ '--c': '#fb7185' }}>Nofaol</span>}</div></div>
-              <PcRing v={sel.perms.length} max={ALL_PERMS.length} c={R(sel).c} size={76} txt={sel.perms.length + '/' + ALL_PERMS.length} />
-            </div>
-            <div className="pc-cols">
-              <div className="v2-c pc-ed">
-                <div className="sx-bh"><h2>Huquqlar</h2>{sel.locked && <span className="pc-lock"><Icon.lock width="13" height="13" /> To'liq huquq — o'zgartirilmaydi</span>}</div>
-                {sel.kind === 'user' && !sel.locked && sel.role !== 'custom' && <div className="pc-info">Bu xodim <b>{R(sel).l}</b> shabloniga ulangan. Alohida sozlash uchun <button type="button" className="hd-link" onClick={() => changeRole(sel.user, 'custom')}>Custom qilib ajratish →</button></div>}
-                {sel.kind === 'role' && !sel.locked && <div className="pc-info">Shablonni o'zgartirsangiz, <b>{n(sel.role)} ta</b> {sel.name} xodimiga darhol ta'sir qiladi.</div>}
-                <PermList perms={sel.perms} disabled={!can2} onChange={(p) => { const ch = ALL_PERMS.filter((x) => p.includes(x) !== sel.perms.includes(x)); if (ch.length) writePerms(sel, p, ch.map((k) => PERM_LABEL[k] + (p.includes(k) ? ' yoqildi' : " o'chirildi")).join(', ')); }} />
-              </div>
-              <div className="pc-side">
+        <>
+          <div className="nx-railbar">
+            <label className="nx-search"><Icon.search width="16" height="16" /><input placeholder="Rol yoki xodim…" value={q} onChange={(e) => setQ(e.target.value)} /></label>
+            <div className="nx-rail">{['role', 'user'].map((k) => { const items = list.filter((e) => e.kind === k); return items.length ? (<React.Fragment key={k}><span className="nx-rail-lh">{k === 'role' ? 'Rollar' : 'Xodimlar'}</span>
+              {items.map((e) => { const r = riskOf(e.perms); return (
+                <button key={e.id} type="button" className={'nx-sub' + (sel.id === e.id ? ' on' : '')} style={{ '--c': R(e).c }} onClick={() => setSelId(e.id)}>
+                  {avOf(e)}<span className="nx-sub-t"><b>{e.name}{e.id === me.id && <em>siz</em>}</b><small>{e.sub}</small></span>
+                  <span className="nx-sub-n" title={'Xavf: ' + r[0]}><i style={{ background: r[1] }} />{e.perms.length}</span>
+                </button>); })}</React.Fragment>) : null; })}</div>
+          </div>
+
+          <div className="nx-pcgrid">
+            <section className="nx-panel nx-main">
+              <div className="nx-ph"><div><h2>Modul huquqlari</h2><p>Har bir modul uchun daraja tanlang — o'zgarish darhol saqlanadi.</p></div>{sel.locked && <span className="nx-lockb"><Icon.lock width="13" height="13" /> To'liq huquq</span>}</div>
+              {sel.kind === 'user' && !sel.locked && sel.role !== 'custom' && <div className="nx-info2">Bu xodim <b>{R(sel).l}</b> shabloniga ulangan. Alohida sozlash uchun <button type="button" className="nx-link" onClick={() => changeRole(sel.user, 'custom')}>Custom qilib ajratish →</button></div>}
+              {sel.kind === 'role' && !sel.locked && <div className="nx-info2">Shablonni o'zgartirsangiz, <b>{n(sel.role)} ta</b> {sel.name} xodimiga darhol ta'sir qiladi.</div>}
+              <NxTiles perms={sel.perms} disabled={!can2} onChange={(p) => { const ch = ALL_PERMS.filter((x) => p.includes(x) !== sel.perms.includes(x)); if (ch.length) writePerms(sel, p, ch.map((k) => PERM_LABEL[k] + (p.includes(k) ? ' yoqildi' : " o'chirildi")).join(', ')); }} />
+            </section>
+
+            <aside className="nx-side">
+              <div className="nx-panel nx-id" style={{ '--c': R(sel).c }}>
+                <div className="nx-id-t">{avOf(sel, 'lg')}<div><h2>{sel.name}</h2><span>{sel.sub}</span></div></div>
+                <div className="nx-id-r"><PcRing v={sel.perms.length} max={ALL_PERMS.length} c={R(sel).c} size={84} txt={sel.perms.length + '/' + ALL_PERMS.length} />
+                  <div className="nx-badges"><span className="nx-role" style={{ '--c': R(sel).c }}>{R(sel).l}</span><span className="nx-role" style={{ '--c': rk[1] }}>Xavf: {rk[0]}</span>{sel.kind === 'user' && sel.user.disabled && <span className="nx-role" style={{ '--c': '#fb7185' }}>Nofaol</span>}</div></div>
                 {sel.kind === 'user' && !sel.locked && sel.id !== me.id && (
-                  <div className="v2-c pc-box"><h2>Rol</h2>
-                    <div className="pc-seg">{[['admin_teacher', 'Teacher'], ['support', 'Support'], ['custom', 'Custom']].map(([r, l]) => <button key={r} type="button" className={sel.role === r ? 'on' : ''} style={{ '--c': ROLE_META[r].c }} onClick={() => sel.role !== r && changeRole(sel.user, r)}>{l}</button>)}</div></div>)}
-                <div className="v2-c pc-box"><h2>Sidebar ko'rinishi <small>real vaqtda</small></h2>
-                  <div className="pc-nav">{NAV_PREVIEW.map(([k, l, ed]) => { const on = sel.perms.includes(k); return <div key={k} className={on ? 'on' : ''}><span>{on ? <Icon.check width="13" height="13" /> : <Icon.lock width="12" height="12" />}{l}</span>{on && ed && sel.perms.includes(ed) && <em>boshqaradi</em>}</div>; })}</div></div>
-                {can2 || (sel.kind === 'user' && !sel.locked) ? (
-                  <div className="v2-c pc-box"><h2>Tayyor andozalar <small>bir bosishda</small></h2>
-                    <div className="pc-pre">{PERM_PRESETS.map((p) => <button key={p.id} type="button" onClick={() => preset(sel, p)} title={p.d}><span>{p.e}</span><b>{p.l}</b><small>{p.d}</small></button>)}</div>
-                    <label className="pc-cp">Huquqlarni nusxalash<select value="" onChange={(e) => e.target.value && copyFrom(sel, e.target.value)}><option value="">Kimdan nusxalash…</option>{ents.filter((x) => x.id !== sel.id).map((x) => <option key={x.id} value={x.id}>{x.name} ({R(x).l})</option>)}</select></label>
-                    {sel.kind === 'user' && sel.role !== 'custom' && <p className="hd-note" style={{ marginTop: 8 }}>Andoza qo'llansa, xodim avtomatik Custom rolga o'tadi.</p>}
-                  </div>) : null}
+                  <div className="nx-seg wide" style={{ '--n': 3, '--i': ['admin_teacher', 'support', 'custom'].indexOf(sel.role) }}><i />{[['admin_teacher', 'Teacher'], ['support', 'Support'], ['custom', 'Custom']].map(([r, l]) => <button key={r} type="button" className={sel.role === r ? 'on' : ''} onClick={() => sel.role !== r && changeRole(sel.user, r)}>{l}</button>)}</div>)}
               </div>
-            </div>
-          </section>
-        </div>)}
+
+              <div className="nx-panel nx-win">
+                <div className="nx-win-bar"><i /><i /><i /><span>Sidebar ko'rinishi · real vaqtda</span></div>
+                <div className="nx-win-b">{NAV_PREVIEW.map(([k, l, ed]) => { const on = sel.perms.includes(k); return <div key={k} className={'nx-nav' + (on ? ' on' : '')}><span>{on ? <Icon.check width="13" height="13" /> : <Icon.lock width="12" height="12" />}{l}</span>{on && ed && sel.perms.includes(ed) && <em>boshqaradi</em>}</div>; })}</div>
+              </div>
+
+              {(can2 || (sel.kind === 'user' && !sel.locked)) && (
+                <div className="nx-panel"><div className="nx-ph sm"><div><h2>Tayyor andozalar</h2><p>Bir bosishda qo'llanadi</p></div></div>
+                  <div className="nx-pre">{PERM_PRESETS.map((p) => <button key={p.id} type="button" onClick={() => preset(sel, p)} title={p.d}><span>{p.e}</span><b>{p.l}</b><small>{p.d}</small></button>)}</div>
+                  <label className="nx-cp">Huquqlarni nusxalash<select value="" onChange={(e) => e.target.value && copyFrom(sel, e.target.value)}><option value="">Kimdan nusxalash…</option>{ents.filter((x) => x.id !== sel.id).map((x) => <option key={x.id} value={x.id}>{x.name} ({R(x).l})</option>)}</select></label>
+                  {sel.kind === 'user' && sel.role !== 'custom' && <p className="nx-hint">Andoza qo'llansa, xodim avtomatik Custom rolga o'tadi.</p>}
+                </div>)}
+            </aside>
+          </div>
+        </>)}
 
       {tab === 'matrix' && (
-        <section className="v2-c sx-box rp-mx">
-          <div className="sx-bh"><h2>Huquqlar matritsasi <small>{cols.length} ustun · {ALL_PERMS.length} huquq</small></h2>
-            <div className="hd-search" style={{ maxWidth: 260, minWidth: 180 }}><Icon.search width="15" height="15" /><input placeholder="Huquq qidirish…" value={mq} onChange={(e) => setMq(e.target.value)} /></div></div>
-          <div className="pc-leg"><span><i style={{ background: '#34d399' }} />Ko'rish</span><span><i style={{ background: '#fbbf24' }} />Boshqarish (xavfliroq)</span><span><i style={{ background: '#fb7185' }} />Jamoani boshqarish</span></div>
-          <div className="rp-sc"><div className="rp-t pc-t" style={grid}>
-            <div className="rp-h rp-fc" />{cols.map((c) => (
-              <div key={c.id} className="rp-h" style={{ '--c': R(c).c }}><b>{c.name}</b><small>{c.sub}</small>
-                {!c.locked && <span><button type="button" onClick={() => writePerms(c, ALL_PERMS.filter((k) => k !== 'staff.manage'), 'barcha huquqlar berildi')}>Hammasi</button><button type="button" onClick={() => writePerms(c, [], 'barcha huquqlar olindi')}>Hech biri</button></span>}</div>))}
-            {mgroups.map((g) => (<React.Fragment key={g.id}><div className="rp-g">{g.label}</div>
-              {g.items.map(([k, l, d]) => (<React.Fragment key={k}><div className="rp-fc rp-n"><b><i className="pc-dot" style={{ background: k === 'staff.manage' ? '#fb7185' : k.endsWith('.edit') ? '#fbbf24' : '#34d399' }} />{l}</b><small>{d}</small></div>
-                {cols.map((c) => <div key={c.id} className="rp-cell">{c.locked ? <span className="rp-ck">✓</span> : <Switch on={c.perms.includes(k)} onToggle={(v) => toggleKey(c, k, v)} />}</div>)}</React.Fragment>))}</React.Fragment>))}
-            {!mgroups.length && <div className="rp-g" style={{ gridColumn: '1/-1' }}>Hech narsa topilmadi</div>}
+        <section className="nx-panel nx-mxp">
+          <div className="nx-ph"><div><h2>Huquqlar matritsasi</h2><p>{cols.length} ustun · {PERM_GROUPS.length} modul — katakni bosib darajani almashtiring</p></div>
+            <label className="nx-search sm"><Icon.search width="15" height="15" /><input placeholder="Modul qidirish…" value={mq} onChange={(e) => setMq(e.target.value)} /></label></div>
+          <div className="nx-leg"><span><i className="l0" />Yopiq</span><span><i className="l1" />Ko'rish</span><span><i className="l2" />Boshqarish</span><span><i className="l3" />Jamoani boshqarish</span></div>
+          <div className="nx-mx-sc"><div className="nx-mx" style={{ '--cols': cols.length }}>
+            <div className="nx-mx-row hd"><div className="nx-mx-c0"><small>Modul</small></div>
+              {cols.map((c) => (
+                <div key={c.id} className="nx-mx-h" style={{ '--c': R(c).c }}>{avOf(c)}<b>{c.name}</b><small>{c.sub}</small>
+                  {!c.locked && <span className="nx-mx-q"><button type="button" onClick={() => setAll(c, 2)}>Hammasi</button><button type="button" onClick={() => setAll(c, 1)}>Ko'rish</button><button type="button" onClick={() => setAll(c, 0)}>Hech biri</button></span>}</div>))}</div>
+            {mshow.map((g) => { const m = NX_MODS[g.id] || { ic: 'lock', c: '#34d399' }, Ic = Icon[m.ic] || Icon.lock; return (
+              <div key={g.id} className="nx-mx-row">
+                <div className="nx-mx-c0"><span className="nx-ico" style={{ '--mc': m.c }}><Ic width="17" height="17" /></span><div><b>{g.label}</b><small>{g.items.map((i) => i[1]).join(' / ')}</small></div></div>
+                {cols.map((c) => { const lv = nxLevel(c.perms, g), top = lv === 2 && g.id === 'staff' ? 3 : lv; return (
+                  <div key={c.id} className="nx-mx-cell"><button type="button" disabled={c.locked} className={'nx-cell l' + top} onClick={() => cycle(c, g)} title={c.name + ' · ' + g.label + ': ' + NX_LV[lv]}>{lv === 0 ? '—' : NX_LV[lv]}</button></div>); })}
+              </div>); })}
+            {!mshow.length && <div className="nx-mx-empty">Hech narsa topilmadi</div>}
           </div></div>
         </section>)}
 
       {tab === 'audit' && (
-        <div className="pc-au">
-          <div className="v2-c pc-ascore"><PcRing v={score} max={100} c={sc} size={120} txt={score} /><div><h2>Xavfsizlik bahosi: <span style={{ color: sc }}>{score}/100</span></h2><p>{issues ? `${issues} ta muammoni bartaraf etsangiz, baho oshadi.` : "Ruxsatlar tizimi yaxshi sozlangan."}</p></div></div>
-          {audit.sort((a, b) => b.pen - a.pen).map((a, i) => <div key={i} className={'v2-c pc-ai ' + a.lvl}><span>{a.lvl === 'ok' ? '✓' : a.lvl === 'bad' ? '!' : '▲'}</span><div><b>{a.t}</b>{a.d && <p>{a.d}</p>}</div>{a.pen > 0 && <em>−{a.pen}</em>}</div>)}
+        <div className="nx-audit">
+          <div className="nx-panel nx-ascore"><PcRing v={score} max={100} c={sc} size={128} txt={score} /><div><h2>Xavfsizlik bahosi: <span style={{ color: sc }}>{score}/100</span></h2><p>{issues ? `${issues} ta muammoni bartaraf etsangiz, baho oshadi.` : "Ruxsatlar tizimi yaxshi sozlangan."}</p></div></div>
+          <div className="nx-alist">{audit.sort((a, b) => b.pen - a.pen).map((a, i) => <div key={i} className={'nx-ai ' + a.lvl} style={{ '--d': i }}><span>{a.lvl === 'ok' ? '✓' : a.lvl === 'bad' ? '!' : '▲'}</span><div><b>{a.t}</b>{a.d && <p>{a.d}</p>}</div>{a.pen > 0 && <em>−{a.pen}</em>}</div>)}</div>
         </div>)}
 
       {tab === 'log' && (
-        <section className="v2-c sx-box">
-          <div className="sx-bh"><h2>O'zgarishlar tarixi <small>{log.length} ta yozuv</small></h2>{log.length > 0 && <button type="button" className="sx-btn" onClick={() => setLog([])}>Tozalash</button>}</div>
-          {log.length === 0 ? <p className="sx-em">Hozircha o'zgarishlar yo'q. Har bir ruxsat o'zgarishi shu yerda saqlanadi.</p> : <div className="pc-log">{log.map((l) => <div key={l.id}><i /><div><b>{l.txt}</b><small>{l.by} · {fmtT(l.t)}</small></div></div>)}</div>}
+        <section className="nx-panel">
+          <div className="nx-ph"><div><h2>O'zgarishlar tarixi</h2><p>{log.length} ta yozuv</p></div>{log.length > 0 && <button type="button" className="nx-btn" onClick={() => setLog([])}>Tozalash</button>}</div>
+          {log.length === 0 ? <p className="nx-note">Hozircha o'zgarishlar yo'q. Har bir ruxsat o'zgarishi shu yerda saqlanadi.</p> : <div className="nx-tl">{log.map((l) => <div key={l.id}><i /><div><b>{l.txt}</b><small>{l.by} · {fmtT(l.t)}</small></div></div>)}</div>}
         </section>)}
 
       {askReset && <Modal title="Shablonlarni tiklash" onClose={() => setAskReset(false)}><div className="hd-form"><p style={{ lineHeight: 1.6 }}>Teacher va Support shablonlari boshlang'ich holatga qaytariladi. Custom xodimlarga ta'sir qilmaydi. Keyin "Bekor qilish" bilan qaytarish mumkin.</p><div className="hd-fa"><button type="button" className="sx-btn" onClick={() => setAskReset(false)}>Bekor qilish</button><button type="button" className="hd-add" onClick={doReset}>Tiklash</button></div></div></Modal>}
@@ -6663,17 +7042,14 @@ const formatPhone = (v) => {
 };
 
 function SdModal({ title, icon, onClose, children, size }) {
-  useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  /* Static modal: faqat × yoki ichidagi tugmalar bilan yopiladi. */
   /* Rendered via a portal straight into <body> so the full-screen blurred
      backdrop always covers the whole viewport (sidebar + topbar included),
      regardless of any scrollable/overflow ancestor it's opened from. */
   return ReactDOM.createPortal(
-    <div className="sd-backdrop" onClick={onClose}>
-      <div className={`sd-modal ${size === 'lg' ? 'sd-modal-lg' : size === 'xl' ? 'sd-modal-xl' : ''}`} onClick={(e) => e.stopPropagation()}>
+    <div className="sd-backdrop">
+      <div className={`sd-modal ${size === 'lg' ? 'sd-modal-lg' : size === 'xl' ? 'sd-modal-xl' : ''}`} role="dialog" aria-modal="true">
+        <button type="button" className="sd-x" onClick={onClose} aria-label="Yopish"><Icon.close width="16" height="16" /></button>
         <div className="sd-title">{icon ? <span className={`sd-title-icon ${icon === 'warn' ? 'is-danger' : ''}`}>{Icon[icon] ? React.createElement(Icon[icon], { width: 18, height: 18 }) : icon}</span> : null}<span>{title}</span></div>
         {children}
       </div>
@@ -8127,99 +8503,179 @@ function StaffPage({ me, staff, setStaff, roleTpl, notify, onGoPerms }) {
   const isCeo = me.role === 'ceo';
   const canManage = isCeo || permsOf(me, roleTpl).includes('staff.manage');
   const canTouch = (u) => isCeo || u.role !== 'ceo';
-  const [q, setQ] = useState(''); const [rf, setRf] = useState('all'); const [view, setView] = useState('grid');
-  const [form, setForm] = useState(null); const [del, setDel] = useState(null); const [showPw, setShowPw] = useState({}); const [fpw, setFpw] = useState(false);
+  const [q, setQ] = useState(''); const [rf, setRf] = useState('all'); const [view, setView] = useState('grid'); const [sort, setSort] = useState('role');
+  const [form, setForm] = useState(null); const [del, setDel] = useState(null); const [showPw, setShowPw] = useState({}); const [fpw, setFpw] = useState(true); const [made, setMade] = useState(null);
+  const searchRef = useRef(null);
+  useEffect(() => {
+    const k = (e) => { if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test((document.activeElement || {}).tagName || '')) { e.preventDefault(); if (searchRef.current) searchRef.current.focus(); } };
+    window.addEventListener('keydown', k);
+    return () => window.removeEventListener('keydown', k);
+  }, []);
   const cnt = (r) => staff.filter((u) => u.role === r).length;
-  const list = staff.filter((u) => (rf === 'all' || (rf === 'off' ? u.disabled : u.role === rf)) && (!q.trim() || [u.name, u.username, u.phone, u.position].join(' ').toLowerCase().includes(q.trim().toLowerCase())));
+  const ORD = { ceo: 0, admin_teacher: 1, support: 2, custom: 3 }; const ord = (r) => (r in ORD ? ORD[r] : 9);
+  const list = staff
+    .filter((u) => (rf === 'all' || (rf === 'off' ? u.disabled : rf === 'on' ? !u.disabled : u.role === rf)) && (!q.trim() || [u.name, u.username, u.phone, u.position].join(' ').toLowerCase().includes(q.trim().toLowerCase())))
+    .slice().sort((a, b) => sort === 'name' ? String(a.name).localeCompare(String(b.name)) : sort === 'new' ? String(b.createdAt || '').localeCompare(String(a.createdAt || '')) : (ord(a.role) - ord(b.role)) || String(a.name).localeCompare(String(b.name)));
   const lastCeo = (u) => u.role === 'ceo' && cnt('ceo') <= 1;
-  const openNew = () => { setFpw(false); setForm({ isNew: true, name: '', username: '', password: '', role: 'admin_teacher', phone: '', position: '', perms: null }); };
+
+  /* ---- forma: yangi xodimga login va parol AVTOMATIK beriladi ---- */
+  const openNew = () => { setFpw(true); setForm({ isNew: true, name: '', username: nxLogin('', staff), password: nxPass(), uAuto: true, role: 'admin_teacher', phone: '', position: '', perms: null }); };
+  const openEdit = (u) => { setFpw(false); setForm({ ...u, password: '', uAuto: false, perms: u.perms || null }); };
+  const setName = (v) => setForm((f) => ({ ...f, name: v, username: f.isNew && f.uAuto ? nxLogin(v, staff, f.id) : f.username }));
+  const setUser = (v) => setForm((f) => ({ ...f, username: v.replace(/\s+/g, ''), uAuto: false }));
+  const regenLogin = () => setForm((f) => ({ ...f, username: nxLogin(f.name, staff, f.id), uAuto: true }));
+  const regenPass = () => { setFpw(true); setForm((f) => ({ ...f, password: nxPass() })); };
   const pickRole = (r) => setForm((f) => ({ ...f, role: r, perms: r === 'custom' ? (f.perms || permsOf({ role: f.role, perms: f.perms }, roleTpl).slice()) : f.perms }));
   const save = () => {
     const f = form, name = f.name.trim(), un = f.username.trim();
-    if (!name || !un || (f.isNew && !f.password.trim())) { notify("Ism, login va parolni to'ldiring", 'danger'); return; }
+    if (!name) { notify("Ism familiyani kiriting", 'danger'); return; }
+    if (!un || (f.isNew && !f.password.trim())) { notify("Login va parol bo'sh bo'lmasligi kerak", 'danger'); return; }
     if (staff.some((u) => u.username === un && u.id !== f.id)) { notify('Bu login band — boshqasini tanlang', 'danger'); return; }
     if (f.role === 'custom' && !(f.perms || []).length) { notify('Custom rol uchun kamida bitta huquq bering', 'danger'); return; }
-    const base = { name, username: un, role: f.role, phone: f.phone.trim(), position: f.position.trim(), perms: f.role === 'custom' ? (f.perms || []) : undefined };
-    if (f.isNew) setStaff([...staff, { id: uid('u'), password: f.password.trim(), createdAt: todayISO(), disabled: false, ...base }]);
-    else setStaff(staff.map((u) => (u.id === f.id ? { ...u, ...base, password: f.password.trim() || u.password } : u)));
-    notify(f.isNew ? "Yangi xodim qo'shildi" : "Xodim va huquqlari saqlandi"); setForm(null);
+    const base = { name, username: un, role: f.role, phone: (f.phone || '').trim(), position: (f.position || '').trim(), perms: f.role === 'custom' ? (f.perms || []) : undefined };
+    const pw = f.password.trim();
+    if (f.isNew) {
+      setStaff([...staff, { id: uid('u'), password: pw, createdAt: todayISO(), disabled: false, ...base }]);
+      setMade({ name, username: un, password: pw, role: f.role });
+      notify("Yangi xodim qo'shildi");
+    } else {
+      setStaff(staff.map((u) => (u.id === f.id ? { ...u, ...base, password: pw || u.password } : u)));
+      if (pw) setMade({ name, username: un, password: pw, role: f.role, reset: true });
+      notify('Xodim va huquqlari saqlandi');
+    }
+    setForm(null);
     // API: POST/PATCH /api/admin/staff/  (role, perms)
   };
   const toggle = (u) => { setStaff(staff.map((x) => (x.id === u.id ? { ...x, disabled: !x.disabled } : x))); notify(u.disabled ? `${u.name} faollashtirildi` : `${u.name} faolsizlantirildi (tizimga kira olmaydi)`); };
   const remove = () => { setStaff(staff.filter((u) => u.id !== del.id)); notify("Xodim o'chirildi", 'danger'); setDel(null); };
   const exportCsv = () => sxCsv('xodimlar.csv', [['Ism', 'Login', 'Rol', 'Huquqlar', 'Telefon', 'Lavozim', "Qo'shilgan", 'Holat'], ...staff.map((u) => [u.name, u.username, (ROLE_META[u.role] || {}).l, permsOf(u, roleTpl).length + '/' + ALL_PERMS.length, u.phone || '', u.position || '', u.createdAt || '', u.disabled ? 'Nofaol' : 'Faol'])]);
-  const chip = (id, l, n, c) => <button key={id} type="button" className={'hd-chip' + (rf === id ? ' on' : '')} style={{ '--c': c || '#34d399' }} onClick={() => setRf(id)}><i />{l}<b>{n}</b></button>;
-  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
-  const kp = [['Jami xodim', staff.length, '#34d399'], ['Faol', staff.filter((u) => !u.disabled).length, '#38bdf8'], ['Custom huquqli', cnt('custom'), '#f472b6'], ['Nofaol', staff.filter((u) => u.disabled).length, '#fb7185']];
   const formPerms = form ? (form.role === 'custom' ? (form.perms || []) : permsOf({ role: form.role }, roleTpl)) : [];
+  const st = nxStrength(form && form.password);
+
+  const total = useCountUp(staff.length), act = useCountUp(staff.filter((u) => !u.disabled).length), cus = useCountUp(cnt('custom')), offN = useCountUp(staff.filter((u) => u.disabled).length);
+  const kp = [['all', 'Jami xodim', total, '#34d399', staff.length ? 100 : 0], ['on', 'Faol', act, '#38bdf8', staff.length ? (staff.filter((u) => !u.disabled).length / staff.length) * 100 : 0], ['custom', 'Custom huquqli', cus, '#f472b6', staff.length ? (cnt('custom') / staff.length) * 100 : 0], ['off', 'Nofaol', offN, '#fb7185', staff.length ? (staff.filter((u) => u.disabled).length / staff.length) * 100 : 0]];
+  const chip = (id, l, n, c) => <button key={id} type="button" className={'nx-chip' + (rf === id ? ' on' : '')} style={{ '--c': c || '#34d399' }} onClick={() => setRf(id)}><i />{l}<b>{n}</b></button>;
+  const roleLabel = (r) => (ROLE_META[r] || ROLE_META.support).l;
 
   return (
-    <div className="v2 hd">
-      <div className="hd-head">
-        <div><span className="sx-eye"><i />Jamoa va xavfsizlik</span><h1>Xodimlar</h1><p>Rollar, huquqlar va tizimga kirish nazorati</p></div>
-        <div className="hd-hact">
-          <button type="button" className="sx-btn" onClick={exportCsv}>↓ CSV</button>
-          {isCeo && <button type="button" className="sx-btn" onClick={onGoPerms}><Icon.lock width="14" height="14" /> Ruxsatlar matritsasi</button>}
-          {canManage && <button type="button" className="hd-add" onClick={openNew}><Icon.plus width="16" height="16" />Yangi xodim</button>}
+    <div className="v2 hd nx nx-staff">
+      <section className="nx-hero" onMouseMove={nxSpot}>
+        <div className="nx-aur" aria-hidden="true"><i /><i /><i /></div>
+        <div className="nx-hero-l">
+          <span className="sx-eye"><i />Jamoa va xavfsizlik</span>
+          <h1>Bizning <em>jamoa</em></h1>
+          <p>Rollar, huquqlar va tizimga kirish nazorati — barchasi bir joyda. Yangi xodimga login va parol avtomatik yaratiladi.</p>
+          <div className="nx-acts">
+            {canManage && <button type="button" className="nx-btn pri" onClick={openNew}><Icon.plus width="16" height="16" />Yangi xodim</button>}
+            {isCeo && <button type="button" className="nx-btn" onClick={onGoPerms}><Icon.lock width="14" height="14" />Ruxsatlar markazi</button>}
+            <button type="button" className="nx-btn" onClick={exportCsv}>↓ CSV</button>
+          </div>
         </div>
+        <div className="nx-kpis">{kp.map(([id, l, v, c, pc]) => (
+          <button key={id} type="button" className={'nx-kpi' + (rf === id ? ' on' : '')} style={{ '--c': c }} onClick={() => setRf(rf === id ? 'all' : id)}>
+            <small><i />{l}</small><b>{v}</b><div className="nx-bar"><u style={{ width: pc + '%' }} /></div>
+          </button>))}
+        </div>
+      </section>
+
+      <div className="nx-toolbar">
+        <label className="nx-search"><Icon.search width="16" height="16" /><input ref={searchRef} placeholder="Ism, login, telefon yoki lavozim…" value={q} onChange={(e) => setQ(e.target.value)} />{q ? <button type="button" className="nx-ib" onClick={() => setQ('')} aria-label="Tozalash"><Icon.close width="13" height="13" /></button> : <kbd>/</kbd>}</label>
+        <div className="nx-chips">{chip('all', 'Hammasi', staff.length)}{chip('ceo', 'CEO', cnt('ceo'), '#fbbf24')}{chip('admin_teacher', 'Teacher', cnt('admin_teacher'), '#38bdf8')}{chip('support', 'Support', cnt('support'), '#a78bfa')}{chip('custom', 'Custom', cnt('custom'), '#f472b6')}{chip('off', 'Nofaol', staff.filter((u) => u.disabled).length, '#fb7185')}</div>
+        <div className="nx-seg" style={{ '--n': 3, '--i': ['role', 'name', 'new'].indexOf(sort) }} title="Saralash"><i />{[['role', 'Rol'], ['name', 'Ism'], ['new', 'Yangi']].map(([id, l]) => <button key={id} type="button" className={sort === id ? 'on' : ''} onClick={() => setSort(id)}>{l}</button>)}</div>
+        <div className="nx-seg" style={{ '--n': 2, '--i': view === 'grid' ? 0 : 1 }}><i />{[['grid', 'Kartalar'], ['list', "Ro'yxat"]].map(([id, l]) => <button key={id} type="button" className={view === id ? 'on' : ''} onClick={() => setView(id)}>{l}</button>)}</div>
       </div>
-      <div className="hd-kpis">{kp.map(([l, v, c]) => <div key={l} className="v2-c hd-k" style={{ '--c': c }}><small>{l}</small><b>{v}</b></div>)}</div>
-      <div className="hd-bar">
-        <div className="hd-search"><Icon.search width="15" height="15" /><input placeholder="Ism, login, telefon yoki lavozim…" value={q} onChange={(e) => setQ(e.target.value)} /></div>
-        <div className="hd-chips">{chip('all', 'Hammasi', staff.length)}{chip('ceo', 'CEO', cnt('ceo'), '#fbbf24')}{chip('admin_teacher', 'Teacher', cnt('admin_teacher'), '#38bdf8')}{chip('support', 'Support', cnt('support'), '#a78bfa')}{chip('custom', 'Custom', cnt('custom'), '#f472b6')}{chip('off', 'Nofaol', staff.filter((u) => u.disabled).length, '#fb7185')}</div>
-        <div className="sx-seg s"><button type="button" className={view === 'grid' ? 'on' : ''} onClick={() => setView('grid')}>Kartalar</button><button type="button" className={view === 'list' ? 'on' : ''} onClick={() => setView('list')}>Ro'yxat</button></div>
-      </div>
-      {list.length === 0 ? <p className="v2-c sx-box sx-em">Mos xodim topilmadi.</p> : (
-        <div className={'hd-grid' + (view === 'list' ? ' list' : '')}>
-          {list.map((u) => { const R = ROLE_META[u.role] || ROLE_META.support, self = u.id === me.id, ps = permsOf(u, roleTpl), mods = PERM_GROUPS.filter((g) => ps.some((k) => k.startsWith(g.id + '.'))); return (
-            <div key={u.id} className={'v2-c hd-card' + (u.disabled ? ' off' : '')} style={{ '--c': R.c }}>
-              <div className="hd-top">
-                <span className="hd-av" style={{ background: hdGrad(u.name) }}>{hdIni(u.name)}</span>
-                <div className="hd-nm"><b>{u.name}{self && <em>siz</em>}</b><small>@{u.username}</small></div>
-                <span className="hd-role">{R.l}</span>
-              </div>
-              <div className="hd-info">
-                <span><Icon.phone />{u.phone || '—'}</span>
-                <span><Icon.cap width="14" height="14" />{u.position || 'Lavozim kiritilmagan'}</span>
-              </div>
-              <div className="hd-perm">
-                <div className="hd-ph"><span>Huquqlar</span><b>{ps.length}/{ALL_PERMS.length}</b></div>
-                <div className="hd-pb"><u style={{ width: (ps.length / ALL_PERMS.length) * 100 + '%' }} /></div>
-                <div className="hd-mods">{mods.slice(0, 5).map((g) => <span key={g.id}>{g.label}</span>)}{mods.length > 5 && <span>+{mods.length - 5}</span>}</div>
-              </div>
-              {isCeo && <div className="hd-pw"><Icon.key width="14" height="14" /><code>{showPw[u.id] ? u.password : '••••••••'}</code>
-                <button type="button" onClick={() => setShowPw({ ...showPw, [u.id]: !showPw[u.id] })} aria-label="Parolni ko'rsatish">{showPw[u.id] ? <Icon.eyeOff width="14" height="14" /> : <Icon.eye width="14" height="14" />}</button></div>}
-              <div className="hd-act">
-                <label className="hd-sw"><Switch on={!u.disabled} onToggle={() => toggle(u)} disabled={!canManage || self || !canTouch(u)} /><span>{u.disabled ? 'Nofaol' : 'Faol'}</span></label>
-                {canManage && canTouch(u) && <div><button type="button" title="Huquqlar va tahrirlash" onClick={() => { setFpw(false); setForm({ ...u, password: '', perms: u.perms || null }); }}><Icon.edit /> <span>Huquqlar</span></button>
-                  {!self && !lastCeo(u) && <button type="button" title="O'chirish" className="dn" onClick={() => setDel(u)}><Icon.trash /></button>}</div>}
-              </div>
-            </div>); })}
+
+      {list.length === 0 ? (
+        <div className="nx-empty"><span>🔎</span><b>Mos xodim topilmadi</b><p>Qidiruv yoki filtrni o'zgartirib ko'ring.</p>{(q || rf !== 'all') && <button type="button" className="nx-btn" onClick={() => { setQ(''); setRf('all'); }}>Filtrni tozalash</button>}</div>
+      ) : (
+        <div className={'nx-grid' + (view === 'list' ? ' list' : '')}>
+          {list.map((u, i) => {
+            const R = ROLE_META[u.role] || ROLE_META.support, self = u.id === me.id, ps = permsOf(u, roleTpl);
+            return (
+              <article key={u.id} className={'nx-card' + (u.disabled ? ' off' : '')} style={{ '--c': R.c, '--d': Math.min(i, 12) }} onMouseMove={nxSpot}>
+                <div className="nx-top">
+                  <span className="nx-av" style={{ background: hdGrad(u.name) }}>{hdIni(u.name)}<i className={'nx-pres' + (u.disabled ? ' off' : '')} /></span>
+                  <div className="nx-nm"><b>{u.name}{self && <em>siz</em>}</b><small>{u.position || '@' + u.username}</small></div>
+                  <span className="nx-role">{R.l}</span>
+                </div>
+                <div className="nx-acc">
+                  <PcRing v={ps.length} max={ALL_PERMS.length} c={R.c} size={56} txt={ps.length} />
+                  <div className="nx-acc-r"><div className="nx-acc-h"><span>Kirish huquqlari</span><b>{ps.length}/{ALL_PERMS.length}</b></div><NxMods perms={ps} /></div>
+                </div>
+                <div className="nx-info">
+                  <span><Icon.phone width="14" height="14" />{u.phone || '—'}</span>
+                  {u.createdAt && <span><Icon.clock width="14" height="14" />{"Qo'shilgan: " + u.createdAt}</span>}
+                </div>
+                {isCeo && (
+                  <div className="nx-cred">
+                    <div className="nx-cr"><small>Login</small><code>@{u.username}</code><button type="button" className="nx-ib" onClick={() => nxCopy(u.username, notify, 'Login')} aria-label="Loginni nusxalash"><Icon.copy width="14" height="14" /></button></div>
+                    <div className="nx-cr"><small>Parol</small><code>{showPw[u.id] ? u.password : '••••••••'}</code>
+                      <button type="button" className="nx-ib" onClick={() => setShowPw({ ...showPw, [u.id]: !showPw[u.id] })} aria-label="Parolni ko'rsatish">{showPw[u.id] ? <Icon.eyeOff width="14" height="14" /> : <Icon.eye width="14" height="14" />}</button>
+                      <button type="button" className="nx-ib" onClick={() => nxCopy(u.password, notify, 'Parol')} aria-label="Parolni nusxalash"><Icon.copy width="14" height="14" /></button></div>
+                  </div>)}
+                <div className="nx-foot">
+                  <label className="nx-sw"><Switch on={!u.disabled} onToggle={() => toggle(u)} disabled={!canManage || self || !canTouch(u)} /><span>{u.disabled ? 'Nofaol' : 'Faol'}</span></label>
+                  {canManage && canTouch(u) && <div className="nx-fa">
+                    <button type="button" className="nx-pill" onClick={() => openEdit(u)}><Icon.edit width="14" height="14" />Huquqlar</button>
+                    {!self && !lastCeo(u) && <button type="button" className="nx-ib dn" title="O'chirish" onClick={() => setDel(u)} aria-label="O'chirish"><Icon.trash width="15" height="15" /></button>}
+                  </div>}
+                </div>
+              </article>);
+          })}
         </div>)}
-      {!canManage && <p className="sx-em" style={{ marginTop: 14 }}>Xodimlarni boshqarish uchun sizga "Xodimlarni boshqarish" huquqi kerak.</p>}
+      {!canManage && <p className="nx-note">Xodimlarni boshqarish uchun sizga "Xodimlarni boshqarish" huquqi kerak.</p>}
 
       {form && (
-        <Modal title={form.isNew ? "Yangi xodim qo'shish" : 'Xodim va huquqlari'} size="lg" onClose={() => setForm(null)}>
-          <div className="hd-form hd-wide">
-            <div className="hd-2"><label>To'liq ism<input value={form.name} onChange={set('name')} placeholder="Aziz Karimov" autoFocus /></label>
-              <label>Lavozim<input value={form.position || ''} onChange={set('position')} placeholder="Matematika o'qituvchisi" /></label></div>
-            <div className="hd-2"><label>Login<input value={form.username} onChange={set('username')} placeholder="aziz" /></label>
-              <label>{form.isNew ? 'Parol' : 'Yangi parol'}<span className="hd-pwi"><input type={fpw ? 'text' : 'password'} value={form.password} onChange={set('password')} placeholder={form.isNew ? '••••••' : "O'zgartirmaslik uchun bo'sh"} /><button type="button" onClick={() => setFpw(!fpw)}>{fpw ? <Icon.eyeOff width="15" height="15" /> : <Icon.eye width="15" height="15" />}</button></span></label></div>
-            <label>Telefon<input value={form.phone || ''} onChange={set('phone')} placeholder="+998 90 123 45 67" /></label>
-            <div className="hd-sec">Rol</div>
-            <div className="hd-roles">{ROLE_CARDS.filter(([r]) => r !== 'ceo' || isCeo).map(([r, l, d]) => { const lock = !form.isNew && (form.id === me.id || lastCeo(form)); return (
-              <button key={r} type="button" disabled={lock && form.role !== r} className={'hd-rc' + (form.role === r ? ' on' : '')} style={{ '--c': ROLE_META[r].c }} onClick={() => pickRole(r)}><b>{l}</b><small>{d}</small></button>); })}</div>
-            <div className="hd-sec">Huquqlar <small>{formPerms.length}/{ALL_PERMS.length}</small></div>
-            {form.role === 'custom' && <div className="hd-qa">
-              <button type="button" className="sx-btn" onClick={() => setForm({ ...form, perms: ALL_PERMS.filter((k) => k !== 'staff.manage') })}>Hammasi</button>
-              <button type="button" className="sx-btn" onClick={() => setForm({ ...form, perms: ALL_PERMS.filter((k) => k.endsWith('.view') && k !== 'staff.view') })}>Faqat ko'rish</button>
-              <button type="button" className="sx-btn" onClick={() => setForm({ ...form, perms: permsOf({ role: 'admin_teacher' }, roleTpl).slice() })}>Teacher'dan nusxa</button>
-              <button type="button" className="sx-btn" onClick={() => setForm({ ...form, perms: [] })}>Tozalash</button></div>}
-            {form.role !== 'custom' && <p className="hd-note">{form.role === 'ceo' ? "CEO barcha huquqlarga ega — o'zgartirib bo'lmaydi." : "Bu rol umumiy shablondan foydalanadi: shablonni o'zgartirsangiz, shu roldagi barcha xodimlarga ta'sir qiladi."}{form.role !== 'ceo' && isCeo && <> <button type="button" className="hd-link" onClick={() => { setForm(null); onGoPerms(); }}>Shablonni sozlash →</button></>}</p>}
-            <PermList perms={formPerms} disabled={form.role !== 'custom'} onChange={(p) => setForm({ ...form, perms: p })} />
-            <div className="hd-fa"><button type="button" className="sx-btn" onClick={() => setForm(null)}>Bekor qilish</button><button type="button" className="hd-add" onClick={save}>{form.isNew ? "Qo'shish" : 'Saqlash'}</button></div>
+        <NxDrawer title={form.isNew ? "Yangi xodim" : 'Xodimni tahrirlash'} sub={form.isNew ? "Login va parol avtomatik yaratildi — xohlasangiz o'zgartiring" : '@' + form.username + ' · ' + roleLabel(form.role)} onClose={() => setForm(null)}
+          footer={<><button type="button" className="nx-btn" onClick={() => setForm(null)}>Bekor qilish</button><button type="button" className="nx-btn pri" onClick={save}>{form.isNew ? "Qo'shish" : 'Saqlash'}</button></>}>
+          <div className="nx-f">
+            <div className="nx-sec"><span className="nx-n">1</span>Profil</div>
+            <div className="nx-2"><label>To'liq ism<input value={form.name} onChange={(e) => setName(e.target.value)} placeholder="Aziz Karimov" autoFocus /></label>
+              <label>Lavozim<input value={form.position || ''} onChange={(e) => setForm({ ...form, position: e.target.value })} placeholder="Matematika o'qituvchisi" /></label></div>
+            <label>Telefon<input value={form.phone || ''} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+998 90 123 45 67" /></label>
+
+            <div className="nx-sec"><span className="nx-n">2</span>Kirish ma'lumotlari {form.isNew && <em className="nx-auto">⚡ avtomatik</em>}</div>
+            <div className="nx-keybox">
+              <label>Login
+                <span className="nx-inp"><b>@</b><input value={form.username} onChange={(e) => setUser(e.target.value)} placeholder="aziz.karimov" />
+                  <button type="button" className="nx-ib" onClick={regenLogin} title="Qayta yaratish" aria-label="Loginni qayta yaratish"><Icon.refresh width="15" height="15" /></button>
+                  <button type="button" className="nx-ib" onClick={() => nxCopy(form.username, notify, 'Login')} title="Nusxalash" aria-label="Nusxalash"><Icon.copy width="15" height="15" /></button></span></label>
+              <label>{form.isNew ? 'Parol' : 'Yangi parol'}
+                <span className="nx-inp"><Icon.key width="15" height="15" /><input type={fpw ? 'text' : 'password'} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder={form.isNew ? 'Parol' : "O'zgartirmaslik uchun bo'sh qoldiring"} />
+                  <button type="button" className="nx-ib" onClick={() => setFpw(!fpw)} aria-label="Ko'rsatish">{fpw ? <Icon.eyeOff width="15" height="15" /> : <Icon.eye width="15" height="15" />}</button>
+                  <button type="button" className="nx-ib" onClick={regenPass} title={form.isNew ? 'Qayta yaratish' : 'Yangi parol yaratish'} aria-label="Parolni yaratish"><Icon.refresh width="15" height="15" /></button>
+                  <button type="button" className="nx-ib" onClick={() => form.password && nxCopy(form.password, notify, 'Parol')} title="Nusxalash" aria-label="Nusxalash"><Icon.copy width="15" height="15" /></button></span></label>
+              {form.password && <div className="nx-str" data-s={st}><span /><span /><span /><span /><em>{['', 'Zaif', "O'rtacha", 'Yaxshi', 'Kuchli'][st]}</em></div>}
+            </div>
+
+            <div className="nx-sec"><span className="nx-n">3</span>Rol</div>
+            <div className="nx-roles">{ROLE_CARDS.filter(([r]) => r !== 'ceo' || isCeo).map(([r, l, d]) => { const lock = !form.isNew && (form.id === me.id || lastCeo(form)); return (
+              <button key={r} type="button" disabled={lock && form.role !== r} className={'nx-rc' + (form.role === r ? ' on' : '')} style={{ '--c': ROLE_META[r].c }} onClick={() => pickRole(r)}><i /><b>{l}</b><small>{d}</small></button>); })}</div>
+
+            <div className="nx-sec"><span className="nx-n">4</span>Huquqlar <small>{formPerms.length}/{ALL_PERMS.length}</small></div>
+            {form.role === 'custom' && <div className="nx-qa">
+              <button type="button" className="nx-pill" onClick={() => setForm({ ...form, perms: ALL_PERMS.filter((k) => k !== 'staff.manage') })}>Hammasi</button>
+              <button type="button" className="nx-pill" onClick={() => setForm({ ...form, perms: ALL_PERMS.filter((k) => k.endsWith('.view') && k !== 'staff.view') })}>Faqat ko'rish</button>
+              <button type="button" className="nx-pill" onClick={() => setForm({ ...form, perms: permsOf({ role: 'admin_teacher' }, roleTpl).slice() })}>Teacher'dan nusxa</button>
+              <button type="button" className="nx-pill" onClick={() => setForm({ ...form, perms: [] })}>Tozalash</button></div>}
+            {form.role !== 'custom' && <p className="nx-hint">{form.role === 'ceo' ? "CEO barcha huquqlarga ega — o'zgartirib bo'lmaydi." : "Bu rol umumiy shablondan foydalanadi: shablonni o'zgartirsangiz, shu roldagi barcha xodimlarga ta'sir qiladi."}{form.role !== 'ceo' && isCeo && <> <button type="button" className="nx-link" onClick={() => { setForm(null); onGoPerms(); }}>Shablonni sozlash →</button></>}</p>}
+            <NxTiles perms={formPerms} disabled={form.role !== 'custom'} onChange={(p) => setForm({ ...form, perms: p })} />
+          </div>
+        </NxDrawer>)}
+
+      {made && (
+        <Modal title={made.reset ? 'Yangi parol yaratildi' : 'Xodim yaratildi 🎉'} onClose={() => setMade(null)}>
+          <div className="hd-form nx-made">
+            <p className="hd-note"><b>{made.name}</b> uchun kirish ma'lumotlari tayyor. Ularni xodimga yuboring.</p>
+            <div className="nx-ticket">
+              <div className="nx-tk-h"><span>{roleLabel(made.role)}</span><i /></div>
+              <div className="nx-tk-r"><small>Login</small><code>{made.username}</code><button type="button" className="nx-ib" onClick={() => nxCopy(made.username, notify, 'Login')} aria-label="Nusxalash"><Icon.copy width="15" height="15" /></button></div>
+              <div className="nx-tk-r"><small>Parol</small><code>{made.password}</code><button type="button" className="nx-ib" onClick={() => nxCopy(made.password, notify, 'Parol')} aria-label="Nusxalash"><Icon.copy width="15" height="15" /></button></div>
+            </div>
+            <div className="hd-fa"><button type="button" className="sx-btn" onClick={() => nxCopy('Login: ' + made.username + '\nParol: ' + made.password, notify, 'Kirish ma\'lumotlari')}>Hammasini nusxalash</button><button type="button" className="hd-add" onClick={() => setMade(null)}>Yopish</button></div>
           </div>
         </Modal>)}
+
       {del && (
         <Modal title="Xodimni o'chirish" onClose={() => setDel(null)}>
           <div className="hd-form"><p style={{ lineHeight: 1.6 }}><b>{del.name}</b> (@{del.username}) tizimdan butunlay o'chiriladi. Bu amalni qaytarib bo'lmaydi.</p>
@@ -8258,8 +8714,9 @@ function StaffProfile({ me, staff, setStaff, notify, onLogout }) {
 
   const addUser = () => {
     if (!newUser.name.trim() || !newUser.username.trim() || !newUser.password.trim()) return;
-    setStaff([...staff, { id: uid('u'), name: newUser.name.trim(), username: newUser.username.trim(), password: newUser.password.trim(), role: newUser.role }]);
-    notify("Yangi foydalanuvchi qo'shildi");
+    if (staff.some((u) => u.username === newUser.username.trim())) { notify('Bu login band — boshqasini tanlang', 'danger'); return; }
+    setStaff([...staff, { id: uid('u'), name: newUser.name.trim(), username: newUser.username.trim(), password: newUser.password.trim(), role: newUser.role, createdAt: todayISO(), disabled: false }]);
+    notify(`Qo'shildi — login: ${newUser.username.trim()} · parol: ${newUser.password.trim()}`);
     setNewUser({ name: '', username: '', password: '', role: 'admin_teacher' });
     setAddingUser(false);
     // API: POST /api/admin/staff/  (name, username, password, role)
@@ -8353,9 +8810,9 @@ function StaffProfile({ me, staff, setStaff, notify, onLogout }) {
 
           {addingUser ? (
             <div className="mt-3 space-y-2 border-t border-line pt-3">
-              <input value={newUser.name} onChange={(e) => setNewUser({ ...newUser, name: e.target.value })} placeholder="Ism familiya" className="w-full border border-line rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-gold" />
+              <input value={newUser.name} onChange={(e) => setNewUser({ ...newUser, name: e.target.value, username: newUser.uAuto === false ? newUser.username : nxLogin(e.target.value, staff) })} placeholder="Ism familiya" className="w-full border border-line rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-gold" />
               <div className="grid grid-cols-2 gap-2">
-                <input value={newUser.username} onChange={(e) => setNewUser({ ...newUser, username: e.target.value })} placeholder="Username" className="w-full border border-line rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-gold" />
+                <input value={newUser.username} onChange={(e) => setNewUser({ ...newUser, username: e.target.value.replace(/\s+/g, ''), uAuto: false })} placeholder="Username" className="w-full border border-line rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-gold" />
                 <input value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} placeholder="Parol" className="w-full border border-line rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-gold" />
               </div>
               <select value={newUser.role} onChange={(e) => setNewUser({ ...newUser, role: e.target.value })} className="w-full border border-line rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-gold">
@@ -8368,7 +8825,7 @@ function StaffProfile({ me, staff, setStaff, notify, onLogout }) {
               </div>
             </div>
           ) : (
-            <button onClick={() => setAddingUser(true)} className="mt-3 w-full border border-dashed border-forest/50 text-forest text-sm px-4 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-forest/5">
+            <button onClick={() => { setNewUser({ name: '', username: nxLogin('', staff), password: nxPass(), role: 'admin_teacher', uAuto: true }); setAddingUser(true); }} className="mt-3 w-full border border-dashed border-forest/50 text-forest text-sm px-4 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-forest/5">
               <Icon.plus width="14" height="14" /> Yangi foydalanuvchi
             </button>
           )}
@@ -8768,7 +9225,7 @@ function AttendancePanel({ state }) {
 
 /* Mobil bottom-sheet uchun umumiy elementlar: orqa fon + sarlavha + suzuvchi tugma */
 function CsSheetBackdrop({ open, onClose }) {
-  return <div className={`cs-sheet-backdrop ${open ? 'on' : ''}`} onClick={onClose} />;
+  return <div className={`cs-sheet-backdrop ${open ? 'on' : ''}`} />;
 }
 function CsSheetHead({ title, onClose }) {
   return (
