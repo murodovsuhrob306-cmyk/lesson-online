@@ -3287,6 +3287,142 @@ html body .course-card-body .flex.items-center.gap-1\.5{ margin-bottom:.05rem; }
 }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+<style id="edu-stats-v4">
+/* ===== STATISTIKA v4 + XODIMLAR — yangi vizual til ===== */
+html body .sx-hero{ display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); gap:22px; padding:28px 30px; margin-bottom:18px; border-radius:28px; position:relative; overflow:hidden; border:1px solid var(--bd);
+  background:radial-gradient(520px 260px at 0% 0%,rgba(52,211,153,.28),transparent 70%),radial-gradient(480px 260px at 100% 100%,rgba(56,189,248,.22),transparent 70%),var(--glass); }
+.sx-eye{ display:inline-flex; align-items:center; gap:8px; font-size:11.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--em); }
+.sx-eye i{ width:7px; height:7px; border-radius:50%; background:var(--em); box-shadow:0 0 0 4px rgba(52,211,153,.2); }
+.sx-hl h1{ margin:8px 0 4px; font-size:clamp(28px,3vw,40px) !important; }
+.sx-hl p{ color:var(--mut); font-weight:600; font-size:13.5px; margin-bottom:18px; max-width:520px; }
+.sx-hr{ display:flex; flex-direction:column; justify-content:flex-end; gap:2px; padding:18px 20px; border-radius:20px; background:color-mix(in srgb,var(--dot) 55%,transparent); border:1px solid var(--bd); }
+.sx-hr small{ color:var(--mut); font-weight:700; font-size:12px; }
+.sx-hr>b{ font-family:Sora,Manrope,sans-serif; font-size:clamp(24px,2.6vw,34px); letter-spacing:-.03em; }
+.sx-hm{ display:flex; align-items:center; gap:8px; font-size:12px; color:var(--mut); } .sx-hm .sx-d{ margin:0; }
+.sx-hr .sx-sp{ height:54px; margin-top:8px; }
+html body .sx-tabs{ width:100%; gap:2px; padding:0; border:0; border-bottom:1px solid var(--bd); border-radius:0; background:transparent; margin-bottom:18px; }
+html body .sx-tabs button{ display:inline-flex; align-items:center; gap:8px; padding:12px 18px; border-radius:0; position:relative; background:transparent; color:var(--mut); }
+html body .sx-tabs button.on{ background:transparent; color:var(--ink); }
+html body .sx-tabs button.on::after{ content:''; position:absolute; left:10px; right:10px; bottom:-1px; height:3px; border-radius:3px 3px 0 0; background:linear-gradient(90deg,#34d399,#38bdf8); }
+.sx-tabs em{ font-style:normal; font-size:11px; font-weight:800; padding:2px 8px; border-radius:99px; background:var(--line); } .sx-tabs em.warn{ background:rgba(251,113,133,.2); color:#fb7185; }
+html body .sx-k{ background:var(--glass) !important; border-radius:20px !important; border-left:1px solid var(--bd) !important; border-top:3px solid var(--c) !important; }
+html body .sx-k::after{ display:none; }
+html body .sx-kh i{ width:34px; height:34px; border-radius:11px; box-shadow:none; }
+html body .sx-box{ border-radius:20px !important; }
+.sx-box>h2,.sx-bh h2{ display:flex; align-items:center; gap:8px; }
+.sx-insg{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:10px; }
+.sx-insg>div{ display:flex; gap:12px; align-items:flex-start; padding:12px 14px; border-radius:14px; background:var(--line); } .sx-insg span{ font-size:20px; } .sx-insg p{ font-size:13px; line-height:1.5; font-weight:600; }
+.sx-ins{ margin-bottom:14px; }
+.sx-coll{ display:grid !important; grid-template-columns:auto minmax(0,1fr) auto; gap:26px; align-items:center; margin-bottom:14px; }
+.sx-cl1,.sx-cl3{ display:flex; flex-direction:column; gap:2px; } .sx-cl1 small,.sx-cl3 small{ color:var(--mut); font-weight:700; font-size:12px; } .sx-cl1 span{ color:var(--mut); font-size:12px; }
+.sx-cl1 b{ font-family:Sora,sans-serif; font-size:44px; letter-spacing:-.04em; line-height:1; background:linear-gradient(90deg,#34d399,#38bdf8); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.sx-cl3 b{ font-size:22px; font-family:Sora,sans-serif; }
+.sx-stack{ display:flex; gap:3px; height:14px; border-radius:99px; overflow:hidden; background:var(--line); margin-bottom:12px; } .sx-stack u{ display:block; min-width:0; transition:flex .5s; }
+.sx-av{ display:inline-flex; width:28px; height:28px; border-radius:9px; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff; margin-right:9px; vertical-align:middle; }
+.sx-t tbody tr{ transition:background .15s; } .sx-t tbody tr:hover{ background:var(--line); }
+@media (max-width:1000px){ html body .sx-hero{ grid-template-columns:minmax(0,1fr); padding:20px; } .sx-coll{ grid-template-columns:minmax(0,1fr); gap:14px; } }
+/* --- Xodimlar --- */
+.hd-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:14px; flex-wrap:wrap; margin-bottom:18px; } .hd-head h1{ margin-top:6px; } .hd-head p{ color:var(--mut); font-size:13.5px; font-weight:600; margin-top:3px; }
+.hd-hact{ display:flex; gap:10px; align-items:center; }
+.hd-add{ display:inline-flex; align-items:center; gap:7px; border:0; cursor:pointer; font:800 13px inherit; font-family:inherit; padding:10px 16px; border-radius:12px; color:#052e1c; background:linear-gradient(135deg,#34d399,#6ee7b7); box-shadow:0 10px 22px -10px #34d399; } .hd-add.dn{ background:linear-gradient(135deg,#fb7185,#f43f5e); color:#fff; box-shadow:0 10px 22px -10px #f43f5e; }
+.hd-bar{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:16px; }
+.hd-search{ display:flex; align-items:center; gap:9px; flex:1; min-width:220px; padding:0 14px; border-radius:14px; border:1px solid var(--bd); background:var(--glass); color:var(--mut); } .hd-search input{ flex:1; border:0; outline:0; background:transparent; color:var(--ink); font:600 13px inherit; font-family:inherit; padding:11px 0; }
+.hd-chips{ display:flex; gap:6px; flex-wrap:wrap; }
+.hd-chip{ display:inline-flex; align-items:center; gap:7px; font:700 12px inherit; font-family:inherit; color:var(--mut); background:transparent; border:1px solid var(--bd); border-radius:99px; padding:7px 13px; cursor:pointer; } .hd-chip i{ width:8px; height:8px; border-radius:50%; background:var(--c); } .hd-chip b{ opacity:.8; }
+.hd-chip.on{ color:var(--ink); border-color:var(--c); background:color-mix(in srgb,var(--c) 14%,transparent); }
+.hd-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:14px; } .hd-grid.list{ grid-template-columns:minmax(0,1fr); }
+html body .hd-card{ padding:18px !important; border-radius:20px !important; display:flex; flex-direction:column; gap:12px; border-top:3px solid var(--c) !important; } .hd-card.off{ opacity:.55; }
+.hd-top{ display:flex; align-items:center; gap:12px; } .hd-av{ width:46px; height:46px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; flex:none; box-shadow:0 10px 20px -10px #000; }
+.hd-nm{ flex:1; min-width:0; } .hd-nm b{ display:flex; align-items:center; gap:7px; font-size:15px; } .hd-nm em{ font-style:normal; font-size:10.5px; padding:2px 7px; border-radius:99px; background:rgba(52,211,153,.18); color:#10b981; } .hd-nm small{ color:var(--mut); font-weight:600; }
+.hd-role{ font-size:11px; font-weight:800; padding:4px 10px; border-radius:99px; color:var(--c); background:color-mix(in srgb,var(--c) 16%,transparent); white-space:nowrap; }
+.hd-info{ display:flex; flex-direction:column; gap:6px; font-size:12.5px; color:var(--mut); font-weight:600; } .hd-info span{ display:flex; align-items:center; gap:8px; }
+.hd-pw{ display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:11px; background:var(--line); color:var(--mut); } .hd-pw code{ flex:1; color:var(--ink); font-size:12.5px; } .hd-pw button,.hd-act button{ border:0; background:transparent; color:var(--mut); cursor:pointer; padding:6px; border-radius:8px; } .hd-act button:hover,.hd-pw button:hover{ background:var(--line); color:var(--ink); } .hd-act button.dn:hover{ color:#f43f5e; }
+.hd-act{ display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:10px; border-top:1px solid var(--line); } .hd-sw{ display:flex; align-items:center; gap:9px; font-size:12.5px; font-weight:700; color:var(--mut); }
+.hd-grid.list .hd-card{ flex-direction:row; align-items:center; flex-wrap:wrap; gap:18px; } .hd-grid.list .hd-top{ flex:1.2; min-width:230px; } .hd-grid.list .hd-info{ flex:1.4; min-width:200px; } .hd-grid.list .hd-act{ margin:0; padding:0; border:0; gap:16px; }
+.hd-form{ --fi:#0d1f17; --fm:#5f776b; --fb:rgba(13,31,23,.14); --fg:rgba(13,31,23,.04); display:flex; flex-direction:column; gap:14px; color:var(--fi); }
+html.theme-dark .hd-form{ --fi:#eef6f1; --fm:#8aa398; --fb:rgba(255,255,255,.14); --fg:rgba(255,255,255,.05); }
+.hd-form label{ display:flex; flex-direction:column; gap:6px; font-size:12px; font-weight:700; color:var(--fm); }
+.hd-form input,.hd-form select{ font:600 14px inherit; font-family:inherit; color:var(--fi); background:var(--fg); border:1px solid var(--fb); border-radius:12px; padding:11px 13px; outline:0; width:100%; } .hd-form select option{ color:#0d1f17; } .hd-form input:focus,.hd-form select:focus{ border-color:#34d399; box-shadow:0 0 0 3px rgba(52,211,153,.18); }
+.hd-2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; } .hd-pwi{ position:relative; display:block; } .hd-pwi button{ position:absolute; right:6px; top:50%; transform:translateY(-50%); border:0; background:transparent; color:var(--fm); cursor:pointer; padding:6px; }
+.hd-fa{ display:flex; justify-content:flex-end; gap:10px; margin-top:4px; } .hd-form .sx-btn{ color:var(--fi); border-color:var(--fb); }
+@media (max-width:560px){ .hd-2{ grid-template-columns:1fr; } .hd-head{ align-items:flex-start; } }
+</style>
+
+<style id="edu-perms-v5">
+/* ===== Xodimlar + Ruxsatlar (v5) ===== */
+.hd-kpis{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-bottom:16px; }
+html body .hd-k{ padding:14px 18px !important; border-radius:18px !important; border-left:3px solid var(--c) !important; display:flex; flex-direction:column; gap:2px; } .hd-k small{ color:var(--mut); font-weight:700; font-size:12px; } .hd-k b{ font-family:Sora,sans-serif; font-size:26px; }
+.hd-perm{ padding:10px 12px; border-radius:13px; background:var(--line); display:flex; flex-direction:column; gap:7px; }
+.hd-ph{ display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:12px; font-weight:700; color:var(--mut); } .hd-ph b{ color:var(--ink); } .hd-ph span{ font-weight:600; }
+.hd-pb{ height:6px; border-radius:99px; background:var(--line); overflow:hidden; } .hd-perm .hd-pb{ background:color-mix(in srgb,var(--ink) 10%,transparent); } .hd-pb u{ display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,var(--c,#34d399),color-mix(in srgb,var(--c,#34d399) 50%,#fff)); transition:width .4s; }
+.hd-mods{ display:flex; flex-wrap:wrap; gap:5px; } .hd-mods span{ font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:99px; border:1px solid var(--bd); color:var(--mut); }
+.hd-act button span{ font-size:12px; font-weight:700; margin-left:4px; } .hd-act button{ display:inline-flex; align-items:center; }
+.hd-sec{ font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--fm); margin-top:6px; display:flex; gap:8px; align-items:center; } .hd-sec small{ font-weight:700; color:#34d399; }
+.hd-roles{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
+.hd-rc{ text-align:left; display:flex; flex-direction:column; gap:4px; padding:12px 14px; border-radius:14px; border:1px solid var(--fb); background:var(--fg); color:var(--fi); cursor:pointer; font-family:inherit; } .hd-rc b{ font-size:14px; } .hd-rc small{ font-size:11.5px; line-height:1.4; color:var(--fm); font-weight:600; } .hd-rc:disabled{ opacity:.4; cursor:not-allowed; }
+.hd-rc.on{ border-color:var(--c); background:color-mix(in srgb,var(--c) 14%,transparent); box-shadow:0 0 0 1px var(--c); }
+.hd-qa{ display:flex; gap:8px; flex-wrap:wrap; } .hd-note{ font-size:12.5px; color:var(--fm); line-height:1.5; margin:0; } .hd-link{ border:0; background:transparent; color:#34d399; font:800 12.5px inherit; font-family:inherit; cursor:pointer; padding:0; }
+.hd-wide{ --ink:var(--fi); --mut:var(--fm); --line:var(--fb); }
+.modal-card:has(.hd-wide){ max-width:46rem; max-height:92vh; overflow-y:auto; }
+.pm{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; } .pm-g{ border:1px solid var(--line); border-radius:14px; padding:10px 14px; }
+.pm-gh{ display:flex; justify-content:space-between; font-size:13px; font-weight:800; margin-bottom:4px; color:var(--ink); } .pm-gh small{ color:var(--mut); font-weight:700; }
+.pm-r{ display:flex; justify-content:space-between; align-items:center; gap:12px; padding:8px 0; border-top:1px solid var(--line); } .pm-r b{ display:block; font-size:12.5px; color:var(--ink); } .pm-r small{ display:block; font-size:11px; color:var(--mut); line-height:1.35; margin-top:1px; font-weight:600; }
+.rp-roles{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-bottom:14px; }
+html body .rp-rc{ padding:16px 18px !important; border-radius:18px !important; border-top:3px solid var(--c) !important; display:flex; flex-direction:column; gap:8px; } .rp-rc .hd-ph b{ font-size:15px; }
+.rp-big{ font-family:Sora,sans-serif; font-size:30px; font-weight:800; line-height:1; } .rp-big small{ font-size:12px; font-weight:700; color:var(--mut); font-family:Manrope,sans-serif; }
+.rp-sc{ overflow:auto; max-height:70vh; } .rp-t{ display:grid; align-items:stretch; font-size:13px; }
+.rp-h{ position:sticky; top:0; z-index:3; background:var(--dot); padding:10px 8px 12px; text-align:center; border-bottom:2px solid var(--c,transparent); display:flex; flex-direction:column; gap:2px; align-items:center; } .rp-h b{ font-size:13.5px; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .rp-h small{ color:var(--mut); font-size:11px; font-weight:600; }
+.rp-h span{ display:flex; gap:6px; margin-top:4px; } .rp-h button{ border:0; background:transparent; color:#34d399; font:700 11px inherit; font-family:inherit; cursor:pointer; padding:0; }
+.rp-fc{ position:sticky; left:0; z-index:2; background:var(--dot); } .rp-h.rp-fc{ z-index:4; }
+.rp-g{ grid-column:1/-1; padding:14px 4px 6px; font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:#34d399; }
+.rp-n{ padding:9px 8px 9px 0; border-top:1px solid var(--line); } .rp-n b{ display:block; font-size:13px; } .rp-n small{ display:block; font-size:11px; color:var(--mut); font-weight:600; }
+.rp-cell{ display:flex; align-items:center; justify-content:center; border-top:1px solid var(--line); } .rp-ck{ width:24px; height:24px; border-radius:50%; background:rgba(251,191,36,.2); color:#fbbf24; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; }
+.rp-ul{ display:flex; flex-direction:column; } .rp-u{ display:flex; align-items:center; gap:14px; padding:11px 0; border-top:1px solid var(--line); } .rp-u:first-child{ border-top:0; } .rp-uc{ margin-left:auto; } .hd-av.sm{ width:36px; height:36px; border-radius:12px; font-size:12px; }
+.rp-sel{ font:700 12.5px inherit; font-family:inherit; color:var(--ink); background:var(--glass); border:1px solid var(--bd); border-radius:10px; padding:7px 10px; } .rp-sel option{ color:#0d1f17; }
+@media (max-width:1000px){ .hd-kpis,.rp-roles{ grid-template-columns:repeat(2,minmax(0,1fr)); } .pm{ grid-template-columns:minmax(0,1fr); } }
+</style>
+
+<style id="edu-perms-v6">
+/* ===== Ruxsatlar markazi (v6) ===== */
+html body .pc-hero{ display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:22px; padding:28px 30px; margin-bottom:18px; border-radius:28px; border:1px solid var(--bd); position:relative; overflow:hidden;
+  background:radial-gradient(520px 260px at 0% 0%,rgba(244,114,182,.22),transparent 70%),radial-gradient(480px 260px at 100% 100%,rgba(56,189,248,.22),transparent 70%),var(--glass); }
+.pc-hl h1{ margin:8px 0 6px; font-size:clamp(28px,3vw,40px) !important; } .pc-hl p{ color:var(--mut); font-weight:600; font-size:13.5px; max-width:540px; line-height:1.55; margin-bottom:16px; }
+.pc-ha{ display:flex; gap:8px; flex-wrap:wrap; } .pc-ha .sx-btn:disabled{ opacity:.4; cursor:not-allowed; }
+.pc-hs{ display:flex; flex-direction:column; gap:12px; justify-content:center; padding:16px 18px; border-radius:20px; background:color-mix(in srgb,var(--dot) 55%,transparent); border:1px solid var(--bd); }
+.pc-sc{ display:flex; align-items:center; gap:16px; } .pc-sc>div{ display:flex; flex-direction:column; gap:1px; } .pc-sc small{ color:var(--mut); font-weight:700; font-size:12px; } .pc-sc b{ font-family:Sora,sans-serif; font-size:22px; } .pc-sc span{ color:var(--mut); font-size:12px; font-weight:600; }
+.pc-mini{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; } .pc-mini div{ padding:9px 12px; border-radius:12px; background:var(--line); display:flex; flex-direction:column; } .pc-mini b{ font-family:Sora,sans-serif; font-size:20px; } .pc-mini small{ color:var(--mut); font-size:11.5px; font-weight:700; }
+.pc-ring{ color:var(--ink); flex:none; }
+.pc-grid{ display:grid; grid-template-columns:300px minmax(0,1fr); gap:14px; align-items:start; }
+html body .pc-list{ padding:14px !important; border-radius:20px !important; position:sticky; top:0; max-height:calc(100vh - 120px); overflow-y:auto; }
+.pc-lh{ font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--mut); margin:12px 4px 6px; }
+.pc-li{ width:100%; display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:14px; border:1px solid transparent; background:transparent; color:var(--ink); cursor:pointer; font-family:inherit; text-align:left; transition:background .15s; } .pc-li:hover{ background:var(--line); }
+.pc-li.on{ background:color-mix(in srgb,var(--c) 14%,transparent); border-color:var(--c); }
+.pc-lt{ flex:1; min-width:0; display:flex; flex-direction:column; } .pc-lt b{ font-size:13.5px; display:flex; gap:6px; align-items:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .pc-lt em{ font-style:normal; font-size:10px; padding:1px 6px; border-radius:99px; background:rgba(52,211,153,.18); color:#10b981; } .pc-lt small{ color:var(--mut); font-size:11.5px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.pc-cnt{ display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:800; padding:3px 9px; border-radius:99px; background:var(--line); } .pc-cnt i{ width:7px; height:7px; border-radius:50%; }
+.pc-det{ display:flex; flex-direction:column; gap:14px; min-width:0; }
+html body .pc-dh{ display:flex; align-items:center; gap:16px; padding:18px 20px !important; border-radius:20px !important; border-left:4px solid var(--c) !important; }
+.pc-dt{ flex:1; min-width:0; } .pc-dt h2{ font-family:Sora,sans-serif; font-size:22px; } .pc-dt>span{ color:var(--mut); font-size:12.5px; font-weight:600; } .pc-badges{ display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+.pc-cols{ display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:14px; align-items:start; } .pc-side{ display:flex; flex-direction:column; gap:14px; }
+html body .pc-ed,html body .pc-box{ padding:18px 20px !important; border-radius:20px !important; } .pc-box h2,.pc-ed h2{ font-size:15px; font-weight:800; margin-bottom:10px; } .pc-box h2 small{ color:var(--mut); font-weight:600; font-size:12px; margin-left:6px; }
+.pc-ed .pm{ grid-template-columns:minmax(0,1fr); } .pc-ed .sx-bh{ margin-bottom:6px; }
+.pc-lock{ display:inline-flex; gap:6px; align-items:center; font-size:12px; font-weight:700; color:#fbbf24; } .pc-info{ font-size:12.5px; line-height:1.55; color:var(--mut); padding:10px 12px; border-radius:12px; background:var(--line); margin-bottom:12px; } .pc-info b{ color:var(--ink); }
+.pc-seg{ display:flex; gap:4px; padding:3px; border-radius:12px; background:var(--line); } .pc-seg button{ flex:1; border:0; padding:8px; border-radius:9px; background:transparent; color:var(--mut); font:800 12.5px inherit; font-family:inherit; cursor:pointer; } .pc-seg button.on{ background:var(--c); color:#0b1410; }
+.pc-nav{ display:flex; flex-direction:column; gap:4px; } .pc-nav>div{ display:flex; justify-content:space-between; align-items:center; padding:8px 11px; border-radius:11px; font-size:13px; font-weight:700; color:var(--mut); opacity:.55; } .pc-nav>div span{ display:flex; gap:9px; align-items:center; }
+.pc-nav>div.on{ opacity:1; color:var(--ink); background:rgba(52,211,153,.12); } .pc-nav>div.on svg{ color:#34d399; } .pc-nav em{ font-style:normal; font-size:10.5px; padding:2px 8px; border-radius:99px; background:rgba(251,191,36,.2); color:#d99a06; }
+.pc-pre{ display:grid; grid-template-columns:1fr 1fr; gap:8px; } .pc-pre button{ text-align:left; display:flex; flex-direction:column; gap:2px; padding:10px 12px; border-radius:13px; border:1px solid var(--bd); background:transparent; color:var(--ink); cursor:pointer; font-family:inherit; transition:.15s; } .pc-pre button:hover{ border-color:#34d399; background:rgba(52,211,153,.1); transform:translateY(-1px); }
+.pc-pre span{ font-size:18px; } .pc-pre b{ font-size:12.5px; } .pc-pre small{ font-size:10.5px; color:var(--mut); line-height:1.35; font-weight:600; }
+.pc-cp{ display:flex; flex-direction:column; gap:6px; margin-top:12px; font-size:12px; font-weight:700; color:var(--mut); } .pc-cp select{ font:600 13px inherit; font-family:inherit; color:var(--ink); background:var(--glass); border:1px solid var(--bd); border-radius:11px; padding:9px 11px; } .pc-cp select option{ color:#0d1f17; }
+.pc-leg{ display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--mut); font-weight:600; margin-bottom:8px; } .pc-leg span{ display:inline-flex; align-items:center; gap:6px; } .pc-leg i,.pc-dot{ width:8px; height:8px; border-radius:50%; display:inline-block; } .pc-dot{ margin-right:8px; }
+.pc-t .rp-cell,.pc-t .rp-n{ transition:background .12s; }
+.pc-au{ display:flex; flex-direction:column; gap:10px; max-width:860px; }
+html body .pc-ascore{ display:flex; align-items:center; gap:22px; padding:22px 24px !important; border-radius:22px !important; } .pc-ascore h2{ font-family:Sora,sans-serif; font-size:20px; } .pc-ascore p{ color:var(--mut); font-size:13px; margin-top:4px; font-weight:600; }
+html body .pc-ai{ display:flex; align-items:flex-start; gap:14px; padding:14px 18px !important; border-radius:16px !important; border-left:4px solid var(--k) !important; --k:#34d399; } .pc-ai.warn{ --k:#fbbf24; } .pc-ai.bad{ --k:#fb7185; }
+.pc-ai>span{ width:28px; height:28px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-weight:800; color:var(--k); background:color-mix(in srgb,var(--k) 18%,transparent); flex:none; } .pc-ai>div{ flex:1; } .pc-ai b{ font-size:14px; } .pc-ai p{ font-size:12.5px; color:var(--mut); margin-top:3px; line-height:1.5; font-weight:600; } .pc-ai em{ font-style:normal; font-weight:800; color:var(--k); }
+.pc-log{ display:flex; flex-direction:column; } .pc-log>div{ display:flex; gap:14px; padding:11px 0; border-top:1px solid var(--line); } .pc-log>div:first-child{ border-top:0; } .pc-log i{ width:9px; height:9px; border-radius:50%; background:#34d399; margin-top:6px; flex:none; box-shadow:0 0 0 4px rgba(52,211,153,.18); } .pc-log b{ font-size:13.5px; display:block; } .pc-log small{ color:var(--mut); font-size:12px; font-weight:600; }
+@media (max-width:1100px){ .pc-grid{ grid-template-columns:minmax(0,1fr); } html body .pc-list{ position:static; max-height:300px; } .pc-cols{ grid-template-columns:minmax(0,1fr); } }
+@media (max-width:900px){ html body .pc-hero{ grid-template-columns:minmax(0,1fr); padding:20px; } }
+</style>
+
 <style id="no-zoom-lock">
 /* ZOOM TAQIQLANGAN: pinch-zoom, double-tap zoom va matn avtomatik kattalashishi o'chirilgan */
 html, body { touch-action: pan-x pan-y; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
@@ -4861,14 +4997,15 @@ function Topbar({ me, roleLabel, initials, theme, onToggleTheme, notifications, 
   );
 }
 
-function StaffApp({ me, staff, setStaff, categories, setCategories, students, setStudents, onLogout, notify }) {
+function StaffApp({ me, staff, setStaff, roleTpl, setRoleTpl, categories, setCategories, students, setStudents, onLogout, notify }) {
   const [page, setPage] = useState('overview');
   const [editingStudentId, setEditingStudentId] = useState(null);
   const [editingStudentTab, setEditingStudentTab] = useState('info');
   const [quickAddCourse, setQuickAddCourse] = useState(false);
   const [theme, setTheme] = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const canEdit = me.role !== 'support';
+  const myPerms = permsOf(me, roleTpl); const can = (k) => myPerms.includes(k);
+  const canEditCourses = can('courses.edit'), canEditStudents = can('students.edit');
 
   const stats = useMemo(() => {
     const lessonsCount = categories.reduce((a, c) => a + c.subtopics.reduce((b, s) => b + s.lessons.length, 0), 0);
@@ -4934,16 +5071,18 @@ function StaffApp({ me, staff, setStaff, categories, setCategories, students, se
   );
 
   const nav = [
-    { id: 'overview', label: 'Dashboard', icon: Icon.home },
-    { id: 'students', label: "O'quvchilar", icon: Icon.users },
-    { id: 'courses', label: 'Kurslar', icon: Icon.book },
-    { id: 'statistics', label: 'Statistika', icon: Icon.chart },
-    { id: 'payments', label: "To'lovlar", icon: Icon.warn },
-    { id: 'blocked', label: 'Bloklanganlar', icon: Icon.lock, badge: blockedStudentCount },
-    ...(me.role === 'ceo' ? [{ id: 'permissions', label: 'Ruxsatlar', icon: Icon.lock }] : []),
+    can('dashboard.view') && { id: 'overview', label: 'Dashboard', icon: Icon.home },
+    can('students.view') && { id: 'students', label: "O'quvchilar", icon: Icon.users },
+    can('courses.view') && { id: 'courses', label: 'Kurslar', icon: Icon.book },
+    can('statistics.view') && { id: 'statistics', label: 'Statistika', icon: Icon.chart },
+    can('payments.view') && { id: 'payments', label: "To'lovlar", icon: Icon.warn },
+    can('blocked.view') && { id: 'blocked', label: 'Bloklanganlar', icon: Icon.lock, badge: blockedStudentCount },
+    can('staff.view') && { id: 'staff', label: 'Xodimlar', icon: Icon.user },
+    me.role === 'ceo' && { id: 'permissions', label: 'Ruxsatlar', icon: Icon.lock },
     { id: 'profile', label: 'Profil', icon: Icon.user, dividerBefore: true },
-  ];
-  const roleLabel = me.role === 'ceo' ? 'CEO' : me.role === 'admin_teacher' ? 'Teacher' : 'Support';
+  ].filter(Boolean);
+  const curPage = nav.some((n) => n.id === page) ? page : nav[0].id;
+  const roleLabel = (ROLE_META[me.role] || ROLE_META.support).l;
   const initials = me.name.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 
   const goTo = (id) => {
@@ -4959,7 +5098,7 @@ function StaffApp({ me, staff, setStaff, categories, setCategories, students, se
           onFinish={(goBlocked) => { setIntro('done'); if (goBlocked) goTo('blocked'); }} />
       )}
       <Sidebar roleLabel={roleLabel} navItems={nav}
-        activePage={page} onNavigate={goTo}
+        activePage={curPage} onNavigate={goTo}
         footerName={me.name} footerSub="Profilni ko'rish" footerInitials={initials}
         onFooterClick={() => goTo('profile')}
         mobileOpen={mobileMenuOpen} onCloseMobile={() => setMobileMenuOpen(false)} />
@@ -4972,48 +5111,50 @@ function StaffApp({ me, staff, setStaff, categories, setCategories, students, se
           onOpenMenu={() => setMobileMenuOpen(true)} />
 
         <main className="flex-1 p-8 overflow-y-auto max-h-screen">
-          <div key={page + (editingStudentId || '')} className="page-enter">
-          {page === 'overview' && (
-            <DashV2 me={me} canEdit={canEdit} stats={stats} revenue={revenue} students={students} categories={categories}
+          <div key={curPage + (editingStudentId || '')} className="page-enter">
+          {curPage === 'overview' && (
+            <DashV2 me={me} canEdit={canEditCourses} stats={stats} revenue={revenue} students={students} categories={categories}
               overdueStudents={overdueStudents} overdueShown={overdueShown} overdueCurPage={overdueCurPage}
               overduePageCount={overduePageCount} setOverduePage={setOverduePage} goTo={goTo}
               onNewCourse={() => { setQuickAddCourse(true); setPage('courses'); }} />
           )}
 
-          {page === 'courses' && (
-          <CoursesManager categories={categories} setCategories={setCategories} canEdit={canEdit} notify={notify} me={me}
+          {curPage === 'courses' && (
+          <CoursesManager categories={categories} setCategories={setCategories} canEdit={canEditCourses} notify={notify} me={me}
             students={students}
             quickAdd={quickAddCourse} onQuickAddDone={() => setQuickAddCourse(false)} />
         )}
 
-        {page === 'statistics' && (
+        {curPage === 'statistics' && (
           <StatisticsPage stats={stats} revenue={revenue} students={students} categories={categories} />
         )}
 
-        {page === 'payments' && (
+        {curPage === 'payments' && (
           <PaymentsPage students={students} categories={categories} />
         )}
 
-        {page === 'blocked' && (
+        {curPage === 'blocked' && (
           <BlockedPage students={students} categories={categories}
             onOpenStudent={(id) => { setPage('students'); setEditingStudentTab('info'); setEditingStudentId(id); }} />
         )}
 
-        {page === 'permissions' && me.role === 'ceo' && (
-          <PermissionsPage me={me} staff={staff} setStaff={setStaff} notify={notify} />
+        {curPage === 'permissions' && me.role === 'ceo' && (
+          <PermissionsPage me={me} staff={staff} setStaff={setStaff} roleTpl={roleTpl} setRoleTpl={setRoleTpl} notify={notify} />
         )}
 
-        {page === 'students' && !editingStudentId && (
-          <StudentsList students={students} setStudents={setStudents} categories={categories} canEdit={canEdit}
+        {curPage === 'students' && !editingStudentId && (
+          <StudentsList students={students} setStudents={setStudents} categories={categories} canEdit={canEditStudents}
             onOpen={(id, tab) => { setEditingStudentTab(tab || 'info'); setEditingStudentId(id); }} notify={notify} staff={staff} me={me} />
         )}
-        {page === 'students' && editingStudentId && (
+        {curPage === 'students' && editingStudentId && (
           <StudentEditor student={students.find((s) => s.id === editingStudentId)} categories={categories}
-            canEdit={canEdit} staff={staff} initialTab={editingStudentTab} onBack={() => setEditingStudentId(null)}
+            canEdit={canEditStudents} staff={staff} initialTab={editingStudentTab} onBack={() => setEditingStudentId(null)}
             onSave={(upd, opts) => { setStudents(students.map((s) => (s.id === upd.id ? upd : s))); notify((opts && opts.message) || 'O\'quvchi ma\'lumotlari saqlandi', opts && opts.variant); }} />
         )}
 
-        {page === 'profile' && <StaffProfile me={me} staff={staff} setStaff={setStaff} notify={notify} onLogout={onLogout} />}
+        {curPage === 'staff' && <StaffPage me={me} staff={staff} setStaff={setStaff} roleTpl={roleTpl} notify={notify} onGoPerms={() => goTo('permissions')} />}
+
+        {curPage === 'profile' && <StaffProfile me={me} staff={staff} setStaff={setStaff} notify={notify} onLogout={onLogout} />}
           </div>
         </main>
       </div>
@@ -5147,24 +5288,45 @@ function StatisticsPage({ stats, revenue, students, categories }) {
   const th = (k, l) => <th onClick={() => { setSort([k, sk === k ? -sd : (k === 'name' || k === 'days' ? 1 : -1)]); setPg(0); }} className={'sx-sort' + (sk === k ? ' on' : '')}>{l}{sk === k ? (sd > 0 ? ' ↑' : ' ↓') : ''}</th>;
   const Chip = ({ id, l, n }) => <button type="button" className={flt === id ? 'on' : ''} onClick={() => { setFlt(id); setPg(0); }}>{l}{n != null && <b>{n}</b>}</button>;
   const rangeOpts = [[3, '3 oy'], [6, '6 oy'], [12, '1 yil'], [24, '2 yil']];
+  const insights = [];
+  { const dd = sxDelta(D.thisM, D.prevM); if (dd) insights.push([dd.up ? '🚀' : '📉', `Shu oy tushum o'tgan oyga nisbatan ${dd.v == null ? "yangi boshlandi" : (dd.up ? '+' : '−') + dd.v + '%'}.`]); }
+  if (D.best && D.best.v) insights.push(['📈', `Eng yuqori tushum — ${D.best.full}: ${fmtMoney(D.best.v)}.`]);
+  { const tc = [...D.courses].sort((a, b) => b.rev - a.rev)[0]; if (tc && tc.rev) insights.push(['🏆', `Eng ko'p tushum keltirgan kurs: ${tc.name}.`]); }
+  if (nDebtors) insights.push(['💸', `${nDebtors} ta o'quvchida jami ${fmtMoney(D.debt)} qarz bor.`]);
+  if (idle) insights.push(['😴', `${idle} ta o'quvchi 14 kundan beri dars ko'rmagan — eslatma yuborish mumkin.`]);
+  if (D.compl >= 60) insights.push(['🎯', `O'zlashtirish yuqori: ${D.compl}% darslar tugatilgan.`]);
+  if (!insights.length) insights.push(['✨', "Ma'lumotlar to'planishi bilan tavsiyalar shu yerda paydo bo'ladi."]);
   const mrows = [...D.months].reverse().map((m, i, a) => ({ ...m, d: a[i + 1] ? sxDelta(m.v, a[i + 1].v) : null }));
   const avg = Math.round(D.tot / range);
 
   return (
     <div className="v2 sx">
-      <div className="sx-head">
-        <div><h1>Statistika</h1><p>{D.cp.m} {D.cp.y} holatiga ko'ra{cid !== 'all' ? ' · ' + (categories.find((c) => c.id === cid) || {}).name : ''}</p></div>
-        <div className="sx-ctl">
-          <select value={cid} onChange={(e) => pick(e.target.value)} aria-label="Kurs"><option value="all">Barcha kurslar</option>{categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select>
-          <div className="sx-seg">{rangeOpts.map(([v, l]) => <button key={v} type="button" className={range === v ? 'on' : ''} onClick={() => setRange(v)}>{l}</button>)}</div>
+      <div className="sx-hero">
+        <div className="sx-hl">
+          <span className="sx-eye"><i />Analitika markazi · {D.cp.m} {D.cp.y}</span>
+          <h1>Statistika</h1>
+          <p>{cid === 'all' ? 'Barcha kurslar' : (categories.find((c) => c.id === cid) || {}).name} bo'yicha moliya, kurslar va o'quvchilar ko'rsatkichlari</p>
+          <div className="sx-ctl">
+            <select value={cid} onChange={(e) => pick(e.target.value)} aria-label="Kurs"><option value="all">Barcha kurslar</option>{categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select>
+            <div className="sx-seg">{rangeOpts.map(([v, l]) => <button key={v} type="button" className={range === v ? 'on' : ''} onClick={() => setRange(v)}>{l}</button>)}</div>
+          </div>
+        </div>
+        <div className="sx-hr">
+          <small>{range} oylik tushum</small>
+          <b>{fmtMoney(D.tot)}</b>
+          <div className="sx-hm"><SxDelta d={sxDelta(D.tot, D.prevTot)} /><span>oldingi davrga nisbatan</span></div>
+          <SxSpark v={D.months.map((x) => x.v)} c="#34d399" />
         </div>
       </div>
-      <div className="sx-tabs" role="tablist">{[['all', 'Umumiy'], ['fin', 'Moliya'], ['crs', 'Kurslar'], ['stu', "O'quvchilar"]].map(([id, l]) => <button key={id} type="button" role="tab" aria-selected={tab === id} className={tab === id ? 'on' : ''} onClick={() => setTab(id)}>{l}</button>)}</div>
+      <div className="sx-tabs" role="tablist">{[['all', 'Umumiy', Icon.chart, null], ['fin', 'Moliya', Icon.cash, nDebtors || null], ['crs', 'Kurslar', Icon.book, D.courses.length], ['stu', "O'quvchilar", Icon.users, D.rows.length]].map(([id, l, Ic, n]) => <button key={id} type="button" role="tab" aria-selected={tab === id} className={tab === id ? 'on' : ''} onClick={() => setTab(id)}><Ic width="16" height="16" />{l}{n != null && <em className={id === 'fin' ? 'warn' : ''}>{n}</em>}</button>)}</div>
 
       {tab === 'all' && (<>
         <div className="sx-kpis">{kpis.map(([l, v, s, c, d, Ic, pc, sp]) => (
           <div key={l} className="v2-c sx-k" style={{ '--c': c }}><div className="sx-kh"><i><Ic width="18" height="18" /></i><span>{l}</span><SxDelta d={d} /></div><b>{v}</b><small>{s}</small>{sp ? <SxSpark v={sp} c={c} /> : pc != null ? <div className="sx-kp"><u style={{ width: Math.min(100, Math.max(3, pc)) + '%' }} /></div> : null}</div>
         ))}</div>
+
+        <section className="v2-c sx-box sx-ins"><h2>Aqlli xulosalar <small>avtomatik tahlil</small></h2>
+          <div className="sx-insg">{insights.map(([e, t], i) => <div key={i}><span>{e}</span><p>{t}</p></div>)}</div></section>
         <div className="sx-row r83">
           <section className="v2-c sx-box">
             <div className="sx-bh"><h2>Tushum <small>{range} oy</small></h2><div className="sx-seg s"><button type="button" className={kind === 'bar' ? 'on' : ''} onClick={() => setKind('bar')}>Ustun</button><button type="button" className={kind === 'line' ? 'on' : ''} onClick={() => setKind('line')}>Chiziq</button></div></div>
@@ -5195,6 +5357,14 @@ function StatisticsPage({ stats, revenue, students, categories }) {
       </>)}
 
       {tab === 'fin' && (<>
+        <section className="v2-c sx-box sx-coll">
+          <div className="sx-cl1"><small>Yig'ish darajasi</small><b>{rate}%</b><span>{fmtMoney(D.collected)} / {fmtMoney(D.expected)}</span></div>
+          <div className="sx-cl2">
+            <div className="sx-stack">{[[D.paidN, '#34d399'], [D.partN, '#fbbf24'], [D.noneN, '#fb7185']].map(([v, c], i) => <u key={i} style={{ flex: v, background: c }} />)}</div>
+            <div className="sx-dots"><span><i style={{ background: '#34d399' }} />To'lagan <b>{D.paidN}</b></span><span><i style={{ background: '#fbbf24' }} />Qisman <b>{D.partN}</b></span><span><i style={{ background: '#fb7185' }} />To'lamagan <b>{D.noneN}</b></span></div>
+          </div>
+          <div className="sx-cl3"><small>Joriy qarz</small><b className={D.debt ? 'bad' : 'ok'}>{fmtMoney(D.debt)}</b></div>
+        </section>
         <div className="sx-kpis k4">{[["Davr tushumi", fmtMoney(D.tot), sxDelta(D.tot, D.prevTot)], ["O'rtacha oylik", fmtMoney(avg), null], ["Qo'shimcha to'lovlar", fmtMoney(D.extra), null], ["Kutilgan / yig'ilgan", `${fmtMoneyShort(D.expected)} / ${fmtMoneyShort(D.collected)}`, null]].map(([l, v, d]) => <div key={l} className="v2-c sx-k" style={{ '--c': '#34d399' }}><div className="sx-kh"><span>{l}</span></div><b>{v}</b><small><SxDelta d={d} /></small></div>)}</div>
         <div className="sx-row r2">
           <section className="v2-c sx-box">
@@ -5233,7 +5403,7 @@ function StatisticsPage({ stats, revenue, students, categories }) {
             <div className="sx-chipsel"><Chip id="all" l="Hammasi" n={D.rows.length} /><Chip id="debt" l="Qarzdor" n={nDebtors} /><Chip id="blk" l="Bloklangan" n={D.blockedSet.size} /><Chip id="act" l="Faol" /><Chip id="idle" l="Nofaol" n={idle} /></div></div>
           {shown.length === 0 ? <p className="sx-em" style={{ padding: '18px 0' }}>{D.rows.length ? "Mos o'quvchi topilmadi." : "Hali o'quvchilar qo'shilmagan."}</p> : (
             <div className="sx-tw"><table className="sx-t"><thead><tr>{th('name', "O'quvchi")}<th>Kurs</th>{th('prog', "O'zlashtirish")}{th('debt', 'Qarz')}{th('days', 'Oxirgi faollik')}<th>Holat</th></tr></thead>
-              <tbody>{shown.map((r) => <tr key={r.id}><td><b>{r.name}</b></td><td>{r.nc}</td><td><div className="sx-pr"><i style={{ width: Math.max(2, r.prog) + '%' }} /></div> {r.prog}% <small className="sx-mut">({r.done}/{r.poss})</small></td><td className={r.debt ? 'bad' : ''}>{r.debt ? fmtMoney(r.debt) : '—'}</td><td>{r.last ? (r.days === 0 ? 'Bugun' : r.days + ' kun oldin') : '—'}</td><td>{r.blocked ? <span className="sx-tag bad">Bloklangan</span> : r.debt ? <span className="sx-tag warn">Qarz</span> : <span className="sx-tag ok">Faol</span>}</td></tr>)}</tbody></table></div>)}
+              <tbody>{shown.map((r) => <tr key={r.id}><td><span className="sx-av" style={{ background: hdGrad(r.name) }}>{hdIni(r.name)}</span><b>{r.name}</b></td><td>{r.nc}</td><td><div className="sx-pr"><i style={{ width: Math.max(2, r.prog) + '%' }} /></div> {r.prog}% <small className="sx-mut">({r.done}/{r.poss})</small></td><td className={r.debt ? 'bad' : ''}>{r.debt ? fmtMoney(r.debt) : '—'}</td><td>{r.last ? (r.days === 0 ? 'Bugun' : r.days + ' kun oldin') : '—'}</td><td>{r.blocked ? <span className="sx-tag bad">Bloklangan</span> : r.debt ? <span className="sx-tag warn">Qarz</span> : <span className="sx-tag ok">Faol</span>}</td></tr>)}</tbody></table></div>)}
           {pages > 1 && <div className="sx-pgn"><button type="button" disabled={page === 0} onClick={() => setPg(page - 1)}>←</button><span>{page + 1} / {pages}</span><button type="button" disabled={page >= pages - 1} onClick={() => setPg(page + 1)}>→</button></div>}
         </section>
       )}
@@ -5426,50 +5596,163 @@ function PaymentsPage({ students, categories }) {
 /* =========================================================================
    RUXSATLAR (staff permissions)
    ========================================================================= */
-function PermissionsPage({ me, staff, setStaff, notify }) {
-  const roleLabel = (r) => r === 'ceo' ? 'CEO' : r === 'admin_teacher' ? 'Teacher' : 'Support';
-  const setRole = (id, role) => {
-    setStaff(staff.map((u) => u.id === id ? { ...u, role } : u));
-    notify("Ruxsat yangilandi");
-    // API: PATCH /api/admin/staff/{id}/  (role)
-  };
-  const removeUser = (id) => {
-    setStaff(staff.filter((u) => u.id !== id));
-    notify("Foydalanuvchi o'chirildi", 'danger');
-    // API: DELETE /api/admin/staff/{id}/
-  };
-  return (
-    <div className="max-w-2xl">
-      <h1 className="font-display text-3xl text-ink mb-1">Ruxsatlar</h1>
-      <p className="text-slate text-sm mb-6">Xodimlarning tizimdagi rolini va huquqlarini boshqaring.</p>
+/* =========================================================================
+   RUXSATLAR MARKAZI — konsol, matritsa, xavfsizlik tekshiruvi, tarix, bekor qilish
+   ========================================================================= */
+const riskOf = (perms) => { const w = perms.reduce((t, k) => t + (k === 'staff.manage' ? 4 : k.endsWith('.edit') ? 2 : (k === 'statistics.view' || k === 'staff.view') ? 1 : 0), 0); return w >= 8 ? ['Yuqori', '#fb7185'] : w >= 3 ? ["O'rta", '#fbbf24'] : ['Past', '#34d399']; };
+function PcRing({ v, max, c, size = 64, txt }) {
+  const r = size / 2 - 6, C = 2 * Math.PI * r;
+  return (<svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="pc-ring"><circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="currentColor" strokeOpacity=".12" strokeWidth="6" />
+    <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={c} strokeWidth="6" strokeLinecap="round" strokeDasharray={`${(C * v) / max} ${C}`} transform={`rotate(-90 ${size / 2} ${size / 2})`} style={{ transition: 'stroke-dasharray .5s' }} />
+    <text x="50%" y="53%" textAnchor="middle" dominantBaseline="middle" fontSize={size / 3.4} fontWeight="800" fill="currentColor">{txt != null ? txt : v}</text></svg>);
+}
+const auditOf = (staff, tplOf) => {
+  const o = [], add = (lvl, t, d, pen) => o.push({ lvl, t, d, pen });
+  const ceos = staff.filter((u) => u.role === 'ceo' && !u.disabled).length;
+  ceos < 2 ? add('warn', "Zaxira CEO yo'q", "Faqat bitta faol CEO bor. Hisobga kirish yo'qolsa, tizimni boshqarib bo'lmaydi.", 10) : add('ok', 'Zaxira CEO mavjud', `${ceos} ta faol CEO bor.`, 0);
+  tplOf('support').some((k) => k.endsWith('.edit') || k === 'staff.manage') ? add('bad', "Support shablonida o'zgartirish huquqi bor", "Support odatda faqat ko'rishi kerak — tahrirlash huquqlarini olib tashlang.", 20) : add('ok', "Support faqat ko'rish huquqiga ega", 'Shablon xavfsiz.', 0);
+  tplOf('admin_teacher').includes('staff.manage') ? add('warn', "Teacher shabloni xodimlarni boshqara oladi", "Barcha Teacher'lar xodim qo'sha va o'chira oladi.", 10) : add('ok', "Teacher xodimlarni boshqara olmaydi", 'Shablon xavfsiz.', 0);
+  const empty = staff.filter((u) => u.role === 'custom' && !(u.perms || []).length);
+  if (empty.length) add('bad', `${empty.length} ta Custom xodimda hech qanday huquq yo'q`, empty.map((u) => u.name).join(', '), 15);
+  const weak = staff.filter((u) => !u.disabled && String(u.password || '').length < 6);
+  weak.length ? add('warn', `${weak.length} ta xodimning paroli qisqa`, weak.map((u) => u.name).join(', ') + " — kamida 6 belgi tavsiya etiladi.", 10) : add('ok', 'Barcha parollar yetarlicha uzun', '', 0);
+  const mg = staff.filter((u) => u.role === 'custom' && (u.perms || []).includes('staff.manage'));
+  if (mg.length) add('warn', `${mg.length} ta Custom xodim jamoani boshqara oladi`, mg.map((u) => u.name).join(', '), 5);
+  return o;
+};
 
-      <div className="bg-card border border-line rounded-xl divide-y divide-line">
-        {staff.map((u) => (
-          <div key={u.id} className="flex items-center justify-between p-4">
-            <div className="flex items-center gap-3">
-              <span className="avatar w-9 h-9 bg-paper text-ink text-sm border border-line">{u.name.split(' ').map((w)=>w[0]).slice(0,2).join('').toUpperCase()}</span>
-              <div>
-                <div className="text-sm font-medium text-ink">{u.name}</div>
-                <div className="text-xs text-slate">@{u.username}</div>
+function PermissionsPage({ me, staff, setStaff, roleTpl, setRoleTpl, notify }) {
+  const tplOf = (r) => (roleTpl && roleTpl[r]) || DEFAULT_ROLE_PERMS[r];
+  const [tab, setTab] = useState('console'); const [selId, setSelId] = useState('admin_teacher'); const [q, setQ] = useState(''); const [mq, setMq] = useState('');
+  const [log, setLog] = useState(() => loadLS('permLog', [])); const [hist, setHist] = useState([]); const [askReset, setAskReset] = useState(false);
+  useEffect(() => { saveLS('permLog', log); }, [log]);
+  const addLog = (txt) => setLog((l) => [{ id: uid('l'), t: new Date().toISOString(), by: me.name, txt }, ...l].slice(0, 80));
+  const commit = (ns, nt, txt) => { setHist((h) => [...h.slice(-19), { staff, roleTpl, txt }]); if (ns) setStaff(ns); if (nt) setRoleTpl(nt); addLog(txt); };
+  const undo = () => { const l = hist[hist.length - 1]; if (!l) return; setStaff(l.staff); setRoleTpl(l.roleTpl); setHist(hist.slice(0, -1)); addLog('Bekor qilindi: ' + l.txt); notify("Oxirgi o'zgarish bekor qilindi"); };
+
+  const n = (r) => staff.filter((u) => u.role === r).length;
+  const ents = [
+    { id: 'ceo', kind: 'role', role: 'ceo', name: 'CEO', sub: n('ceo') + ' xodim · to\'liq huquq', perms: ALL_PERMS, locked: true },
+    { id: 'admin_teacher', kind: 'role', role: 'admin_teacher', name: 'Teacher', sub: n('admin_teacher') + ' xodim · shablon', perms: tplOf('admin_teacher') },
+    { id: 'support', kind: 'role', role: 'support', name: 'Support', sub: n('support') + ' xodim · shablon', perms: tplOf('support') },
+    ...staff.map((u) => ({ id: u.id, kind: 'user', user: u, role: u.role, name: u.name, sub: '@' + u.username + ' · ' + (ROLE_META[u.role] || ROLE_META.support).l, perms: permsOf(u, roleTpl), locked: u.role === 'ceo' })),
+  ];
+  const sel = ents.find((e) => e.id === selId) || ents[1];
+  const R = (e) => ROLE_META[e.role] || ROLE_META.support;
+  const editable = (e) => !e.locked && (e.kind === 'role' || e.role === 'custom');
+  const writePerms = (e, perms, txt) => {
+    if (e.kind === 'role') commit(null, { ...roleTpl, [e.id]: perms }, `${e.name} shabloni: ${txt}`);
+    else commit(staff.map((x) => (x.id === e.user.id ? { ...x, role: 'custom', perms } : x)), null, `${e.name}: ${txt}`);
+  };
+  const toggleKey = (e, k, on) => writePerms(e, permToggle(e.perms, k, on), `${PERM_LABEL[k]} ${on ? 'yoqildi' : "o'chirildi"}`);
+  const changeRole = (u, role) => commit(staff.map((x) => (x.id === u.id ? { ...x, role, perms: role === 'custom' ? permsOf(u, roleTpl).slice() : undefined } : x)), null, `${u.name}: rol ${(ROLE_META[u.role] || {}).l} → ${ROLE_META[role].l}`);
+  const preset = (e, p) => { writePerms(e, p.p.slice(), `"${p.l}" andozasi qo'llandi`); notify(`"${p.l}" andozasi qo'llandi`); };
+  const copyFrom = (e, id) => { const s = ents.find((x) => x.id === id); if (s) { writePerms(e, s.perms.slice(), `huquqlar "${s.name}" dan nusxalandi`); notify('Huquqlar nusxalandi'); } };
+
+  const audit = auditOf(staff, tplOf), score = Math.max(0, 100 - audit.reduce((t, a) => t + a.pen, 0)), issues = audit.filter((a) => a.lvl !== 'ok').length;
+  const sc = score >= 85 ? '#34d399' : score >= 60 ? '#fbbf24' : '#fb7185';
+  const customs = staff.filter((u) => u.role === 'custom');
+  const list = ents.filter((e) => !q.trim() || (e.name + ' ' + e.sub).toLowerCase().includes(q.trim().toLowerCase()));
+  const cols = ents.filter((e) => e.kind === 'role' || e.role === 'custom');
+  const mgroups = PERM_GROUPS.map((g) => ({ ...g, items: g.items.filter(([k, l, d]) => !mq.trim() || (g.label + ' ' + l + ' ' + d).toLowerCase().includes(mq.trim().toLowerCase())) })).filter((g) => g.items.length);
+  const grid = { gridTemplateColumns: `minmax(220px,1.5fr) repeat(${cols.length}, minmax(108px,1fr))`, minWidth: 220 + cols.length * 112 };
+  const exportCsv = () => sxCsv('ruxsatlar.csv', [['Huquq', ...ents.map((e) => e.name + ' (' + R(e).l + ')')], ...ALL_PERMS.map((k) => [PERM_LABEL[k], ...ents.map((e) => (e.perms.includes(k) ? 'Ha' : "Yo'q"))])]);
+  const fmtT = (t) => { const d = new Date(t); return pad(d.getDate()) + '.' + pad(d.getMonth() + 1) + '.' + d.getFullYear() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); };
+  const rk = riskOf(sel.perms), can2 = editable(sel);
+  const doReset = () => { commit(null, { ...DEFAULT_ROLE_PERMS }, 'Teacher va Support shablonlari standart holatga qaytarildi'); setAskReset(false); notify('Shablonlar standartga qaytarildi'); };
+
+  return (
+    <div className="v2 hd pc">
+      <div className="pc-hero">
+        <div className="pc-hl">
+          <span className="sx-eye"><i />Xavfsizlik markazi</span>
+          <h1>Ruxsatlar</h1>
+          <p>Kim nimani ko'rishi va o'zgartirishini boshqaring: rol shablonlari, Custom huquqlar, tayyor andozalar va xavfsizlik tekshiruvi.</p>
+          <div className="pc-ha">
+            <button type="button" className="sx-btn" disabled={!hist.length} onClick={undo}>↶ Bekor qilish{hist.length ? ` (${hist.length})` : ''}</button>
+            <button type="button" className="sx-btn" onClick={exportCsv}>↓ CSV</button>
+            <button type="button" className="sx-btn" onClick={() => setAskReset(true)}>↺ Shablonlarni tiklash</button>
+          </div>
+        </div>
+        <div className="pc-hs">
+          <div className="pc-sc"><PcRing v={score} max={100} c={sc} size={92} txt={score} /><div><small>Xavfsizlik bahosi</small><b style={{ color: sc }}>{score >= 85 ? "A'lo" : score >= 60 ? "Qoniqarli" : 'Xavfli'}</b><span>{issues ? issues + ' ta ogohlantirish' : 'Muammo topilmadi'}</span></div></div>
+          <div className="pc-mini"><div><b>{staff.length}</b><small>xodim</small></div><div><b>{customs.length}</b><small>Custom</small></div><div><b>{staff.filter((u) => u.disabled).length}</b><small>nofaol</small></div></div>
+        </div>
+      </div>
+      <div className="sx-tabs" role="tablist">{[['console', 'Konsol', Icon.user, null], ['matrix', 'Matritsa', Icon.layers, null], ['audit', 'Xavfsizlik', Icon.lock, issues || null], ['log', 'Tarix', Icon.clock, log.length || null]].map(([id, l, Ic, c]) => <button key={id} type="button" role="tab" aria-selected={tab === id} className={tab === id ? 'on' : ''} onClick={() => setTab(id)}><Ic width="16" height="16" />{l}{c != null && <em className={id === 'audit' ? 'warn' : ''}>{c}</em>}</button>)}</div>
+
+      {tab === 'console' && (
+        <div className="pc-grid">
+          <aside className="v2-c pc-list">
+            <div className="hd-search" style={{ marginBottom: 10 }}><Icon.search width="15" height="15" /><input placeholder="Rol yoki xodim…" value={q} onChange={(e) => setQ(e.target.value)} /></div>
+            {['role', 'user'].map((k) => (<React.Fragment key={k}><div className="pc-lh">{k === 'role' ? 'Rollar' : 'Xodimlar'}</div>
+              {list.filter((e) => e.kind === k).map((e) => { const r = riskOf(e.perms); return (
+                <button key={e.id} type="button" className={'pc-li' + (sel.id === e.id ? ' on' : '')} style={{ '--c': R(e).c }} onClick={() => setSelId(e.id)}>
+                  <span className="hd-av sm" style={{ background: e.kind === 'role' ? `linear-gradient(135deg,${R(e).c},color-mix(in srgb,${R(e).c} 55%,#000))` : hdGrad(e.name) }}>{e.kind === 'role' ? <Icon.lock width="15" height="15" /> : hdIni(e.name)}</span>
+                  <span className="pc-lt"><b>{e.name}{e.id === me.id && <em>siz</em>}</b><small>{e.sub}</small></span>
+                  <span className="pc-cnt" title={'Xavf: ' + r[0]}><i style={{ background: r[1] }} />{e.perms.length}</span>
+                </button>); })}</React.Fragment>))}
+          </aside>
+          <section className="pc-det">
+            <div className="v2-c pc-dh" style={{ '--c': R(sel).c }}>
+              <span className="hd-av" style={{ width: 56, height: 56, background: sel.kind === 'role' ? `linear-gradient(135deg,${R(sel).c},color-mix(in srgb,${R(sel).c} 55%,#000))` : hdGrad(sel.name) }}>{sel.kind === 'role' ? <Icon.lock width="22" height="22" /> : hdIni(sel.name)}</span>
+              <div className="pc-dt"><h2>{sel.name}</h2><span>{sel.sub}</span>
+                <div className="pc-badges"><span className="hd-role" style={{ '--c': R(sel).c }}>{R(sel).l}</span><span className="hd-role" style={{ '--c': rk[1] }}>Xavf: {rk[0]}</span>{sel.kind === 'user' && sel.user.disabled && <span className="hd-role" style={{ '--c': '#fb7185' }}>Nofaol</span>}</div></div>
+              <PcRing v={sel.perms.length} max={ALL_PERMS.length} c={R(sel).c} size={76} txt={sel.perms.length + '/' + ALL_PERMS.length} />
+            </div>
+            <div className="pc-cols">
+              <div className="v2-c pc-ed">
+                <div className="sx-bh"><h2>Huquqlar</h2>{sel.locked && <span className="pc-lock"><Icon.lock width="13" height="13" /> To'liq huquq — o'zgartirilmaydi</span>}</div>
+                {sel.kind === 'user' && !sel.locked && sel.role !== 'custom' && <div className="pc-info">Bu xodim <b>{R(sel).l}</b> shabloniga ulangan. Alohida sozlash uchun <button type="button" className="hd-link" onClick={() => changeRole(sel.user, 'custom')}>Custom qilib ajratish →</button></div>}
+                {sel.kind === 'role' && !sel.locked && <div className="pc-info">Shablonni o'zgartirsangiz, <b>{n(sel.role)} ta</b> {sel.name} xodimiga darhol ta'sir qiladi.</div>}
+                <PermList perms={sel.perms} disabled={!can2} onChange={(p) => { const ch = ALL_PERMS.filter((x) => p.includes(x) !== sel.perms.includes(x)); if (ch.length) writePerms(sel, p, ch.map((k) => PERM_LABEL[k] + (p.includes(k) ? ' yoqildi' : " o'chirildi")).join(', ')); }} />
+              </div>
+              <div className="pc-side">
+                {sel.kind === 'user' && !sel.locked && sel.id !== me.id && (
+                  <div className="v2-c pc-box"><h2>Rol</h2>
+                    <div className="pc-seg">{[['admin_teacher', 'Teacher'], ['support', 'Support'], ['custom', 'Custom']].map(([r, l]) => <button key={r} type="button" className={sel.role === r ? 'on' : ''} style={{ '--c': ROLE_META[r].c }} onClick={() => sel.role !== r && changeRole(sel.user, r)}>{l}</button>)}</div></div>)}
+                <div className="v2-c pc-box"><h2>Sidebar ko'rinishi <small>real vaqtda</small></h2>
+                  <div className="pc-nav">{NAV_PREVIEW.map(([k, l, ed]) => { const on = sel.perms.includes(k); return <div key={k} className={on ? 'on' : ''}><span>{on ? <Icon.check width="13" height="13" /> : <Icon.lock width="12" height="12" />}{l}</span>{on && ed && sel.perms.includes(ed) && <em>boshqaradi</em>}</div>; })}</div></div>
+                {can2 || (sel.kind === 'user' && !sel.locked) ? (
+                  <div className="v2-c pc-box"><h2>Tayyor andozalar <small>bir bosishda</small></h2>
+                    <div className="pc-pre">{PERM_PRESETS.map((p) => <button key={p.id} type="button" onClick={() => preset(sel, p)} title={p.d}><span>{p.e}</span><b>{p.l}</b><small>{p.d}</small></button>)}</div>
+                    <label className="pc-cp">Huquqlarni nusxalash<select value="" onChange={(e) => e.target.value && copyFrom(sel, e.target.value)}><option value="">Kimdan nusxalash…</option>{ents.filter((x) => x.id !== sel.id).map((x) => <option key={x.id} value={x.id}>{x.name} ({R(x).l})</option>)}</select></label>
+                    {sel.kind === 'user' && sel.role !== 'custom' && <p className="hd-note" style={{ marginTop: 8 }}>Andoza qo'llansa, xodim avtomatik Custom rolga o'tadi.</p>}
+                  </div>) : null}
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              {u.id === me.id ? (
-                <span className="pill">{roleLabel(u.role)} (siz)</span>
-              ) : (
-                <React.Fragment>
-                  <select value={u.role} onChange={(e) => setRole(u.id, e.target.value)}
-                    className="border border-line rounded-lg px-2 py-1.5 text-xs bg-white outline-none focus:border-gold">
-                    <option value="admin_teacher">Teacher</option>
-                    <option value="support">Support</option>
-                  </select>
-                  <button onClick={() => removeUser(u.id)} className="text-clay text-xs font-medium px-2 py-1.5 rounded-lg hover:bg-clay/10">O'chirish</button>
-                </React.Fragment>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
+          </section>
+        </div>)}
+
+      {tab === 'matrix' && (
+        <section className="v2-c sx-box rp-mx">
+          <div className="sx-bh"><h2>Huquqlar matritsasi <small>{cols.length} ustun · {ALL_PERMS.length} huquq</small></h2>
+            <div className="hd-search" style={{ maxWidth: 260, minWidth: 180 }}><Icon.search width="15" height="15" /><input placeholder="Huquq qidirish…" value={mq} onChange={(e) => setMq(e.target.value)} /></div></div>
+          <div className="pc-leg"><span><i style={{ background: '#34d399' }} />Ko'rish</span><span><i style={{ background: '#fbbf24' }} />Boshqarish (xavfliroq)</span><span><i style={{ background: '#fb7185' }} />Jamoani boshqarish</span></div>
+          <div className="rp-sc"><div className="rp-t pc-t" style={grid}>
+            <div className="rp-h rp-fc" />{cols.map((c) => (
+              <div key={c.id} className="rp-h" style={{ '--c': R(c).c }}><b>{c.name}</b><small>{c.sub}</small>
+                {!c.locked && <span><button type="button" onClick={() => writePerms(c, ALL_PERMS.filter((k) => k !== 'staff.manage'), 'barcha huquqlar berildi')}>Hammasi</button><button type="button" onClick={() => writePerms(c, [], 'barcha huquqlar olindi')}>Hech biri</button></span>}</div>))}
+            {mgroups.map((g) => (<React.Fragment key={g.id}><div className="rp-g">{g.label}</div>
+              {g.items.map(([k, l, d]) => (<React.Fragment key={k}><div className="rp-fc rp-n"><b><i className="pc-dot" style={{ background: k === 'staff.manage' ? '#fb7185' : k.endsWith('.edit') ? '#fbbf24' : '#34d399' }} />{l}</b><small>{d}</small></div>
+                {cols.map((c) => <div key={c.id} className="rp-cell">{c.locked ? <span className="rp-ck">✓</span> : <Switch on={c.perms.includes(k)} onToggle={(v) => toggleKey(c, k, v)} />}</div>)}</React.Fragment>))}</React.Fragment>))}
+            {!mgroups.length && <div className="rp-g" style={{ gridColumn: '1/-1' }}>Hech narsa topilmadi</div>}
+          </div></div>
+        </section>)}
+
+      {tab === 'audit' && (
+        <div className="pc-au">
+          <div className="v2-c pc-ascore"><PcRing v={score} max={100} c={sc} size={120} txt={score} /><div><h2>Xavfsizlik bahosi: <span style={{ color: sc }}>{score}/100</span></h2><p>{issues ? `${issues} ta muammoni bartaraf etsangiz, baho oshadi.` : "Ruxsatlar tizimi yaxshi sozlangan."}</p></div></div>
+          {audit.sort((a, b) => b.pen - a.pen).map((a, i) => <div key={i} className={'v2-c pc-ai ' + a.lvl}><span>{a.lvl === 'ok' ? '✓' : a.lvl === 'bad' ? '!' : '▲'}</span><div><b>{a.t}</b>{a.d && <p>{a.d}</p>}</div>{a.pen > 0 && <em>−{a.pen}</em>}</div>)}
+        </div>)}
+
+      {tab === 'log' && (
+        <section className="v2-c sx-box">
+          <div className="sx-bh"><h2>O'zgarishlar tarixi <small>{log.length} ta yozuv</small></h2>{log.length > 0 && <button type="button" className="sx-btn" onClick={() => setLog([])}>Tozalash</button>}</div>
+          {log.length === 0 ? <p className="sx-em">Hozircha o'zgarishlar yo'q. Har bir ruxsat o'zgarishi shu yerda saqlanadi.</p> : <div className="pc-log">{log.map((l) => <div key={l.id}><i /><div><b>{l.txt}</b><small>{l.by} · {fmtT(l.t)}</small></div></div>)}</div>}
+        </section>)}
+
+      {askReset && <Modal title="Shablonlarni tiklash" onClose={() => setAskReset(false)}><div className="hd-form"><p style={{ lineHeight: 1.6 }}>Teacher va Support shablonlari boshlang'ich holatga qaytariladi. Custom xodimlarga ta'sir qilmaydi. Keyin "Bekor qilish" bilan qaytarish mumkin.</p><div className="hd-fa"><button type="button" className="sx-btn" onClick={() => setAskReset(false)}>Bekor qilish</button><button type="button" className="hd-add" onClick={doReset}>Tiklash</button></div></div></Modal>}
     </div>
   );
 }
@@ -7783,12 +8066,175 @@ function StudentEditor({ student, categories, canEdit, onBack, onSave, staff, in
   );
 }
 
+/* =========================================================================
+   RUXSATLAR TIZIMI — modul bo'yicha huquqlar. CEO: to'liq. Teacher/Support: shablon (CEO tahrirlaydi).
+   Custom: har bir xodimga alohida belgilanadi.
+   ========================================================================= */
+const PERM_GROUPS = [
+  { id: 'dashboard', label: 'Dashboard', items: [['dashboard.view', "Ko'rish", 'Bosh sahifa va umumiy ko\'rsatkichlar']] },
+  { id: 'students', label: "O'quvchilar", items: [['students.view', "Ko'rish", "O'quvchilar ro'yxati va profillari"], ['students.edit', 'Boshqarish', "Qo'shish, tahrirlash, to'lov va kirish sozlamalari"]] },
+  { id: 'courses', label: 'Kurslar', items: [['courses.view', "Ko'rish", "Kurslar va darslarni ko'rish"], ['courses.edit', 'Boshqarish', "Kurs, bo'lim, dars va narxlarni o'zgartirish"]] },
+  { id: 'statistics', label: 'Statistika va moliya', items: [['statistics.view', "Ko'rish", 'Tushum, qarz va tahlillar, CSV eksport']] },
+  { id: 'payments', label: "To'lovlar", items: [['payments.view', "Ko'rish", "Muddati o'tgan to'lovlar"]] },
+  { id: 'blocked', label: 'Bloklanganlar', items: [['blocked.view', "Ko'rish", "Bloklangan o'quvchilar va sabablari"]] },
+  { id: 'staff', label: 'Xodimlar', items: [['staff.view', "Ko'rish", "Jamoa ro'yxati"], ['staff.manage', 'Boshqarish', "Xodim qo'shish, tahrirlash, o'chirish (CEO'ni tahrirlab bo'lmaydi)"]] },
+];
+const ALL_PERMS = PERM_GROUPS.flatMap((g) => g.items.map((i) => i[0]));
+const DEFAULT_ROLE_PERMS = {
+  admin_teacher: ALL_PERMS.filter((k) => k !== 'staff.manage'),
+  support: ['dashboard.view', 'students.view', 'courses.view', 'statistics.view', 'payments.view', 'blocked.view'],
+};
+const permsOf = (u, tpl) => (!u ? [] : u.role === 'ceo' ? ALL_PERMS : u.role === 'custom' ? (u.perms || []) : ((tpl && tpl[u.role]) || DEFAULT_ROLE_PERMS[u.role] || []));
+const permToggle = (list, key, on) => {
+  const s = new Set(list), mod = key.split('.')[0];
+  if (on) { s.add(key); if (key.endsWith('.edit') || key === 'staff.manage') s.add(mod + '.view'); }
+  else { s.delete(key); if (key.endsWith('.view')) { s.delete(mod + '.edit'); s.delete(mod + '.manage'); } }
+  return ALL_PERMS.filter((k) => s.has(k));
+};
+const ROLE_META = { ceo: { l: 'CEO', c: '#fbbf24' }, admin_teacher: { l: 'Teacher', c: '#38bdf8' }, support: { l: 'Support', c: '#a78bfa' }, custom: { l: 'Custom', c: '#f472b6' } };
+
+const PERM_LABEL = Object.fromEntries(PERM_GROUPS.flatMap((g) => g.items.map(([k, l]) => [k, g.label + ' · ' + l])));
+const PERM_PRESETS = [
+  { id: 'kassir', e: '💳', l: 'Kassir', d: "To'lovlar va qarzdorlar bilan ishlaydi", p: ['dashboard.view', 'students.view', 'payments.view', 'blocked.view'] },
+  { id: 'analitik', e: '📊', l: 'Analitik', d: "Statistika va moliyani kuzatadi", p: ['dashboard.view', 'students.view', 'courses.view', 'statistics.view', 'payments.view'] },
+  { id: 'kontent', e: '🎬', l: 'Kontent menejer', d: "Kurs va darslarni boshqaradi", p: ['dashboard.view', 'courses.view', 'courses.edit', 'students.view'] },
+  { id: 'moder', e: '🛡️', l: 'Moderator', d: "O'quvchilar va bloklarni boshqaradi", p: ['dashboard.view', 'students.view', 'students.edit', 'blocked.view', 'payments.view'] },
+  { id: 'view', e: '👁️', l: "Faqat ko'rish", d: "Hech narsani o'zgartira olmaydi", p: ALL_PERMS.filter((k) => k.endsWith('.view') && k !== 'staff.view') },
+];
+const NAV_PREVIEW = [['dashboard.view', 'Dashboard', 'dashboard.edit'], ['students.view', "O'quvchilar", 'students.edit'], ['courses.view', 'Kurslar', 'courses.edit'], ['statistics.view', 'Statistika'], ['payments.view', "To'lovlar"], ['blocked.view', 'Bloklanganlar'], ['staff.view', 'Xodimlar', 'staff.manage']];
+
+function PermList({ perms, onChange, disabled }) {
+  return (
+    <div className="pm">{PERM_GROUPS.map((g) => (
+      <div key={g.id} className="pm-g">
+        <div className="pm-gh">{g.label}<small>{perms.filter((k) => k.startsWith(g.id + '.')).length}/{g.items.length}</small></div>
+        {g.items.map(([k, l, d]) => (
+          <div key={k} className="pm-r"><div><b>{l}</b><small>{d}</small></div><Switch on={perms.includes(k)} disabled={disabled} onToggle={(v) => onChange(permToggle(perms, k, v))} /></div>
+        ))}
+      </div>))}
+    </div>
+  );
+}
+
+/* =========================================================================
+   XODIMLAR — jamoa, rollar va huquqlarni boshqarish
+   ========================================================================= */
+const hdGrad = (s) => { let h = 0; for (const ch of String(s || '?')) h = (h * 31 + ch.charCodeAt(0)) % 360; return `linear-gradient(135deg,hsl(${h} 70% 55%),hsl(${(h + 45) % 360} 72% 38%))`; };
+const hdIni = (n) => String(n || '').split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase() || '?';
+const ROLE_CARDS = [['ceo', 'CEO', "To'liq huquq — barcha bo'lim va sozlamalar"], ['admin_teacher', 'Teacher', 'Alohida shablon huquqlari (Ruxsatlar bo\'limida sozlanadi)'], ['support', 'Support', "Asosan ko'rish huquqi (shablon)"], ['custom', 'Custom', "Huquqlarni o'zingiz bittalab belgilaysiz"]];
+
+function StaffPage({ me, staff, setStaff, roleTpl, notify, onGoPerms }) {
+  const isCeo = me.role === 'ceo';
+  const canManage = isCeo || permsOf(me, roleTpl).includes('staff.manage');
+  const canTouch = (u) => isCeo || u.role !== 'ceo';
+  const [q, setQ] = useState(''); const [rf, setRf] = useState('all'); const [view, setView] = useState('grid');
+  const [form, setForm] = useState(null); const [del, setDel] = useState(null); const [showPw, setShowPw] = useState({}); const [fpw, setFpw] = useState(false);
+  const cnt = (r) => staff.filter((u) => u.role === r).length;
+  const list = staff.filter((u) => (rf === 'all' || (rf === 'off' ? u.disabled : u.role === rf)) && (!q.trim() || [u.name, u.username, u.phone, u.position].join(' ').toLowerCase().includes(q.trim().toLowerCase())));
+  const lastCeo = (u) => u.role === 'ceo' && cnt('ceo') <= 1;
+  const openNew = () => { setFpw(false); setForm({ isNew: true, name: '', username: '', password: '', role: 'admin_teacher', phone: '', position: '', perms: null }); };
+  const pickRole = (r) => setForm((f) => ({ ...f, role: r, perms: r === 'custom' ? (f.perms || permsOf({ role: f.role, perms: f.perms }, roleTpl).slice()) : f.perms }));
+  const save = () => {
+    const f = form, name = f.name.trim(), un = f.username.trim();
+    if (!name || !un || (f.isNew && !f.password.trim())) { notify("Ism, login va parolni to'ldiring", 'danger'); return; }
+    if (staff.some((u) => u.username === un && u.id !== f.id)) { notify('Bu login band — boshqasini tanlang', 'danger'); return; }
+    if (f.role === 'custom' && !(f.perms || []).length) { notify('Custom rol uchun kamida bitta huquq bering', 'danger'); return; }
+    const base = { name, username: un, role: f.role, phone: f.phone.trim(), position: f.position.trim(), perms: f.role === 'custom' ? (f.perms || []) : undefined };
+    if (f.isNew) setStaff([...staff, { id: uid('u'), password: f.password.trim(), createdAt: todayISO(), disabled: false, ...base }]);
+    else setStaff(staff.map((u) => (u.id === f.id ? { ...u, ...base, password: f.password.trim() || u.password } : u)));
+    notify(f.isNew ? "Yangi xodim qo'shildi" : "Xodim va huquqlari saqlandi"); setForm(null);
+    // API: POST/PATCH /api/admin/staff/  (role, perms)
+  };
+  const toggle = (u) => { setStaff(staff.map((x) => (x.id === u.id ? { ...x, disabled: !x.disabled } : x))); notify(u.disabled ? `${u.name} faollashtirildi` : `${u.name} faolsizlantirildi (tizimga kira olmaydi)`); };
+  const remove = () => { setStaff(staff.filter((u) => u.id !== del.id)); notify("Xodim o'chirildi", 'danger'); setDel(null); };
+  const exportCsv = () => sxCsv('xodimlar.csv', [['Ism', 'Login', 'Rol', 'Huquqlar', 'Telefon', 'Lavozim', "Qo'shilgan", 'Holat'], ...staff.map((u) => [u.name, u.username, (ROLE_META[u.role] || {}).l, permsOf(u, roleTpl).length + '/' + ALL_PERMS.length, u.phone || '', u.position || '', u.createdAt || '', u.disabled ? 'Nofaol' : 'Faol'])]);
+  const chip = (id, l, n, c) => <button key={id} type="button" className={'hd-chip' + (rf === id ? ' on' : '')} style={{ '--c': c || '#34d399' }} onClick={() => setRf(id)}><i />{l}<b>{n}</b></button>;
+  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+  const kp = [['Jami xodim', staff.length, '#34d399'], ['Faol', staff.filter((u) => !u.disabled).length, '#38bdf8'], ['Custom huquqli', cnt('custom'), '#f472b6'], ['Nofaol', staff.filter((u) => u.disabled).length, '#fb7185']];
+  const formPerms = form ? (form.role === 'custom' ? (form.perms || []) : permsOf({ role: form.role }, roleTpl)) : [];
+
+  return (
+    <div className="v2 hd">
+      <div className="hd-head">
+        <div><span className="sx-eye"><i />Jamoa va xavfsizlik</span><h1>Xodimlar</h1><p>Rollar, huquqlar va tizimga kirish nazorati</p></div>
+        <div className="hd-hact">
+          <button type="button" className="sx-btn" onClick={exportCsv}>↓ CSV</button>
+          {isCeo && <button type="button" className="sx-btn" onClick={onGoPerms}><Icon.lock width="14" height="14" /> Ruxsatlar matritsasi</button>}
+          {canManage && <button type="button" className="hd-add" onClick={openNew}><Icon.plus width="16" height="16" />Yangi xodim</button>}
+        </div>
+      </div>
+      <div className="hd-kpis">{kp.map(([l, v, c]) => <div key={l} className="v2-c hd-k" style={{ '--c': c }}><small>{l}</small><b>{v}</b></div>)}</div>
+      <div className="hd-bar">
+        <div className="hd-search"><Icon.search width="15" height="15" /><input placeholder="Ism, login, telefon yoki lavozim…" value={q} onChange={(e) => setQ(e.target.value)} /></div>
+        <div className="hd-chips">{chip('all', 'Hammasi', staff.length)}{chip('ceo', 'CEO', cnt('ceo'), '#fbbf24')}{chip('admin_teacher', 'Teacher', cnt('admin_teacher'), '#38bdf8')}{chip('support', 'Support', cnt('support'), '#a78bfa')}{chip('custom', 'Custom', cnt('custom'), '#f472b6')}{chip('off', 'Nofaol', staff.filter((u) => u.disabled).length, '#fb7185')}</div>
+        <div className="sx-seg s"><button type="button" className={view === 'grid' ? 'on' : ''} onClick={() => setView('grid')}>Kartalar</button><button type="button" className={view === 'list' ? 'on' : ''} onClick={() => setView('list')}>Ro'yxat</button></div>
+      </div>
+      {list.length === 0 ? <p className="v2-c sx-box sx-em">Mos xodim topilmadi.</p> : (
+        <div className={'hd-grid' + (view === 'list' ? ' list' : '')}>
+          {list.map((u) => { const R = ROLE_META[u.role] || ROLE_META.support, self = u.id === me.id, ps = permsOf(u, roleTpl), mods = PERM_GROUPS.filter((g) => ps.some((k) => k.startsWith(g.id + '.'))); return (
+            <div key={u.id} className={'v2-c hd-card' + (u.disabled ? ' off' : '')} style={{ '--c': R.c }}>
+              <div className="hd-top">
+                <span className="hd-av" style={{ background: hdGrad(u.name) }}>{hdIni(u.name)}</span>
+                <div className="hd-nm"><b>{u.name}{self && <em>siz</em>}</b><small>@{u.username}</small></div>
+                <span className="hd-role">{R.l}</span>
+              </div>
+              <div className="hd-info">
+                <span><Icon.phone />{u.phone || '—'}</span>
+                <span><Icon.cap width="14" height="14" />{u.position || 'Lavozim kiritilmagan'}</span>
+              </div>
+              <div className="hd-perm">
+                <div className="hd-ph"><span>Huquqlar</span><b>{ps.length}/{ALL_PERMS.length}</b></div>
+                <div className="hd-pb"><u style={{ width: (ps.length / ALL_PERMS.length) * 100 + '%' }} /></div>
+                <div className="hd-mods">{mods.slice(0, 5).map((g) => <span key={g.id}>{g.label}</span>)}{mods.length > 5 && <span>+{mods.length - 5}</span>}</div>
+              </div>
+              {isCeo && <div className="hd-pw"><Icon.key width="14" height="14" /><code>{showPw[u.id] ? u.password : '••••••••'}</code>
+                <button type="button" onClick={() => setShowPw({ ...showPw, [u.id]: !showPw[u.id] })} aria-label="Parolni ko'rsatish">{showPw[u.id] ? <Icon.eyeOff width="14" height="14" /> : <Icon.eye width="14" height="14" />}</button></div>}
+              <div className="hd-act">
+                <label className="hd-sw"><Switch on={!u.disabled} onToggle={() => toggle(u)} disabled={!canManage || self || !canTouch(u)} /><span>{u.disabled ? 'Nofaol' : 'Faol'}</span></label>
+                {canManage && canTouch(u) && <div><button type="button" title="Huquqlar va tahrirlash" onClick={() => { setFpw(false); setForm({ ...u, password: '', perms: u.perms || null }); }}><Icon.edit /> <span>Huquqlar</span></button>
+                  {!self && !lastCeo(u) && <button type="button" title="O'chirish" className="dn" onClick={() => setDel(u)}><Icon.trash /></button>}</div>}
+              </div>
+            </div>); })}
+        </div>)}
+      {!canManage && <p className="sx-em" style={{ marginTop: 14 }}>Xodimlarni boshqarish uchun sizga "Xodimlarni boshqarish" huquqi kerak.</p>}
+
+      {form && (
+        <Modal title={form.isNew ? "Yangi xodim qo'shish" : 'Xodim va huquqlari'} size="lg" onClose={() => setForm(null)}>
+          <div className="hd-form hd-wide">
+            <div className="hd-2"><label>To'liq ism<input value={form.name} onChange={set('name')} placeholder="Aziz Karimov" autoFocus /></label>
+              <label>Lavozim<input value={form.position || ''} onChange={set('position')} placeholder="Matematika o'qituvchisi" /></label></div>
+            <div className="hd-2"><label>Login<input value={form.username} onChange={set('username')} placeholder="aziz" /></label>
+              <label>{form.isNew ? 'Parol' : 'Yangi parol'}<span className="hd-pwi"><input type={fpw ? 'text' : 'password'} value={form.password} onChange={set('password')} placeholder={form.isNew ? '••••••' : "O'zgartirmaslik uchun bo'sh"} /><button type="button" onClick={() => setFpw(!fpw)}>{fpw ? <Icon.eyeOff width="15" height="15" /> : <Icon.eye width="15" height="15" />}</button></span></label></div>
+            <label>Telefon<input value={form.phone || ''} onChange={set('phone')} placeholder="+998 90 123 45 67" /></label>
+            <div className="hd-sec">Rol</div>
+            <div className="hd-roles">{ROLE_CARDS.filter(([r]) => r !== 'ceo' || isCeo).map(([r, l, d]) => { const lock = !form.isNew && (form.id === me.id || lastCeo(form)); return (
+              <button key={r} type="button" disabled={lock && form.role !== r} className={'hd-rc' + (form.role === r ? ' on' : '')} style={{ '--c': ROLE_META[r].c }} onClick={() => pickRole(r)}><b>{l}</b><small>{d}</small></button>); })}</div>
+            <div className="hd-sec">Huquqlar <small>{formPerms.length}/{ALL_PERMS.length}</small></div>
+            {form.role === 'custom' && <div className="hd-qa">
+              <button type="button" className="sx-btn" onClick={() => setForm({ ...form, perms: ALL_PERMS.filter((k) => k !== 'staff.manage') })}>Hammasi</button>
+              <button type="button" className="sx-btn" onClick={() => setForm({ ...form, perms: ALL_PERMS.filter((k) => k.endsWith('.view') && k !== 'staff.view') })}>Faqat ko'rish</button>
+              <button type="button" className="sx-btn" onClick={() => setForm({ ...form, perms: permsOf({ role: 'admin_teacher' }, roleTpl).slice() })}>Teacher'dan nusxa</button>
+              <button type="button" className="sx-btn" onClick={() => setForm({ ...form, perms: [] })}>Tozalash</button></div>}
+            {form.role !== 'custom' && <p className="hd-note">{form.role === 'ceo' ? "CEO barcha huquqlarga ega — o'zgartirib bo'lmaydi." : "Bu rol umumiy shablondan foydalanadi: shablonni o'zgartirsangiz, shu roldagi barcha xodimlarga ta'sir qiladi."}{form.role !== 'ceo' && isCeo && <> <button type="button" className="hd-link" onClick={() => { setForm(null); onGoPerms(); }}>Shablonni sozlash →</button></>}</p>}
+            <PermList perms={formPerms} disabled={form.role !== 'custom'} onChange={(p) => setForm({ ...form, perms: p })} />
+            <div className="hd-fa"><button type="button" className="sx-btn" onClick={() => setForm(null)}>Bekor qilish</button><button type="button" className="hd-add" onClick={save}>{form.isNew ? "Qo'shish" : 'Saqlash'}</button></div>
+          </div>
+        </Modal>)}
+      {del && (
+        <Modal title="Xodimni o'chirish" onClose={() => setDel(null)}>
+          <div className="hd-form"><p style={{ lineHeight: 1.6 }}><b>{del.name}</b> (@{del.username}) tizimdan butunlay o'chiriladi. Bu amalni qaytarib bo'lmaydi.</p>
+            <div className="hd-fa"><button type="button" className="sx-btn" onClick={() => setDel(null)}>Bekor qilish</button><button type="button" className="hd-add dn" onClick={remove}>Ha, o'chirish</button></div></div>
+        </Modal>)}
+    </div>
+  );
+}
+
 function StaffProfile({ me, staff, setStaff, notify, onLogout }) {
   const [form, setForm] = useState({ ...me });
   const [pw, setPw] = useState({ cur: '', next: '', confirm: '' });
   const [addingUser, setAddingUser] = useState(false);
   const [newUser, setNewUser] = useState({ name: '', username: '', password: '', role: 'admin_teacher' });
-  const roleLabel = (r) => r === 'ceo' ? 'CEO' : r === 'admin_teacher' ? 'Teacher / Admin' : 'Support';
+  const roleLabel = (r) => (ROLE_META[r] || ROLE_META.support).l;
   const initials = (n) => n.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 
   const saveProfile = () => {
@@ -9243,6 +9689,7 @@ function App() {
   const [categories, setCategories] = useState(() => loadLS('categories', null) || seedCategories());
   const [staff, setStaff] = useState(() => loadLS('staff', null) || seedStaff());
   const [students, setStudents] = useState(() => loadLS('students', null) || seedStudents());
+  const [roleTpl, setRoleTpl] = useState(() => loadLS('roleTpl', null) || { ...DEFAULT_ROLE_PERMS });
   const [session, setSession] = useState(() => loadLS('session', null)); // { type: 'staff'|'student', id }
   const [toasts, setToasts] = useState([]);
 
@@ -9251,6 +9698,7 @@ function App() {
   };
   useEffect(() => { guardedSaveLS('categories', categories, 'Kurslar'); }, [categories]);
   useEffect(() => { guardedSaveLS('staff', staff, 'Xodimlar'); }, [staff]);
+  useEffect(() => { saveLS('roleTpl', roleTpl); }, [roleTpl]);
   useEffect(() => { guardedSaveLS('students', students, "O'quvchilar"); }, [students]);
   useEffect(() => { saveLS('session', session); }, [session]);
 
@@ -9263,7 +9711,7 @@ function App() {
     return false;
   };
   const loginStaff = (username, password) => {
-    const found = staff.find((s) => s.username === username && s.password === password);
+    const found = staff.find((s) => s.username === username && s.password === password && !s.disabled);
     if (found) { setSession({ type: 'staff', id: found.id }); return true; }
     return false;
   };
@@ -9272,10 +9720,10 @@ function App() {
 
   if (session.type === 'staff') {
     const me = staff.find((s) => s.id === session.id);
-    if (!me) return <LoginScreen onStudentLogin={loginStudent} onStaffLogin={loginStaff} />;
+    if (!me || me.disabled) return <LoginScreen onStudentLogin={loginStudent} onStaffLogin={loginStaff} />;
     return (
       <React.Fragment>
-        <StaffApp me={me} staff={staff} setStaff={setStaff} categories={categories} setCategories={setCategories}
+        <StaffApp me={me} staff={staff} setStaff={setStaff} roleTpl={roleTpl} setRoleTpl={setRoleTpl} categories={categories} setCategories={setCategories}
           students={students} setStudents={setStudents} onLogout={() => setSession(null)} notify={notify} />
         <ToastStack toasts={toasts} onDismiss={dismissToast} />
       </React.Fragment>
