@@ -3697,6 +3697,81 @@ input, select, textarea { font-size: max(16px, 1em); } /* iOS fokusda avtomatik 
   }, { passive: false });
 })();
 </script>
+<style id="edu-calm-v7">
+/* ===== v7: tinchroq ko'rinish — kamroq gradient, kursor ortidan yuradigan rangsiz ===== */
+
+/* 1) Kursor ortidan yuradigan rangli yorug'lik butunlay o'chirilgan */
+html body .nx-hero::before,
+html body .nx-card::before,
+html body .nx-tile::before,
+html body .v2-c::before,
+html body .course-card::after{ display:none !important; content:none !important; background:none !important; }
+
+/* 2) Umumiy fon: bitta juda yengil yashil tus (binafsha/to'q sariq dog'lar va animatsiya olib tashlandi) */
+html body::before{ background:radial-gradient(760px 420px at 8% -10%, rgba(52,211,153,.07), transparent 70%) !important; animation:none !important; }
+html:not(.theme-dark) body::before{ opacity:.5; }
+html:not(.theme-dark), html:not(.theme-dark) body{ background:#eaf0ec !important; }
+.nx-aur{ display:none !important; }
+.nx-hero::after{ opacity:.18 !important; }
+
+/* 3) Katta bloklar (hero, KPI, panellar) — tekis fon */
+html body .nx-hero,
+html body .sx-hero,
+html body .pc-hero{ background:color-mix(in srgb,var(--dot) 88%,transparent) !important; }
+html body .v2-hero,
+html.theme-dark body .v2-hero{ background:var(--glass) !important; background-image:none !important; }
+html body .sx-k{ background:var(--glass) !important; }
+html body .sx-k::after{ opacity:.3; }
+html body .nx-kpi::after{ opacity:.12; }
+html body .nx-kpi:hover::after{ opacity:.2; transform:none; }
+html body .nx-id,
+html body .nx-ascore,
+html body .nx-keybox,
+html body .nx-dw-h,
+html body .nx-ticket,
+html body .nx-mx-h{ background:var(--glass) !important; }
+html body .nx-ai{ background:var(--glass) !important; }
+html body .nx-card::after{ background:var(--c); opacity:.5; left:22px; right:22px; }
+
+/* 4) Matn va tugmalardagi gradientlar -> tekis rang */
+.v2 h1 em, .nx-hero h1 em{ background:none !important; -webkit-background-clip:border-box !important; background-clip:border-box !important; color:var(--em) !important; -webkit-text-fill-color:var(--em) !important; }
+.v2-big{ background:none !important; -webkit-background-clip:border-box !important; background-clip:border-box !important; color:var(--ink) !important; -webkit-text-fill-color:var(--ink) !important; }
+html body .nx-btn.pri,
+html body .nx-btn.pri:hover:not(:disabled){ background:#34d399 !important; box-shadow:none !important; }
+html body .nx-btn.pri:hover:not(:disabled){ background:#4be0a7 !important; }
+html body .bg-gold, html body button.bg-gold{ background-image:none !important; background-color:#34d399 !important; }
+html body .nx-seg>i,
+html body .nx-n{ background:var(--em) !important; }
+html body .nx-tabs-i{ background:color-mix(in srgb,var(--em) 20%,transparent) !important; box-shadow:none !important; }
+html body .nx-bar u,
+html body .sx-kp u{ background:var(--c) !important; }
+html body .sx-kh i{ background:var(--c) !important; box-shadow:none !important; }
+html body .nx-tl::before{ background:var(--em); opacity:.25; }
+
+/* 5) Qidiruv inputi ("Rol yoki xodim…") — ichidagi qorong'i to'rtburchak va ikkinchi halqa yo'qotildi */
+html body .nx-search,
+html body .nx-search.sm{ backdrop-filter:none !important; -webkit-backdrop-filter:none !important; background:var(--glass); }
+html body .nx-search input,
+html body .nx-search input:hover,
+html body .nx-search input:focus,
+html body .nx-search input:active{
+  background:transparent !important; background-color:transparent !important; background-image:none !important;
+  border:0 !important; border-radius:0 !important; outline:0 !important; box-shadow:none !important;
+  -webkit-appearance:none; appearance:none; margin:0; padding:0 !important; height:100%; width:100%;
+  color:var(--ink); caret-color:var(--em); font:600 14px Manrope,sans-serif !important;
+}
+html body .nx-search input::placeholder{ color:var(--mut); opacity:.9; }
+html body .nx-search input::-webkit-search-cancel-button,
+html body .nx-search input::-webkit-search-decoration{ -webkit-appearance:none; display:none; }
+html body .nx-search input:-webkit-autofill,
+html body .nx-search input:-webkit-autofill:focus{ -webkit-box-shadow:0 0 0 100px transparent inset !important; -webkit-text-fill-color:var(--ink) !important; transition:background-color 99999s; }
+
+/* 6) Andoza (preset) ikonkalari */
+.nx-pre span{ display:inline-flex; width:34px; height:34px; align-items:center; justify-content:center; border-radius:11px; color:var(--em); background:color-mix(in srgb,var(--em) 13%,transparent); font-size:0; margin-bottom:2px; }
+.nx-pre span svg{ width:18px; height:18px; }
+.nx-empty span{ display:inline-flex; color:var(--mut); font-size:0; }
+</style>
+
 </head>
 <body>
 <div id="root"></div>
@@ -4817,7 +4892,7 @@ function DashV2({ me, canEdit, stats, revenue, students, categories, overdueStud
 
         <section className="v2-c v2-w3">
           <div className="v2-ch"><div className="v2-ct">To'lovi o'tganlar</div>{overdueStudents.length > 0 && <span className="v2-cs">Jami: {overdueStudents.length} ta</span>}</div>
-          {overdueStudents.length === 0 && <p className="v2-cs">Hozircha muddati o'tgan to'lovlar yo'q 🎉</p>}
+          {overdueStudents.length === 0 && <p className="v2-cs">Hozircha muddati o'tgan to'lovlar yo'q</p>}
           {overdueShown.map((s) => (
             <div key={s.id} className="v2-it"><div className="v2-av">{ini(s.name)}</div><div><b>{s.name}</b><small>To'lov muddati o'tgan</small></div></div>
           ))}
@@ -5316,7 +5391,7 @@ function StaffApp({ me, staff, setStaff, roleTpl, setRoleTpl, categories, setCat
     can('payments.view') && { id: 'payments', label: "To'lovlar", icon: Icon.warn },
     can('blocked.view') && { id: 'blocked', label: 'Bloklanganlar', icon: Icon.lock, badge: blockedStudentCount },
     can('staff.view') && { id: 'staff', label: 'Xodimlar', icon: Icon.user },
-    me.role === 'ceo' && { id: 'permissions', label: 'Ruxsatlar', icon: Icon.lock },
+    isTopRole(me.role) && { id: 'permissions', label: 'Ruxsatlar', icon: Icon.lock },
     { id: 'profile', label: 'Profil', icon: Icon.user, dividerBefore: true },
   ].filter(Boolean);
   const curPage = nav.some((n) => n.id === page) ? page : nav[0].id;
@@ -5376,7 +5451,7 @@ function StaffApp({ me, staff, setStaff, roleTpl, setRoleTpl, categories, setCat
             onOpenStudent={(id) => { setPage('students'); setEditingStudentTab('info'); setEditingStudentId(id); }} />
         )}
 
-        {curPage === 'permissions' && me.role === 'ceo' && (
+        {curPage === 'permissions' && isTopRole(me.role) && (
           <PermissionsPage me={me} staff={staff} setStaff={setStaff} roleTpl={roleTpl} setRoleTpl={setRoleTpl} notify={notify} />
         )}
 
@@ -5585,7 +5660,7 @@ function StatisticsPage({ stats, revenue, students, categories }) {
             <div className="sx-li"><span>Bloklangan o'quvchilar</span><b className={D.blockedSet.size ? 'bad' : 'ok'}>{D.blockedSet.size}</b></div>
             <div className="sx-li"><span>14 kundan beri nofaol</span><b className={idle ? 'bad' : 'ok'}>{idle}</b></div>
             <div className="sx-chips">{Object.entries(RS).filter(([k]) => D.reasons[k]).map(([k, l]) => <span key={k}>{l} <b>{D.reasons[k]}</b></span>)}</div>
-            {!nDebtors && !D.blockedSet.size && !idle && <p className="sx-em">Hammasi joyida 🎉</p>}
+            {!nDebtors && !D.blockedSet.size && !idle && <p className="sx-em">Hammasi joyida</p>}
           </section>
         </div>
         <div className="sx-row r2">
@@ -5613,7 +5688,7 @@ function StatisticsPage({ stats, revenue, students, categories }) {
             <h2>Kurslar bo'yicha tushum <small>{range} oy</small></h2>
             <SxHB rows={[...D.courses.filter((c) => c.rev > 0).map((c) => ({ l: c.name, v: c.rev, t: fmtMoney(c.rev) })), ...(D.other > 0 ? [{ l: "Boshqa (umumiy to'lovlar)", v: D.other, t: fmtMoney(D.other), c: '#94a3b8' }] : [])].sort((a, b) => b.v - a.v)} empty="Tanlangan davrda tushum yo'q." />
             <h2 style={{ marginTop: 22 }}>Qarzdorlar <small>{nDebtors} ta · {fmtMoney(D.debt)}</small></h2>
-            {debtors.length ? (allDebt ? debtors : debtors.slice(0, 6)).map((b) => <div key={b.s.id} className="sx-li"><span>{b.s.name}</span><b className="bad">{fmtMoney(b.debt)}</b></div>) : <p className="sx-em">Qarzdor yo'q 🎉</p>}
+            {debtors.length ? (allDebt ? debtors : debtors.slice(0, 6)).map((b) => <div key={b.s.id} className="sx-li"><span>{b.s.name}</span><b className="bad">{fmtMoney(b.debt)}</b></div>) : <p className="sx-em">Qarzdor yo'q</p>}
             {debtors.length > 6 && <button type="button" className="sx-btn" style={{ marginTop: 10 }} onClick={() => setAllDebt(!allDebt)}>{allDebt ? "Kamroq ko'rsatish" : `Hammasini ko'rsatish (${debtors.length})`}</button>}
           </section>
         </div>
@@ -5857,6 +5932,7 @@ const nxSetLevel = (perms, g, lvl) => {
   return ek ? permToggle(p, ek, true) : p;
 };
 const nxSpot = (e) => {
+  return; // kursor ortidan yuradigan rang o'chirilgan
   const r = e.currentTarget.getBoundingClientRect();
   e.currentTarget.style.setProperty('--mx', (e.clientX - r.left) + 'px');
   e.currentTarget.style.setProperty('--my', (e.clientY - r.top) + 'px');
@@ -5968,7 +6044,7 @@ function PcRing({ v, max, c, size = 64, txt }) {
 }
 const auditOf = (staff, tplOf) => {
   const o = [], add = (lvl, t, d, pen) => o.push({ lvl, t, d, pen });
-  const ceos = staff.filter((u) => u.role === 'ceo' && !u.disabled).length;
+  const ceos = staff.filter((u) => isTopRole(u.role) && !u.disabled).length;
   ceos < 2 ? add('warn', "Zaxira CEO yo'q", "Faqat bitta faol CEO bor. Hisobga kirish yo'qolsa, tizimni boshqarib bo'lmaydi.", 10) : add('ok', 'Zaxira CEO mavjud', `${ceos} ta faol CEO bor.`, 0);
   tplOf('support').some((k) => k.endsWith('.edit') || k === 'staff.manage') ? add('bad', "Support shablonida o'zgartirish huquqi bor", "Support odatda faqat ko'rishi kerak — tahrirlash huquqlarini olib tashlang.", 20) : add('ok', "Support faqat ko'rish huquqiga ega", 'Shablon xavfsiz.', 0);
   tplOf('admin_teacher').includes('staff.manage') ? add('warn', "Teacher shabloni xodimlarni boshqara oladi", "Barcha Teacher'lar xodim qo'sha va o'chira oladi.", 10) : add('ok', "Teacher xodimlarni boshqara olmaydi", 'Shablon xavfsiz.', 0);
@@ -5993,11 +6069,12 @@ function PermissionsPage({ me, staff, setStaff, roleTpl, setRoleTpl, notify }) {
   const n = (r) => staff.filter((u) => u.role === r).length;
   const ents = [
     { id: 'ceo', kind: 'role', role: 'ceo', name: 'CEO', sub: n('ceo') + ' xodim · to\'liq huquq', perms: ALL_PERMS, locked: true },
+    { id: 'ceo_support', kind: 'role', role: 'ceo_support', name: 'CEO Support', sub: n('ceo_support') + ' xodim · to\'liq huquq', perms: ALL_PERMS, locked: true },
     { id: 'admin_teacher', kind: 'role', role: 'admin_teacher', name: 'Teacher', sub: n('admin_teacher') + ' xodim · shablon', perms: tplOf('admin_teacher') },
     { id: 'support', kind: 'role', role: 'support', name: 'Support', sub: n('support') + ' xodim · shablon', perms: tplOf('support') },
-    ...staff.map((u) => ({ id: u.id, kind: 'user', user: u, role: u.role, name: u.name, sub: '@' + u.username + ' · ' + (ROLE_META[u.role] || ROLE_META.support).l, perms: permsOf(u, roleTpl), locked: u.role === 'ceo' })),
+    ...staff.map((u) => ({ id: u.id, kind: 'user', user: u, role: u.role, name: u.name, sub: (me.role === 'ceo' ? '@' + u.username + ' · ' : '') + (ROLE_META[u.role] || ROLE_META.support).l, perms: permsOf(u, roleTpl), locked: isTopRole(u.role) })),
   ];
-  const sel = ents.find((e) => e.id === selId) || ents[1];
+  const sel = ents.find((e) => e.id === selId) || ents.find((e) => e.id === 'admin_teacher');
   const R = (e) => ROLE_META[e.role] || ROLE_META.support;
   const editable = (e) => !e.locked && (e.kind === 'role' || e.role === 'custom');
   const writePerms = (e, perms, txt) => {
@@ -6028,7 +6105,7 @@ function PermissionsPage({ me, staff, setStaff, roleTpl, setRoleTpl, notify }) {
   const mshow = PERM_GROUPS.filter((g) => !mq.trim() || (g.label + ' ' + g.items.map((i) => i[1] + ' ' + i[2]).join(' ')).toLowerCase().includes(mq.trim().toLowerCase()));
   const cycle = (c, g) => { const mx = nxEditKey(g) ? 2 : 1, nx = (nxLevel(c.perms, g) + 1) % (mx + 1); writePerms(c, nxSetLevel(c.perms, g, nx), `${g.label}: ${NX_LV[nx]}`); };
   const setAll = (c, lv) => writePerms(c, PERM_GROUPS.reduce((p, g) => nxSetLevel(p, g, g.id === 'staff' ? Math.min(lv, 1) : lv), c.perms), lv === 0 ? 'barcha huquqlar olindi' : lv === 1 ? "barcha modullar: Ko'rish" : 'barcha huquqlar berildi (jamoani boshqarishsiz)');
-  const avOf = (e, size) => <span className={'nx-av ' + (size || 'sm')} style={{ background: e.kind === 'role' ? `linear-gradient(135deg,${R(e).c},color-mix(in srgb,${R(e).c} 50%,#000))` : hdGrad(e.name) }}>{e.kind === 'role' ? <Icon.lock width={size === 'lg' ? 26 : 16} height={size === 'lg' ? 26 : 16} /> : hdIni(e.name)}</span>;
+  const avOf = (e, size) => <span className={'nx-av ' + (size || 'sm')} style={{ background: e.kind === 'role' ? `color-mix(in srgb,${R(e).c} 62%,#000)` : hdGrad(e.name) }}>{e.kind === 'role' ? <Icon.lock width={size === 'lg' ? 26 : 16} height={size === 'lg' ? 26 : 16} /> : hdIni(e.name)}</span>;
 
   return (
     <div className="v2 hd nx nx-pc">
@@ -6091,7 +6168,7 @@ function PermissionsPage({ me, staff, setStaff, roleTpl, setRoleTpl, notify }) {
 
               {(can2 || (sel.kind === 'user' && !sel.locked)) && (
                 <div className="nx-panel"><div className="nx-ph sm"><div><h2>Tayyor andozalar</h2><p>Bir bosishda qo'llanadi</p></div></div>
-                  <div className="nx-pre">{PERM_PRESETS.map((p) => <button key={p.id} type="button" onClick={() => preset(sel, p)} title={p.d}><span>{p.e}</span><b>{p.l}</b><small>{p.d}</small></button>)}</div>
+                  <div className="nx-pre">{PERM_PRESETS.map((p) => <button key={p.id} type="button" onClick={() => preset(sel, p)} title={p.d}><span>{(Icon[p.ic] || Icon.lock)({ width: 20, height: 20 })}</span><b>{p.l}</b><small>{p.d}</small></button>)}</div>
                   <label className="nx-cp">Huquqlarni nusxalash<select value="" onChange={(e) => e.target.value && copyFrom(sel, e.target.value)}><option value="">Kimdan nusxalash…</option>{ents.filter((x) => x.id !== sel.id).map((x) => <option key={x.id} value={x.id}>{x.name} ({R(x).l})</option>)}</select></label>
                   {sel.kind === 'user' && sel.role !== 'custom' && <p className="nx-hint">Andoza qo'llansa, xodim avtomatik Custom rolga o'tadi.</p>}
                 </div>)}
@@ -8460,22 +8537,23 @@ const DEFAULT_ROLE_PERMS = {
   admin_teacher: ALL_PERMS.filter((k) => k !== 'staff.manage'),
   support: ['dashboard.view', 'students.view', 'courses.view', 'statistics.view', 'payments.view', 'blocked.view'],
 };
-const permsOf = (u, tpl) => (!u ? [] : u.role === 'ceo' ? ALL_PERMS : u.role === 'custom' ? (u.perms || []) : ((tpl && tpl[u.role]) || DEFAULT_ROLE_PERMS[u.role] || []));
+const isTopRole = (r) => r === 'ceo' || r === 'ceo_support';
+const permsOf = (u, tpl) => (!u ? [] : isTopRole(u.role) ? ALL_PERMS : u.role === 'custom' ? (u.perms || []) : ((tpl && tpl[u.role]) || DEFAULT_ROLE_PERMS[u.role] || []));
 const permToggle = (list, key, on) => {
   const s = new Set(list), mod = key.split('.')[0];
   if (on) { s.add(key); if (key.endsWith('.edit') || key === 'staff.manage') s.add(mod + '.view'); }
   else { s.delete(key); if (key.endsWith('.view')) { s.delete(mod + '.edit'); s.delete(mod + '.manage'); } }
   return ALL_PERMS.filter((k) => s.has(k));
 };
-const ROLE_META = { ceo: { l: 'CEO', c: '#fbbf24' }, admin_teacher: { l: 'Teacher', c: '#38bdf8' }, support: { l: 'Support', c: '#a78bfa' }, custom: { l: 'Custom', c: '#f472b6' } };
+const ROLE_META = { ceo: { l: 'CEO', c: '#fbbf24' }, ceo_support: { l: 'CEO Support', c: '#fb923c' }, admin_teacher: { l: 'Teacher', c: '#38bdf8' }, support: { l: 'Support', c: '#a78bfa' }, custom: { l: 'Custom', c: '#f472b6' } };
 
 const PERM_LABEL = Object.fromEntries(PERM_GROUPS.flatMap((g) => g.items.map(([k, l]) => [k, g.label + ' · ' + l])));
 const PERM_PRESETS = [
-  { id: 'kassir', e: '💳', l: 'Kassir', d: "To'lovlar va qarzdorlar bilan ishlaydi", p: ['dashboard.view', 'students.view', 'payments.view', 'blocked.view'] },
-  { id: 'analitik', e: '📊', l: 'Analitik', d: "Statistika va moliyani kuzatadi", p: ['dashboard.view', 'students.view', 'courses.view', 'statistics.view', 'payments.view'] },
-  { id: 'kontent', e: '🎬', l: 'Kontent menejer', d: "Kurs va darslarni boshqaradi", p: ['dashboard.view', 'courses.view', 'courses.edit', 'students.view'] },
-  { id: 'moder', e: '🛡️', l: 'Moderator', d: "O'quvchilar va bloklarni boshqaradi", p: ['dashboard.view', 'students.view', 'students.edit', 'blocked.view', 'payments.view'] },
-  { id: 'view', e: '👁️', l: "Faqat ko'rish", d: "Hech narsani o'zgartira olmaydi", p: ALL_PERMS.filter((k) => k.endsWith('.view') && k !== 'staff.view') },
+  { id: 'kassir', ic: 'card', l: 'Kassir', d: "To'lovlar va qarzdorlar bilan ishlaydi", p: ['dashboard.view', 'students.view', 'payments.view', 'blocked.view'] },
+  { id: 'analitik', ic: 'chart', l: 'Analitik', d: "Statistika va moliyani kuzatadi", p: ['dashboard.view', 'students.view', 'courses.view', 'statistics.view', 'payments.view'] },
+  { id: 'kontent', ic: 'video', l: 'Kontent menejer', d: "Kurs va darslarni boshqaradi", p: ['dashboard.view', 'courses.view', 'courses.edit', 'students.view'] },
+  { id: 'moder', ic: 'lock', l: 'Moderator', d: "O'quvchilar va bloklarni boshqaradi", p: ['dashboard.view', 'students.view', 'students.edit', 'blocked.view', 'payments.view'] },
+  { id: 'view', ic: 'eye', l: "Faqat ko'rish", d: "Hech narsani o'zgartira olmaydi", p: ALL_PERMS.filter((k) => k.endsWith('.view') && k !== 'staff.view') },
 ];
 const NAV_PREVIEW = [['dashboard.view', 'Dashboard', 'dashboard.edit'], ['students.view', "O'quvchilar", 'students.edit'], ['courses.view', 'Kurslar', 'courses.edit'], ['statistics.view', 'Statistika'], ['payments.view', "To'lovlar"], ['blocked.view', 'Bloklanganlar'], ['staff.view', 'Xodimlar', 'staff.manage']];
 
@@ -8495,14 +8573,18 @@ function PermList({ perms, onChange, disabled }) {
 /* =========================================================================
    XODIMLAR — jamoa, rollar va huquqlarni boshqarish
    ========================================================================= */
-const hdGrad = (s) => { let h = 0; for (const ch of String(s || '?')) h = (h * 31 + ch.charCodeAt(0)) % 360; return `linear-gradient(135deg,hsl(${h} 70% 55%),hsl(${(h + 45) % 360} 72% 38%))`; };
+const hdGrad = (s) => { let h = 0; for (const ch of String(s || '?')) h = (h * 31 + ch.charCodeAt(0)) % 360; return `hsl(${h} 50% 40%)`; };
 const hdIni = (n) => String(n || '').split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase() || '?';
-const ROLE_CARDS = [['ceo', 'CEO', "To'liq huquq — barcha bo'lim va sozlamalar"], ['admin_teacher', 'Teacher', 'Alohida shablon huquqlari (Ruxsatlar bo\'limida sozlanadi)'], ['support', 'Support', "Asosan ko'rish huquqi (shablon)"], ['custom', 'Custom', "Huquqlarni o'zingiz bittalab belgilaysiz"]];
+const ROLE_CARDS = [['ceo', 'CEO', "To'liq huquq — barcha bo'lim va sozlamalar"], ['ceo_support', 'CEO Support', "CEO bilan bir xil huquq. Faqat CEO va CEO Support'ni o'chira olmaydi"], ['admin_teacher', 'Teacher', 'Alohida shablon huquqlari (Ruxsatlar bo\'limida sozlanadi)'], ['support', 'Support', "Asosan ko'rish huquqi (shablon)"], ['custom', 'Custom', "Huquqlarni o'zingiz bittalab belgilaysiz"]];
 
 function StaffPage({ me, staff, setStaff, roleTpl, notify, onGoPerms }) {
   const isCeo = me.role === 'ceo';
-  const canManage = isCeo || permsOf(me, roleTpl).includes('staff.manage');
-  const canTouch = (u) => isCeo || u.role !== 'ceo';
+  const isTop = isTopRole(me.role);
+  const canManage = isTop || permsOf(me, roleTpl).includes('staff.manage');
+  // CEO hammani boshqaradi; CEO Support va boshqalar CEO hamda CEO Support'ga tegolmaydi (o'chirish/tahrirlash)
+  const canTouch = (u) => isCeo || !isTopRole(u.role);
+  // Login va parolni faqat CEO ko'radi (har kim faqat o'zinikini)
+  const seeCred = (u) => isCeo || u.id === me.id;
   const [q, setQ] = useState(''); const [rf, setRf] = useState('all'); const [view, setView] = useState('grid'); const [sort, setSort] = useState('role');
   const [form, setForm] = useState(null); const [del, setDel] = useState(null); const [showPw, setShowPw] = useState({}); const [fpw, setFpw] = useState(true); const [made, setMade] = useState(null);
   const searchRef = useRef(null);
@@ -8512,9 +8594,9 @@ function StaffPage({ me, staff, setStaff, roleTpl, notify, onGoPerms }) {
     return () => window.removeEventListener('keydown', k);
   }, []);
   const cnt = (r) => staff.filter((u) => u.role === r).length;
-  const ORD = { ceo: 0, admin_teacher: 1, support: 2, custom: 3 }; const ord = (r) => (r in ORD ? ORD[r] : 9);
+  const ORD = { ceo: 0, ceo_support: 1, admin_teacher: 2, support: 3, custom: 4 }; const ord = (r) => (r in ORD ? ORD[r] : 9);
   const list = staff
-    .filter((u) => (rf === 'all' || (rf === 'off' ? u.disabled : rf === 'on' ? !u.disabled : u.role === rf)) && (!q.trim() || [u.name, u.username, u.phone, u.position].join(' ').toLowerCase().includes(q.trim().toLowerCase())))
+    .filter((u) => (rf === 'all' || (rf === 'off' ? u.disabled : rf === 'on' ? !u.disabled : u.role === rf)) && (!q.trim() || [u.name, seeCred(u) ? u.username : '', u.phone, u.position].join(' ').toLowerCase().includes(q.trim().toLowerCase())))
     .slice().sort((a, b) => sort === 'name' ? String(a.name).localeCompare(String(b.name)) : sort === 'new' ? String(b.createdAt || '').localeCompare(String(a.createdAt || '')) : (ord(a.role) - ord(b.role)) || String(a.name).localeCompare(String(b.name)));
   const lastCeo = (u) => u.role === 'ceo' && cnt('ceo') <= 1;
 
@@ -8528,6 +8610,9 @@ function StaffPage({ me, staff, setStaff, roleTpl, notify, onGoPerms }) {
   const pickRole = (r) => setForm((f) => ({ ...f, role: r, perms: r === 'custom' ? (f.perms || permsOf({ role: f.role, perms: f.perms }, roleTpl).slice()) : f.perms }));
   const save = () => {
     const f = form, name = f.name.trim(), un = f.username.trim();
+    const prev = f.isNew ? null : staff.find((x) => x.id === f.id);
+    if (prev && !canTouch(prev)) { notify("Bu xodimni tahrirlash huquqingiz yo'q", 'danger'); return; }
+    if (isTopRole(f.role) && !isCeo && (!prev || prev.role !== f.role)) { notify('CEO va CEO Support rolini faqat CEO bera oladi', 'danger'); return; }
     if (!name) { notify("Ism familiyani kiriting", 'danger'); return; }
     if (!un || (f.isNew && !f.password.trim())) { notify("Login va parol bo'sh bo'lmasligi kerak", 'danger'); return; }
     if (staff.some((u) => u.username === un && u.id !== f.id)) { notify('Bu login band — boshqasini tanlang', 'danger'); return; }
@@ -8547,8 +8632,8 @@ function StaffPage({ me, staff, setStaff, roleTpl, notify, onGoPerms }) {
     // API: POST/PATCH /api/admin/staff/  (role, perms)
   };
   const toggle = (u) => { setStaff(staff.map((x) => (x.id === u.id ? { ...x, disabled: !x.disabled } : x))); notify(u.disabled ? `${u.name} faollashtirildi` : `${u.name} faolsizlantirildi (tizimga kira olmaydi)`); };
-  const remove = () => { setStaff(staff.filter((u) => u.id !== del.id)); notify("Xodim o'chirildi", 'danger'); setDel(null); };
-  const exportCsv = () => sxCsv('xodimlar.csv', [['Ism', 'Login', 'Rol', 'Huquqlar', 'Telefon', 'Lavozim', "Qo'shilgan", 'Holat'], ...staff.map((u) => [u.name, u.username, (ROLE_META[u.role] || {}).l, permsOf(u, roleTpl).length + '/' + ALL_PERMS.length, u.phone || '', u.position || '', u.createdAt || '', u.disabled ? 'Nofaol' : 'Faol'])]);
+  const remove = () => { if (!canManage || !canTouch(del) || del.id === me.id) { setDel(null); return; } setStaff(staff.filter((u) => u.id !== del.id)); notify("Xodim o'chirildi", 'danger'); setDel(null); };
+  const exportCsv = () => sxCsv('xodimlar.csv', [['Ism', 'Login', 'Rol', 'Huquqlar', 'Telefon', 'Lavozim', "Qo'shilgan", 'Holat'], ...staff.map((u) => [u.name, seeCred(u) ? u.username : '—', (ROLE_META[u.role] || {}).l, permsOf(u, roleTpl).length + '/' + ALL_PERMS.length, u.phone || '', u.position || '', u.createdAt || '', u.disabled ? 'Nofaol' : 'Faol'])]);
   const formPerms = form ? (form.role === 'custom' ? (form.perms || []) : permsOf({ role: form.role }, roleTpl)) : [];
   const st = nxStrength(form && form.password);
 
@@ -8567,7 +8652,7 @@ function StaffPage({ me, staff, setStaff, roleTpl, notify, onGoPerms }) {
           <p>Rollar, huquqlar va tizimga kirish nazorati — barchasi bir joyda. Yangi xodimga login va parol avtomatik yaratiladi.</p>
           <div className="nx-acts">
             {canManage && <button type="button" className="nx-btn pri" onClick={openNew}><Icon.plus width="16" height="16" />Yangi xodim</button>}
-            {isCeo && <button type="button" className="nx-btn" onClick={onGoPerms}><Icon.lock width="14" height="14" />Ruxsatlar markazi</button>}
+            {isTop && <button type="button" className="nx-btn" onClick={onGoPerms}><Icon.lock width="14" height="14" />Ruxsatlar markazi</button>}
             <button type="button" className="nx-btn" onClick={exportCsv}>↓ CSV</button>
           </div>
         </div>
@@ -8580,13 +8665,13 @@ function StaffPage({ me, staff, setStaff, roleTpl, notify, onGoPerms }) {
 
       <div className="nx-toolbar">
         <label className="nx-search"><Icon.search width="16" height="16" /><input ref={searchRef} placeholder="Ism, login, telefon yoki lavozim…" value={q} onChange={(e) => setQ(e.target.value)} />{q ? <button type="button" className="nx-ib" onClick={() => setQ('')} aria-label="Tozalash"><Icon.close width="13" height="13" /></button> : <kbd>/</kbd>}</label>
-        <div className="nx-chips">{chip('all', 'Hammasi', staff.length)}{chip('ceo', 'CEO', cnt('ceo'), '#fbbf24')}{chip('admin_teacher', 'Teacher', cnt('admin_teacher'), '#38bdf8')}{chip('support', 'Support', cnt('support'), '#a78bfa')}{chip('custom', 'Custom', cnt('custom'), '#f472b6')}{chip('off', 'Nofaol', staff.filter((u) => u.disabled).length, '#fb7185')}</div>
+        <div className="nx-chips">{chip('all', 'Hammasi', staff.length)}{chip('ceo', 'CEO', cnt('ceo'), '#fbbf24')}{chip('ceo_support', 'CEO Support', cnt('ceo_support'), '#fb923c')}{chip('admin_teacher', 'Teacher', cnt('admin_teacher'), '#38bdf8')}{chip('support', 'Support', cnt('support'), '#a78bfa')}{chip('custom', 'Custom', cnt('custom'), '#f472b6')}{chip('off', 'Nofaol', staff.filter((u) => u.disabled).length, '#fb7185')}</div>
         <div className="nx-seg" style={{ '--n': 3, '--i': ['role', 'name', 'new'].indexOf(sort) }} title="Saralash"><i />{[['role', 'Rol'], ['name', 'Ism'], ['new', 'Yangi']].map(([id, l]) => <button key={id} type="button" className={sort === id ? 'on' : ''} onClick={() => setSort(id)}>{l}</button>)}</div>
         <div className="nx-seg" style={{ '--n': 2, '--i': view === 'grid' ? 0 : 1 }}><i />{[['grid', 'Kartalar'], ['list', "Ro'yxat"]].map(([id, l]) => <button key={id} type="button" className={view === id ? 'on' : ''} onClick={() => setView(id)}>{l}</button>)}</div>
       </div>
 
       {list.length === 0 ? (
-        <div className="nx-empty"><span>🔎</span><b>Mos xodim topilmadi</b><p>Qidiruv yoki filtrni o'zgartirib ko'ring.</p>{(q || rf !== 'all') && <button type="button" className="nx-btn" onClick={() => { setQ(''); setRf('all'); }}>Filtrni tozalash</button>}</div>
+        <div className="nx-empty"><span><Icon.search width="40" height="40" /></span><b>Mos xodim topilmadi</b><p>Qidiruv yoki filtrni o'zgartirib ko'ring.</p>{(q || rf !== 'all') && <button type="button" className="nx-btn" onClick={() => { setQ(''); setRf('all'); }}>Filtrni tozalash</button>}</div>
       ) : (
         <div className={'nx-grid' + (view === 'list' ? ' list' : '')}>
           {list.map((u, i) => {
@@ -8595,7 +8680,7 @@ function StaffPage({ me, staff, setStaff, roleTpl, notify, onGoPerms }) {
               <article key={u.id} className={'nx-card' + (u.disabled ? ' off' : '')} style={{ '--c': R.c, '--d': Math.min(i, 12) }} onMouseMove={nxSpot}>
                 <div className="nx-top">
                   <span className="nx-av" style={{ background: hdGrad(u.name) }}>{hdIni(u.name)}<i className={'nx-pres' + (u.disabled ? ' off' : '')} /></span>
-                  <div className="nx-nm"><b>{u.name}{self && <em>siz</em>}</b><small>{u.position || '@' + u.username}</small></div>
+                  <div className="nx-nm"><b>{u.name}{self && <em>siz</em>}</b><small>{u.position || (seeCred(u) ? '@' + u.username : R.l)}</small></div>
                   <span className="nx-role">{R.l}</span>
                 </div>
                 <div className="nx-acc">
@@ -8606,7 +8691,7 @@ function StaffPage({ me, staff, setStaff, roleTpl, notify, onGoPerms }) {
                   <span><Icon.phone width="14" height="14" />{u.phone || '—'}</span>
                   {u.createdAt && <span><Icon.clock width="14" height="14" />{"Qo'shilgan: " + u.createdAt}</span>}
                 </div>
-                {isCeo && (
+                {seeCred(u) && (
                   <div className="nx-cred">
                     <div className="nx-cr"><small>Login</small><code>@{u.username}</code><button type="button" className="nx-ib" onClick={() => nxCopy(u.username, notify, 'Login')} aria-label="Loginni nusxalash"><Icon.copy width="14" height="14" /></button></div>
                     <div className="nx-cr"><small>Parol</small><code>{showPw[u.id] ? u.password : '••••••••'}</code>
@@ -8626,7 +8711,7 @@ function StaffPage({ me, staff, setStaff, roleTpl, notify, onGoPerms }) {
       {!canManage && <p className="nx-note">Xodimlarni boshqarish uchun sizga "Xodimlarni boshqarish" huquqi kerak.</p>}
 
       {form && (
-        <NxDrawer title={form.isNew ? "Yangi xodim" : 'Xodimni tahrirlash'} sub={form.isNew ? "Login va parol avtomatik yaratildi — xohlasangiz o'zgartiring" : '@' + form.username + ' · ' + roleLabel(form.role)} onClose={() => setForm(null)}
+        <NxDrawer title={form.isNew ? "Yangi xodim" : 'Xodimni tahrirlash'} sub={form.isNew ? "Login va parol avtomatik yaratildi — xohlasangiz o'zgartiring" : ((isCeo || form.id === me.id) ? '@' + form.username + ' · ' : '') + roleLabel(form.role)} onClose={() => setForm(null)}
           footer={<><button type="button" className="nx-btn" onClick={() => setForm(null)}>Bekor qilish</button><button type="button" className="nx-btn pri" onClick={save}>{form.isNew ? "Qo'shish" : 'Saqlash'}</button></>}>
           <div className="nx-f">
             <div className="nx-sec"><span className="nx-n">1</span>Profil</div>
@@ -8634,12 +8719,12 @@ function StaffPage({ me, staff, setStaff, roleTpl, notify, onGoPerms }) {
               <label>Lavozim<input value={form.position || ''} onChange={(e) => setForm({ ...form, position: e.target.value })} placeholder="Matematika o'qituvchisi" /></label></div>
             <label>Telefon<input value={form.phone || ''} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+998 90 123 45 67" /></label>
 
-            <div className="nx-sec"><span className="nx-n">2</span>Kirish ma'lumotlari {form.isNew && <em className="nx-auto">⚡ avtomatik</em>}</div>
+            <div className="nx-sec"><span className="nx-n">2</span>Kirish ma'lumotlari {form.isNew && <em className="nx-auto">avtomatik</em>}</div>
             <div className="nx-keybox">
-              <label>Login
+              {(isCeo || form.isNew || form.id === me.id) && <label>Login
                 <span className="nx-inp"><b>@</b><input value={form.username} onChange={(e) => setUser(e.target.value)} placeholder="aziz.karimov" />
                   <button type="button" className="nx-ib" onClick={regenLogin} title="Qayta yaratish" aria-label="Loginni qayta yaratish"><Icon.refresh width="15" height="15" /></button>
-                  <button type="button" className="nx-ib" onClick={() => nxCopy(form.username, notify, 'Login')} title="Nusxalash" aria-label="Nusxalash"><Icon.copy width="15" height="15" /></button></span></label>
+                  <button type="button" className="nx-ib" onClick={() => nxCopy(form.username, notify, 'Login')} title="Nusxalash" aria-label="Nusxalash"><Icon.copy width="15" height="15" /></button></span></label>}
               <label>{form.isNew ? 'Parol' : 'Yangi parol'}
                 <span className="nx-inp"><Icon.key width="15" height="15" /><input type={fpw ? 'text' : 'password'} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder={form.isNew ? 'Parol' : "O'zgartirmaslik uchun bo'sh qoldiring"} />
                   <button type="button" className="nx-ib" onClick={() => setFpw(!fpw)} aria-label="Ko'rsatish">{fpw ? <Icon.eyeOff width="15" height="15" /> : <Icon.eye width="15" height="15" />}</button>
@@ -8649,7 +8734,7 @@ function StaffPage({ me, staff, setStaff, roleTpl, notify, onGoPerms }) {
             </div>
 
             <div className="nx-sec"><span className="nx-n">3</span>Rol</div>
-            <div className="nx-roles">{ROLE_CARDS.filter(([r]) => r !== 'ceo' || isCeo).map(([r, l, d]) => { const lock = !form.isNew && (form.id === me.id || lastCeo(form)); return (
+            <div className="nx-roles">{ROLE_CARDS.filter(([r]) => !isTopRole(r) || isCeo).map(([r, l, d]) => { const lock = !form.isNew && (form.id === me.id || lastCeo(form)); return (
               <button key={r} type="button" disabled={lock && form.role !== r} className={'nx-rc' + (form.role === r ? ' on' : '')} style={{ '--c': ROLE_META[r].c }} onClick={() => pickRole(r)}><i /><b>{l}</b><small>{d}</small></button>); })}</div>
 
             <div className="nx-sec"><span className="nx-n">4</span>Huquqlar <small>{formPerms.length}/{ALL_PERMS.length}</small></div>
@@ -8658,13 +8743,13 @@ function StaffPage({ me, staff, setStaff, roleTpl, notify, onGoPerms }) {
               <button type="button" className="nx-pill" onClick={() => setForm({ ...form, perms: ALL_PERMS.filter((k) => k.endsWith('.view') && k !== 'staff.view') })}>Faqat ko'rish</button>
               <button type="button" className="nx-pill" onClick={() => setForm({ ...form, perms: permsOf({ role: 'admin_teacher' }, roleTpl).slice() })}>Teacher'dan nusxa</button>
               <button type="button" className="nx-pill" onClick={() => setForm({ ...form, perms: [] })}>Tozalash</button></div>}
-            {form.role !== 'custom' && <p className="nx-hint">{form.role === 'ceo' ? "CEO barcha huquqlarga ega — o'zgartirib bo'lmaydi." : "Bu rol umumiy shablondan foydalanadi: shablonni o'zgartirsangiz, shu roldagi barcha xodimlarga ta'sir qiladi."}{form.role !== 'ceo' && isCeo && <> <button type="button" className="nx-link" onClick={() => { setForm(null); onGoPerms(); }}>Shablonni sozlash →</button></>}</p>}
+            {form.role !== 'custom' && <p className="nx-hint">{isTopRole(form.role) ? "Bu rol barcha huquqlarga ega — o'zgartirib bo'lmaydi." : "Bu rol umumiy shablondan foydalanadi: shablonni o'zgartirsangiz, shu roldagi barcha xodimlarga ta'sir qiladi."}{!isTopRole(form.role) && isTop && <> <button type="button" className="nx-link" onClick={() => { setForm(null); onGoPerms(); }}>Shablonni sozlash →</button></>}</p>}
             <NxTiles perms={formPerms} disabled={form.role !== 'custom'} onChange={(p) => setForm({ ...form, perms: p })} />
           </div>
         </NxDrawer>)}
 
       {made && (
-        <Modal title={made.reset ? 'Yangi parol yaratildi' : 'Xodim yaratildi 🎉'} onClose={() => setMade(null)}>
+        <Modal title={made.reset ? 'Yangi parol yaratildi' : 'Xodim yaratildi'} onClose={() => setMade(null)}>
           <div className="hd-form nx-made">
             <p className="hd-note"><b>{made.name}</b> uchun kirish ma'lumotlari tayyor. Ularni xodimga yuboring.</p>
             <div className="nx-ticket">
@@ -9415,7 +9500,7 @@ function CourseStudy({ uid, userName, category, initialSubId, access, payBlocked
       </div>
 
       {restModal && (
-        <Modal title="Bugungi dars yakunlandi 🎉" onClose={() => setRestModal(false)}>
+        <Modal title="Bugungi dars yakunlandi" onClose={() => setRestModal(false)}>
           <p className="text-ink text-base leading-relaxed">
             Keyingi darsgacha o'tilgan darslarni <b>takrorlang</b>, o'rgangan kodlaringizni <b>amaliyotda sinab ko'ring</b> va <b>o'z ustingizda ishlang</b>.
           </p>
