@@ -4565,6 +4565,41 @@ html.theme-dark .pb .pb-adduser .pb-input input, html.theme-dark .pb .pb-adduser
   [data-rv], [data-rv="w"], [data-rv="1"], [data-rv="d"], [data-rk] { animation:none !important; opacity:1 !important; transform:none !important; }
 }
 </style>
+<style id="brand-custom-v1">
+/* =====================================================================
+   BREND — sidebar'dagi logotip, nom va ikonka foni (Profil → Brend sozlamalari)
+   Faqat "Standart rang" o'chirilganda ishlaydi; standart holat eski CSS'dan olinadi.
+   ===================================================================== */
+html body .side-top .brand-lockup{ min-width:0; flex:0 1 auto; }
+html body .side-top .brand-lockup .brand-text{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+html body .side-top .brand-tile{ flex:none; overflow:hidden; }
+html body .side-top .brand-tile.brand-tile-custom{
+  background-image:none !important; background-color:var(--brand-bg) !important;
+  color:var(--brand-fg) !important; box-shadow:0 4px 16px -4px var(--brand-glow) !important;
+}
+html body .side-top .brand-tile-img{ display:block; width:100%; height:100%; object-fit:contain; padding:6px; box-sizing:border-box; pointer-events:none; }
+
+/* Profil → Brend sozlamalari kartasi */
+.bc{ display:grid; grid-template-columns:minmax(0,1fr) 290px; gap:28px; align-items:start; }
+.bc-form{ display:flex; flex-direction:column; gap:22px; min-width:0; }
+.bc-row{ display:flex; flex-direction:column; gap:10px; min-width:0; }
+.bc-lab{ font-size:12.5px; font-weight:700; color:var(--pb-mut); display:flex; justify-content:space-between; align-items:center; }
+.bc-hint{ margin:0; font-size:12px; line-height:1.5; color:var(--pb-mut); }
+.bc-icon-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.bc-def{ display:inline-flex; align-items:center; gap:10px; width:fit-content; cursor:pointer; user-select:none; font-size:14px; font-weight:700; color:var(--pb-ink); }
+.bc-def input{ width:18px; height:18px; margin:0; accent-color:#10b981; cursor:pointer; }
+.bc-colors{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; transition:opacity .2s; }
+.bc-colors.off{ opacity:.38; }
+.bc-sw{ width:32px; height:32px; padding:0; border-radius:11px; border:2px solid transparent; cursor:pointer; box-shadow:0 0 0 1px var(--pb-bd) inset; transition:transform .15s, border-color .15s; }
+.bc-sw:disabled, .bc-pick.dis{ cursor:not-allowed; }
+.bc-sw.on{ border-color:var(--pb-ink); transform:scale(1.1); }
+.bc-pick{ position:relative; width:32px; height:32px; border-radius:11px; overflow:hidden; border:1px dashed var(--pb-mut); display:grid; place-items:center; color:var(--pb-mut); font-size:17px; font-weight:800; line-height:1; cursor:pointer; }
+.bc-pick input{ position:absolute; inset:-8px; width:48px; height:48px; opacity:0; cursor:pointer; }
+.bc-hex{ font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; font-weight:700; color:var(--pb-ink); letter-spacing:.02em; }
+.bc-prev-wrap{ display:flex; flex-direction:column; gap:10px; min-width:0; }
+.bc-prev{ border-radius:20px; background:var(--pb-in); border:1px solid var(--pb-bd); }
+@media (max-width:860px){ .bc{ grid-template-columns:1fr; } }
+</style>
 <script type="text/plain" id="app-source">
 const { useState, useMemo, useRef, useEffect, useLayoutEffect } = React;
 
@@ -4895,7 +4930,65 @@ const seedStaff = () => ([
 const seedStudents = () => ([]);
 
 /* ---------------------------- SMALL UI PARTS ---------------------------- */
-function Logo({ dark }) {
+/* ---------------------------- BREND (sidebar logotipi) ----------------------------
+   Nom, ikonka rasmi va ikonka foni. Faqat 'branding.edit' ruxsati bor xodimlar o'zgartira oladi
+   (Profil → Brend sozlamalari). Saqlash joyi: localStorage 'edustream_branding_v1'. */
+const DEFAULT_BRAND = { name: 'EduStream', image: '', useDefaultBg: true, bgColor: '#34d399' };
+const BRAND_NAME_MAX = 24;
+const BRAND_SWATCHES = ['#34d399', '#38bdf8', '#a78bfa', '#f472b6', '#fb7185', '#fbbf24', '#f97316', '#14b8a6', '#1e293b'];
+const isHex6 = (c) => /^#[0-9a-fA-F]{6}$/.test(c || '');
+const normalizeBrand = (b) => {
+  const x = b && typeof b === 'object' ? b : {};
+  const name = typeof x.name === 'string' ? x.name.trim().slice(0, BRAND_NAME_MAX) : '';
+  return {
+    name: name || DEFAULT_BRAND.name,
+    image: typeof x.image === 'string' && /^data:image\/(png|jpe?g|webp|gif|svg\+xml);/i.test(x.image) ? x.image : '',
+    useDefaultBg: x.useDefaultBg !== false,
+    bgColor: isHex6(x.bgColor) ? x.bgColor.toLowerCase() : DEFAULT_BRAND.bgColor,
+  };
+};
+const hexRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+const brandFg = (h) => { const [r, g, b] = hexRgb(h); return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#052e1c' : '#ffffff'; };
+const brandTileStyle = (b) => {
+  if (b.useDefaultBg) return undefined;
+  const [r, g, bl] = hexRgb(b.bgColor);
+  return { '--brand-bg': b.bgColor, '--brand-fg': brandFg(b.bgColor), '--brand-glow': 'rgba(' + r + ',' + g + ',' + bl + ',.55)' };
+};
+/* Logotipni o'qiydi: PNG shaffofligi saqlanadi (JPEG'ga o'tkazilmaydi), 128px gacha kichraytiriladi */
+const readBrandImage = (file) => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.onerror = () => reject(new Error('read-failed'));
+  reader.onload = () => {
+    const url = reader.result;
+    if (file.type === 'image/svg+xml') { if (String(url).length > 250000) reject(new Error('too-big')); else resolve(url); return; }
+    const img = new Image();
+    img.onerror = () => reject(new Error('decode-failed'));
+    img.onload = () => {
+      const k = Math.min(1, 128 / Math.max(img.width, img.height, 1));
+      const w = Math.max(1, Math.round(img.width * k)), h = Math.max(1, Math.round(img.height * k));
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      resolve(c.toDataURL('image/png'));
+    };
+    img.src = url;
+  };
+  reader.readAsDataURL(file);
+});
+
+function Logo({ dark, brand }) {
+  if (brand) {
+    const custom = !brand.useDefaultBg;
+    return (
+      <div className="flex items-center gap-2 select-none brand-lockup">
+        <div className={`w-8 h-8 rounded-md bg-gold flex items-center justify-center font-display text-ink font-semibold brand-tile${custom ? ' brand-tile-custom' : ''}`} style={brandTileStyle(brand)}>
+          {brand.image
+            ? <img src={brand.image} alt="" className="brand-tile-img" draggable="false" />
+            : <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M7 4l13 8-13 8z" /></svg>}
+        </div>
+        <span title={brand.name} className={`font-display text-lg tracking-tight brand-text ${dark ? 'text-white' : 'text-ink'}`}>{brand.name}</span>
+      </div>
+    );
+  }
   return (
     <div className="flex items-center gap-2 select-none">
       <div className="w-8 h-8 rounded-md bg-gold flex items-center justify-center font-display text-ink font-semibold">{dark ? <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M7 4l13 8-13 8z" /></svg> : 'E'}</div>
@@ -5599,7 +5692,7 @@ function DashV2({ me, canEdit, stats, revenue, students, categories, overdueStud
   );
 }
 
-function Sidebar({ roleLabel, navItems, activePage, onNavigate, footerName, footerSub, footerInitials, footerAvatar, onFooterClick, mobileOpen, onCloseMobile }) {
+function Sidebar({ roleLabel, navItems, activePage, onNavigate, footerName, footerSub, footerInitials, footerAvatar, onFooterClick, mobileOpen, onCloseMobile, brand }) {
   const [collapsed, setCollapsed] = useState(false);
 
   const handleNavigate = (id) => {
@@ -5613,7 +5706,7 @@ function Sidebar({ roleLabel, navItems, activePage, onNavigate, footerName, foot
       <aside className={`side-modern w-60 bg-ink text-white flex flex-col shrink-0 ${collapsed ? 'is-collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
         <div className="side-top">
           <div className="side-logo-row">
-            <Logo dark />
+            <Logo dark brand={brand} />
             <button className="side-collapse-btn" onClick={() => setCollapsed(true)} aria-label="Yig'ish">
               <Icon.chevron width="13" height="13" style={{ transform: 'rotate(90deg)' }} />
             </button>
@@ -6007,6 +6100,18 @@ function StaffApp({ me, staff, setStaff, roleTpl, setRoleTpl, categories, setCat
   const myPerms = permsOf(me, roleTpl); const can = (k) => myPerms.includes(k);
   const canEditCourses = can('courses.edit'), canEditStudents = can('students.edit');
 
+  /* Brend (sidebar logotipi): ko'rinishi hamma xodimga, o'zgartirish faqat 'branding.edit' ruxsati bilan */
+  const canBrand = can('branding.edit');
+  const [brand, setBrand] = useState(() => normalizeBrand(loadLS('branding_v1', null)));
+  const saveBrand = (next) => {
+    if (!canBrand) { notify("Brendni o'zgartirish huquqingiz yo'q", 'danger'); return false; }
+    const nb = normalizeBrand(next);
+    // API: PATCH /api/admin/branding/  (name, logo, bg_color) — faqat CEO / branding.edit
+    if (!saveLS('branding_v1', nb)) { notify("Saqlab bo'lmadi: brauzer xotirasi to'lgan (kichikroq rasm tanlang)", 'danger'); return false; }
+    setBrand(nb);
+    return true;
+  };
+
   const stats = useMemo(() => {
     const lessonsCount = categories.reduce((a, c) => a + c.subtopics.reduce((b, s) => b + s.lessons.length, 0), 0);
     const overdue = students.filter((s) => studentBilling(s, categories).blocked).length;
@@ -6097,7 +6202,7 @@ function StaffApp({ me, staff, setStaff, roleTpl, setRoleTpl, categories, setCat
         <BlockedIntroModal items={notifications}
           onFinish={(goBlocked) => { setIntro('done'); if (goBlocked) goTo('blocked'); }} />
       )}
-      <Sidebar roleLabel={roleLabel} navItems={nav}
+      <Sidebar roleLabel={roleLabel} navItems={nav} brand={brand}
         activePage={curPage} onNavigate={goTo}
         footerName={me.name} footerSub="Profilni ko'rish" footerInitials={initials} footerAvatar={me.avatar}
         onFooterClick={() => goTo('profile')}
@@ -6155,7 +6260,7 @@ function StaffApp({ me, staff, setStaff, roleTpl, setRoleTpl, categories, setCat
 
         {curPage === 'staff' && <StaffPage me={me} staff={staff} setStaff={setStaff} roleTpl={roleTpl} notify={notify} onGoPerms={() => goTo('permissions')} />}
 
-        {curPage === 'profile' && <StaffProfile me={me} staff={staff} setStaff={setStaff} notify={notify} onLogout={onLogout} />}
+        {curPage === 'profile' && <StaffProfile me={me} staff={staff} setStaff={setStaff} notify={notify} onLogout={onLogout} canBrand={canBrand} brand={brand} onSaveBrand={saveBrand} />}
           </div>
         </main>
       </div>
@@ -7219,13 +7324,15 @@ function PaymentsPage({ students, categories, setStudents, notify, canEdit }) {
    ========================================================================= */
 const NX_MODS = {
   dashboard: { ic: 'home', c: '#34d399' }, students: { ic: 'users', c: '#38bdf8' }, courses: { ic: 'book', c: '#a78bfa' },
-  statistics: { ic: 'chart', c: '#22d3ee' }, payments: { ic: 'card', c: '#f472b6' }, blocked: { ic: 'lock', c: '#fb7185' }, staff: { ic: 'user', c: '#2dd4bf' },
+  statistics: { ic: 'chart', c: '#22d3ee' }, payments: { ic: 'card', c: '#f472b6' }, blocked: { ic: 'lock', c: '#fb7185' }, staff: { ic: 'user', c: '#2dd4bf' }, branding: { ic: 'image', c: '#e879f9' },
 };
 const NX_LV = ['Yopiq', "Ko'rish", 'Boshqarish'];
 const nxEditKey = (g) => { const it = g.items.find(([k]) => !k.endsWith('.view')); return it ? it[0] : null; };
 const nxLevel = (perms, g) => { const e = nxEditKey(g); return e && perms.includes(e) ? 2 : perms.includes(g.id + '.view') ? 1 : 0; };
+const nxHasView = (g) => g.items.some(([k]) => k === g.id + '.view');
 const nxSetLevel = (perms, g, lvl) => {
   const vk = g.id + '.view', ek = nxEditKey(g);
+  if (!nxHasView(g)) return ek ? permToggle(perms, ek, lvl === 2) : perms; // faqat "Boshqarish" huquqi bor modul (Brend): Yopiq / Boshqarish
   if (lvl === 0) return permToggle(perms, vk, false);
   let p = permToggle(perms, vk, true);
   if (lvl === 1) return ek ? permToggle(p, ek, false) : p;
@@ -7297,7 +7404,7 @@ function NxTiles({ perms, onChange, disabled }) {
   return (
     <div className="nx-tiles">{PERM_GROUPS.map((g) => {
       const m = NX_MODS[g.id] || { ic: 'lock', c: '#34d399' }, lv = nxLevel(perms, g), ek = nxEditKey(g), Ic = Icon[m.ic] || Icon.lock;
-      const opts = ek ? [0, 1, 2] : [0, 1];
+      const opts = ek ? (nxHasView(g) ? [0, 1, 2] : [0, 2]) : [0, 1];
       const desc = (g.items[lv === 2 && g.items[1] ? 1 : 0] || g.items[0])[2];
       return (
         <div key={g.id} className={'nx-tile l' + lv + (disabled ? ' dis' : '')} style={{ '--mc': m.c, '--hot': g.id === 'staff' ? '#fb7185' : '#fbbf24' }} onMouseMove={nxSpot}>
@@ -7335,7 +7442,7 @@ function NxDrawer({ title, sub, onClose, children, footer }) {
   );
 }
 
-const riskOf = (perms) => { const w = perms.reduce((t, k) => t + (k === 'staff.manage' ? 4 : k.endsWith('.edit') ? 2 : (k === 'statistics.view' || k === 'staff.view') ? 1 : 0), 0); return w >= 8 ? ['Yuqori', '#fb7185'] : w >= 3 ? ["O'rta", '#fbbf24'] : ['Past', '#34d399']; };
+const riskOf = (perms) => { const w = perms.reduce((t, k) => t + (k === 'staff.manage' ? 4 : k === 'branding.edit' ? 1 : k.endsWith('.edit') ? 2 : (k === 'statistics.view' || k === 'staff.view') ? 1 : 0), 0); return w >= 8 ? ['Yuqori', '#fb7185'] : w >= 3 ? ["O'rta", '#fbbf24'] : ['Past', '#34d399']; };
 function PcRing({ v, max, c, size = 64, txt }) {
   const r = size / 2 - 6, C = 2 * Math.PI * r;
   return (<svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="pc-ring"><circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="currentColor" strokeOpacity=".12" strokeWidth="6" />
@@ -7403,8 +7510,8 @@ function PermissionsPage({ me, staff, setStaff, roleTpl, setRoleTpl, notify }) {
   const grade = score >= 85 ? "A'lo" : score >= 60 ? 'Qoniqarli' : 'Xavfli';
   const scoreN = useCountUp(score);
   const mshow = PERM_GROUPS.filter((g) => !mq.trim() || (g.label + ' ' + g.items.map((i) => i[1] + ' ' + i[2]).join(' ')).toLowerCase().includes(mq.trim().toLowerCase()));
-  const cycle = (c, g) => { const mx = nxEditKey(g) ? 2 : 1, nx = (nxLevel(c.perms, g) + 1) % (mx + 1); writePerms(c, nxSetLevel(c.perms, g, nx), `${g.label}: ${NX_LV[nx]}`); };
-  const setAll = (c, lv) => writePerms(c, PERM_GROUPS.reduce((p, g) => nxSetLevel(p, g, g.id === 'staff' ? Math.min(lv, 1) : lv), c.perms), lv === 0 ? 'barcha huquqlar olindi' : lv === 1 ? "barcha modullar: Ko'rish" : 'barcha huquqlar berildi (jamoani boshqarishsiz)');
+  const cycle = (c, g) => { const mx = nxEditKey(g) ? 2 : 1, lv0 = nxLevel(c.perms, g), nx = nxHasView(g) ? (lv0 + 1) % (mx + 1) : (lv0 === 2 ? 0 : 2); writePerms(c, nxSetLevel(c.perms, g, nx), `${g.label}: ${NX_LV[nx]}`); };
+  const setAll = (c, lv) => writePerms(c, PERM_GROUPS.reduce((p, g) => nxSetLevel(p, g, g.id === 'staff' ? Math.min(lv, 1) : g.id === 'branding' ? (lv === 0 ? 0 : nxLevel(p, g)) : lv), c.perms), lv === 0 ? 'barcha huquqlar olindi' : lv === 1 ? "barcha modullar: Ko'rish" : 'barcha huquqlar berildi (jamoani boshqarish va brendsiz)');
   const avOf = (e, size) => <span className={'nx-av ' + (size || 'sm')} style={{ background: e.kind === 'role' ? `color-mix(in srgb,${R(e).c} 62%,#000)` : hdGrad(e.name) }}>{e.kind === 'role' ? <Icon.lock width={size === 'lg' ? 26 : 16} height={size === 'lg' ? 26 : 16} /> : hdIni(e.name)}</span>;
 
   return (
@@ -9831,10 +9938,11 @@ const PERM_GROUPS = [
   { id: 'payments', label: "To'lovlar", items: [['payments.view', "Ko'rish", "Moliya markazi, holat va tranzaksiyalar"], ['payments.edit', 'Boshqarish', "To'lov qabul qilish, bekor qilish va qarzdorlarga eslatma"]] },
   { id: 'blocked', label: 'Bloklanganlar', items: [['blocked.view', "Ko'rish", "Bloklangan o'quvchilar va sabablari"]] },
   { id: 'staff', label: 'Xodimlar', items: [['staff.view', "Ko'rish", "Jamoa ro'yxati"], ['staff.manage', 'Boshqarish', "Xodim qo'shish, tahrirlash, o'chirish (CEO'ni tahrirlab bo'lmaydi)"]] },
+  { id: 'branding', label: 'Brend', items: [['branding.edit', 'Boshqarish', "Sidebar logotipi, nomi va ikonka foni (Profil → Brend sozlamalari). Odatda faqat CEO"]] },
 ];
 const ALL_PERMS = PERM_GROUPS.flatMap((g) => g.items.map((i) => i[0]));
 const DEFAULT_ROLE_PERMS = {
-  admin_teacher: ALL_PERMS.filter((k) => k !== 'staff.manage'),
+  admin_teacher: ALL_PERMS.filter((k) => k !== 'staff.manage' && k !== 'branding.edit'),
   support: ['dashboard.view', 'students.view', 'courses.view', 'statistics.view', 'payments.view', 'blocked.view'],
 };
 const isTopRole = (r) => r === 'ceo' || r === 'ceo_support';
@@ -10093,7 +10201,7 @@ const PB_PREFS = [
   ['newStudents', "Yangi o'quvchilar", "Yangi o'quvchi qo'shilganda xabar", Icon.users, '#38bdf8'],
   ['weeklyReport', 'Haftalik hisobot', "Har dushanba moliya xulosasi", Icon.chart, '#a78bfa'],
 ];
-const PB_MODULE_ICON = { dashboard: Icon.home, students: Icon.users, courses: Icon.book, payments: Icon.cash, blocked: Icon.lock, staff: Icon.user, roles: Icon.key, stats: Icon.chart };
+const PB_MODULE_ICON = { branding: Icon.image, dashboard: Icon.home, students: Icon.users, courses: Icon.book, payments: Icon.cash, blocked: Icon.lock, staff: Icon.user, roles: Icon.key, stats: Icon.chart };
 const pbPwScore = (v) => {
   let sc = 0;
   if (v.length >= 4) sc++;
@@ -10104,7 +10212,104 @@ const pbPwScore = (v) => {
 };
 const pbIni = (n) => String(n || '?').split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 
-function StaffProfile({ me, staff, setStaff, notify, onLogout }) {
+/* =========================================================================
+   BREND SOZLAMALARI (Profil ichida) — faqat CEO va 'branding.edit' ruxsati bor xodimlar
+   ========================================================================= */
+function BrandSettings({ brand, onSave, notify }) {
+  const [d, setD] = useState(brand);
+  const [busy, setBusy] = useState(false);
+  const fileRef = useRef(null);
+  useEffect(() => { setD(brand); }, [brand]);
+
+  const nm = d.name.trim();
+  const nameOk = nm.length >= 1 && nm.length <= BRAND_NAME_MAX;
+  const dirty = nm !== brand.name || d.image !== brand.image || d.useDefaultBg !== brand.useDefaultBg || (!d.useDefaultBg && d.bgColor !== brand.bgColor);
+
+  const pickFile = (e) => {
+    const f = e.target.files && e.target.files[0]; e.target.value = '';
+    if (!f) return;
+    if (!/^image\//.test(f.type)) { notify('Faqat rasm fayli tanlang', 'danger'); return; }
+    if (f.size > 2 * 1024 * 1024) { notify('Rasm hajmi 2 MB dan oshmasin', 'danger'); return; }
+    setBusy(true);
+    readBrandImage(f)
+      .then((url) => setD((x) => ({ ...x, image: url })))
+      .catch(() => notify("Rasmni yuklab bo'lmadi — boshqa fayl tanlang", 'danger'))
+      .then(() => setBusy(false));
+  };
+  const save = () => {
+    if (!nameOk) { notify("Nom bo'sh bo'lmasin", 'danger'); return; }
+    if (onSave({ ...d, name: nm })) notify('Brend yangilandi');
+  };
+
+  return (
+    <section className="pb-card span-12">
+      <header className="pb-ch">
+        <span className="pb-ico" style={{ '--c': '#e879f9' }}><Icon.image width="16" height="16" /></span>
+        <div><h2>Brend sozlamalari</h2><p>Sidebar'dagi logotip, nom va ikonka foni. Bu bo'limni faqat CEO va ruxsati bor xodimlar ko'radi</p></div>
+      </header>
+
+      <div className="bc">
+        <div className="bc-form">
+          <label className="pb-field">
+            <span>Nom <b>{d.name.length}/{BRAND_NAME_MAX}</b></span>
+            <div className={'pb-input' + (nameOk ? ' ok' : ' bad')}>
+              <input value={d.name} maxLength={BRAND_NAME_MAX} placeholder={DEFAULT_BRAND.name} onChange={(e) => setD({ ...d, name: e.target.value })} />
+            </div>
+            {!nameOk && <em>Nom bo'sh bo'lmasin</em>}
+          </label>
+
+          <div className="bc-row">
+            <span className="bc-lab">Ikonka</span>
+            <div className="bc-icon-row">
+              <button type="button" className="pb-btn soft" disabled={busy} onClick={() => fileRef.current && fileRef.current.click()}>
+                <Icon.camera width="14" height="14" /> {busy ? 'Yuklanmoqda…' : 'Rasm yuklash'}
+              </button>
+              {d.image && <button type="button" className="pb-btn soft danger" onClick={() => setD({ ...d, image: '' })}><Icon.trash width="14" height="14" /> Standart ikonka</button>}
+              <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" hidden onChange={pickFile} />
+            </div>
+            <p className="bc-hint">PNG, SVG yoki JPG (2 MB gacha). Fonsiz (shaffof) PNG eng yaxshi ko'rinadi.</p>
+          </div>
+
+          <div className="bc-row">
+            <span className="bc-lab">Ikonka orqa foni</span>
+            <label className="bc-def">
+              <input type="checkbox" checked={d.useDefaultBg} onChange={(e) => setD({ ...d, useDefaultBg: e.target.checked })} />
+              Standart rang
+            </label>
+            <div className={'bc-colors' + (d.useDefaultBg ? ' off' : '')}>
+              {BRAND_SWATCHES.map((c) => (
+                <button key={c} type="button" aria-label={'Rang ' + c} disabled={d.useDefaultBg}
+                  className={'bc-sw' + (!d.useDefaultBg && d.bgColor === c ? ' on' : '')} style={{ background: c }}
+                  onClick={() => setD({ ...d, bgColor: c })} />
+              ))}
+              <label className={'bc-pick' + (d.useDefaultBg ? ' dis' : '')} title="Boshqa rang tanlash">
+                +
+                <input type="color" disabled={d.useDefaultBg} value={d.bgColor} onChange={(e) => setD({ ...d, bgColor: e.target.value.toLowerCase() })} />
+              </label>
+              <span className="bc-hex">{d.useDefaultBg ? 'STANDART' : d.bgColor.toUpperCase()}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bc-prev-wrap">
+          <span className="bc-lab">Ko'rinishi</span>
+          <div className="bc-prev side-top">
+            <div className="side-logo-row"><Logo dark brand={{ ...d, name: nm || DEFAULT_BRAND.name }} /></div>
+          </div>
+          <p className="bc-hint">Sidebar'da shunday ko'rinadi. O'zgarishlar «Saqlash» bosilgach qo'llanadi.</p>
+        </div>
+      </div>
+
+      <div className="pb-cardfoot">
+        <button type="button" className="pb-btn ghost" onClick={() => setD({ ...DEFAULT_BRAND })}>Standartga qaytarish</button>
+        <button type="button" className="pb-btn ghost" onClick={() => setD(brand)} disabled={!dirty}>Bekor qilish</button>
+        <button type="button" className="pb-btn solid" onClick={save} disabled={!dirty || !nameOk || busy}><Icon.check width="14" height="14" /> Saqlash</button>
+      </div>
+    </section>
+  );
+}
+
+function StaffProfile({ me, staff, setStaff, notify, onLogout, canBrand, brand, onSaveBrand }) {
   const stored = staff.find((u) => u.id === me.id) || me;
   const isCeo = me.role === 'ceo';
   const fileRef = useRef(null);
@@ -10388,6 +10593,9 @@ function StaffProfile({ me, staff, setStaff, notify, onLogout }) {
             ))}
           </div>
         </section>
+
+        {/* ---------- BREND (12, faqat CEO / branding.edit) ---------- */}
+        {canBrand && brand && <BrandSettings brand={brand} onSave={onSaveBrand} notify={notify} />}
 
         {/* ---------- RUXSATLAR (12) ---------- */}
         <section className="pb-card span-12">
