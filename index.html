@@ -4600,6 +4600,51 @@ html body .side-top .brand-tile-img{ display:block; width:100%; height:100%; obj
 .bc-prev{ border-radius:20px; background:var(--pb-in); border:1px solid var(--pb-bd); }
 @media (max-width:860px){ .bc{ grid-template-columns:1fr; } }
 </style>
+<style id="edu-polish-v1">
+/* Umumiy sayqal: faqat vizual qatlam. Mantiq, tuzilma va ranglar palitrasi o'zgarmaydi. */
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;text-rendering:optimizeLegibility}
+img,video,canvas,svg{max-width:100%}
+*{scrollbar-width:thin;scrollbar-color:rgba(127,140,150,.4) transparent}
+*::-webkit-scrollbar{width:8px;height:8px}
+*::-webkit-scrollbar-thumb{background:rgba(127,140,150,.4);border-radius:8px}
+:where(button,a,input,select,textarea,[role=button],[tabindex]):focus-visible{outline:2px solid #34d399;outline-offset:2px;border-radius:10px}
+/* Yumshoq harakat */
+:where(button,.course-card,.nx-card,.blk-card,.stu-row,.sd-btn,.nx-btn,.cm-btn,.pb-btn,.pr-btn,.nav-pill,.topbar-icon-btn){transition:transform .18s ease,box-shadow .2s ease,background-color .2s ease,border-color .2s ease,opacity .2s ease}
+:where(button,.sd-btn,.nx-btn,.cm-btn,.pb-btn,.pr-btn):active:not(:disabled){transform:scale(.97)}
+:where(button,.sd-btn,.nx-btn,.cm-btn,.pb-btn,.pr-btn):disabled{cursor:not-allowed}
+/* Kartalar */
+.course-card,.nx-card,.blk-card,.monthly-chart-card,.sx-box{border-radius:18px}
+@media (hover:hover){.course-card:hover,.nx-card:hover,.blk-card:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(8,20,16,.14)}.stu-row:hover{background-image:linear-gradient(rgba(52,211,153,.05),rgba(52,211,153,.05))}}
+/* Maydonlar */
+.sd-input,.pb-input,.pb-pw-input,.course-form-field-input,.stu-search input{border-radius:12px;min-height:44px;font-size:16px}
+.sd-input:focus,.pb-input:focus,.pb-pw-input:focus,.course-form-field-input:focus{box-shadow:0 0 0 3px rgba(52,211,153,.22)}
+/* Modallar */
+.modal-card,.sd-modal{border-radius:20px;max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain}
+/* Jadvallar va keng bloklar ichida o'z-o'zidan aylanadi */
+.app-main table,.st-page table{max-width:100%}
+.sx-tabs,.nx-tabs,.lt-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap}
+.sx-tabs::-webkit-scrollbar,.nx-tabs::-webkit-scrollbar,.lt-tabs::-webkit-scrollbar{display:none}
+.sx-tabs>*,.nx-tabs>*,.lt-tabs>*{flex-shrink:0}
+/* Planshet */
+@media (max-width:1024px){
+  .sx-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .app-main{min-width:0}
+}
+/* Telefon */
+@media (max-width:640px){
+  .app-main,.st-page,.cs-main{padding-left:12px!important;padding-right:12px!important}
+  .app-main{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))!important}
+  .sx-kpis{grid-template-columns:1fr!important}
+  .modal-card,.sd-modal,.sd-modal-xl{width:calc(100vw - 16px)!important;border-radius:18px}
+  :where(.sd-btn,.nx-btn,.cm-btn,.pb-btn,.pr-btn,.topbar-icon-btn,.mobile-menu-btn){min-height:44px}
+  .mobile-bottom-nav{padding-bottom:env(safe-area-inset-bottom,0px);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+  .topbar{padding-left:12px!important;padding-right:12px!important}
+}
+/* Katta ekran: kontent haddan tashqari cho'zilib ketmasin */
+@media (min-width:1600px){.st-page,.cs-main{max-width:1500px;margin-inline:auto}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
 <script type="text/plain" id="app-source">
 const { useState, useMemo, useRef, useEffect, useLayoutEffect } = React;
 
