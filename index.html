@@ -4824,7 +4824,7 @@ const genUniqueLogin = (firstName, existingUsernames) => {
 const genPassword6 = () => String(Math.floor(100000 + Math.random() * 900000));
 
 /* ---------------------------- LOCAL STORAGE ---------------------------- */
-const LS_PREFIX = 'edustream_';
+let LS_PREFIX = 'edustream_';
 const loadLS = (key, fallback) => {
   try {
     const raw = localStorage.getItem(LS_PREFIX + key);
@@ -11996,6 +11996,488 @@ function StudentProfile({ student, onSave }) {
 }
 
 /* =========================================================================
+   MULTI-TENANT: PARTNER PANELI (?role=part), BOSSLAR, OYLIK TO'LOV VA BLOK
+   -------------------------------------------------------------------------
+   - Asosiy platforma ma'lumotlari: 'edustream_' prefiksi (avvalgidek, o'zgarmagan)
+   - Har bir Boss (CEO) o'z bo'limi: 'edustream_t_<id>_' prefiksi (kurslar, xodimlar,
+     o'quvchilar, izohlar... hammasi alohida)
+   - Bosslar ro'yxati va to'lovlar: 'edustream_g_tenants'
+   - Oyning 1–4 kunlari to'lanmagan bo'lsa: kirganda ogohlantirish modali
+   - Oyning BLOCK_DAY (5) kunidan boshlab to'lanmagan bo'lsa: sayt bloklanadi
+   ========================================================================= */
+const BLOCK_DAY = 5;
+const MONTHS_UZ = ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'];
+const gGet = (k, fb) => { try { const r = localStorage.getItem('edustream_g_' + k); return r ? JSON.parse(r) : fb; } catch (e) { return fb; } };
+const gSet = (k, v) => { try { localStorage.setItem('edustream_g_' + k, JSON.stringify(v)); return true; } catch (e) { return false; } };
+const tenantPrefix = (tid) => (!tid || tid === 'main') ? 'edustream_' : `edustream_t_${tid}_`;
+const monthKey = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+const nextMonthKey = () => { const d = new Date(); return monthKey(new Date(d.getFullYear(), d.getMonth() + 1, 1)); };
+const monthLabel = (k) => { const [y, m] = k.split('-').map(Number); return `${MONTHS_UZ[m - 1]} ${y}`; };
+const isoOf = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const randPw = () => { const c = 'abcdefghjkmnpqrstuvwxyz23456789'; let s = ''; for (let i = 0; i < 8; i++) s += c[Math.floor(Math.random() * c.length)]; return s; };
+
+/* Bitta Boss uchun hisob-kitob: qaysi oylar to'lanmagan, bloklanganmi, ogohlantirish kerakmi */
+const tenantBilling = (t, now = new Date()) => {
+  const cur = monthKey(now), day = now.getDate(), today = isoOf(now);
+  const paid = new Set((t.paid || []).map((p) => p.month));
+  const unpaid = [];
+  let [y, m] = (t.startMonth || cur).split('-').map(Number);
+  const [cy, cm] = cur.split('-').map(Number);
+  while (y < cy || (y === cy && m <= cm)) {
+    const k = `${y}-${String(m).padStart(2, '0')}`;
+    if (!paid.has(k)) unpaid.push(k);
+    m++; if (m > 12) { m = 1; y++; }
+  }
+  const overdue = unpaid.filter((k) => k < cur || day >= BLOCK_DAY);
+  const grace = !!(t.graceUntil && t.graceUntil >= today);
+  const blocked = overdue.length > 0 && !grace;
+  const curUnpaid = unpaid.includes(cur);
+  return {
+    blocked, grace, unpaid, overdue,
+    warn: !blocked && curUnpaid && (day < BLOCK_DAY || grace),
+    daysLeft: Math.max(0, BLOCK_DAY - day),
+    isDebtor: unpaid.length > 0,
+    debt: unpaid.length * (Number(t.fee) || 0),
+  };
+};
+const tenantStatus = (t) => {
+  const b = tenantBilling(t);
+  if (b.blocked) return { l: 'Bloklangan', c: 'red' };
+  if (b.grace && b.overdue.length) return { l: 'Vaqtincha ochiq', c: 'blue' };
+  if (b.unpaid.length) return { l: 'Qarzdor', c: 'amber' };
+  return { l: "To'langan", c: 'green' };
+};
+const allUsernames = () => {
+  const out = [];
+  ['main', ...gGet('tenants', []).map((t) => t.id)].forEach((id) => {
+    const p = tenantPrefix(id);
+    ['staff', 'students'].forEach((k) => {
+      try { (JSON.parse(localStorage.getItem(p + k) || '[]') || []).forEach((u) => out.push((u.username || '').toLowerCase())); } catch (e) {}
+    });
+  });
+  return out;
+};
+/* Boshqa bo'limdan (asosiy yoki boshqa Boss) login/parol bo'yicha foydalanuvchi qidirish */
+const findUserInOtherTenants = (username, password) => {
+  const cur = gGet('active', 'main');
+  const ids = ['main', ...gGet('tenants', []).map((t) => t.id)].filter((id) => id !== cur);
+  for (const id of ids) {
+    const p = tenantPrefix(id);
+    const rd = (k) => { try { return JSON.parse(localStorage.getItem(p + k) || 'null') || []; } catch (e) { return []; } };
+    const st = rd('staff').find((s) => s.username === username && s.password === password && !s.disabled);
+    if (st) return { tid: id, session: { type: 'staff', id: st.id } };
+    const sd = rd('students').find((s) => s.username === username && s.password === password);
+    if (sd) return { tid: id, session: { type: 'student', id: sd.id } };
+  }
+  return null;
+};
+const switchTenant = (tid, session) => {
+  saveLS('session', null);   // eski bo'limdagi sessiyani tozalash
+  LS_PREFIX = tenantPrefix(tid);
+  saveLS('session', session || null);
+  gSet('active', tid || 'main');
+  if (window.__rerootTenant) window.__rerootTenant(tid || 'main');
+};
+
+const PT_CSS = `
+.pt-wrap{min-height:100vh;background:#0b1220;color:#e5ecf6;font-family:Manrope,system-ui,sans-serif;padding:20px}
+.pt-in{max-width:1080px;margin:0 auto}
+.pt-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.pt-top h1{font-family:Fraunces,serif;font-size:26px;margin:0}
+.pt-top small{color:#8aa0bd;display:block;font-size:12px;margin-top:2px}
+.pt-card{background:#121b2e;border:1px solid #1f2c47;border-radius:14px;padding:16px}
+.pt-auth{max-width:380px;margin:12vh auto 0}
+.pt-auth h2{font-family:Fraunces,serif;margin:0 0 4px;font-size:22px}
+.pt-auth p{color:#8aa0bd;font-size:13px;margin:0 0 14px}
+.pt-in input,.pt-in select,.pt-in textarea,.pt-modal input,.pt-modal select,.pt-modal textarea,.pt-auth input{width:100%;background:#0b1220;border:1px solid #26365a;border-radius:10px;color:#e5ecf6;padding:10px 12px;font-size:14px;outline:none;font-family:inherit}
+.pt-in input:focus,.pt-modal input:focus,.pt-modal select:focus,.pt-modal textarea:focus,.pt-auth input:focus{border-color:#34d399}
+.pt-lbl{display:block;font-size:12px;color:#8aa0bd;margin:10px 0 4px}
+.pt-btn{background:#34d399;color:#04231a;border:0;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit}
+.pt-btn.g{background:#1a2742;color:#e5ecf6}
+.pt-btn.r{background:#f43f5e;color:#fff}
+.pt-btn.s{padding:6px 10px;font-size:12px}
+.pt-btn:disabled{opacity:.5;cursor:not-allowed}
+.pt-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+.pt-stat b{display:block;font-size:22px;margin-top:2px}
+.pt-stat span{font-size:12px;color:#8aa0bd}
+.pt-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.pt-tab{background:#121b2e;border:1px solid #1f2c47;color:#9fb2cf;border-radius:10px;padding:8px 14px;cursor:pointer;font-weight:600;font-size:13px;font-family:inherit}
+.pt-tab.on{background:#34d399;color:#04231a;border-color:#34d399}
+.pt-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 0;border-top:1px solid #1f2c47}
+.pt-row:first-child{border-top:0}
+.pt-row .n{font-weight:700}
+.pt-row .m{font-size:12px;color:#8aa0bd;margin-top:2px}
+.pt-acts{display:flex;gap:6px;flex-wrap:wrap}
+.pt-chip{font-size:11px;font-weight:700;border-radius:999px;padding:3px 9px;display:inline-block}
+.pt-chip.green{background:rgba(52,211,153,.15);color:#34d399}
+.pt-chip.amber{background:rgba(251,191,36,.15);color:#fbbf24}
+.pt-chip.red{background:rgba(244,63,94,.16);color:#fb7185}
+.pt-chip.blue{background:rgba(96,165,250,.16);color:#60a5fa}
+.pt-empty{color:#8aa0bd;font-size:14px;padding:18px 0;text-align:center}
+.pt-ov{position:fixed;inset:0;background:rgba(3,8,18,.72);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px}
+.pt-modal{background:#121b2e;border:1px solid #26365a;color:#e5ecf6;border-radius:16px;padding:20px;width:100%;max-width:440px;max-height:90vh;overflow:auto;font-family:Manrope,system-ui,sans-serif}
+.pt-modal h3{font-family:Fraunces,serif;margin:0 0 6px;font-size:20px}
+.pt-modal p{color:#a9bad3;font-size:14px;line-height:1.55;margin:6px 0}
+.pt-modal .ft{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+.pt-cred{background:#0b1220;border:1px dashed #34d399;border-radius:10px;padding:12px;font-family:ui-monospace,monospace;font-size:13px;line-height:1.8;word-break:break-all}
+.pt-big{font-size:44px;text-align:center;margin-bottom:4px}
+.pt-blocked{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0b1220;padding:16px}
+`;
+
+/* ---- Bloklangan Boss uchun to'liq ekran ---- */
+function BlockedScreen({ tenant, b, onExit }) {
+  return (
+    <div className="pt-blocked">
+      <style>{PT_CSS}</style>
+      <div className="pt-modal" style={{ maxWidth: 460, textAlign: 'center' }}>
+        <div className="pt-big">🔒</div>
+        <h3>Sayt vaqtincha bloklangan</h3>
+        <p>«{tenant.name}» bo'limi uchun oylik to'lov o'z vaqtida qilinmadi.</p>
+        <p><b>To'lanmagan oylar:</b> {b.unpaid.map(monthLabel).join(', ')}</p>
+        <p><b>Jami qarz:</b> {fmtMoney(b.debt)}</p>
+        <p>To'lov qilingach, sayt avtomatik ochiladi. To'lov haqida administrator bilan bog'laning.</p>
+        <div className="ft" style={{ justifyContent: 'center' }}>
+          <a className="pt-btn" href={SUPPORT_TELEGRAM_URL} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>Bog'lanish</a>
+          <button className="pt-btn g" onClick={onExit}>Chiqish</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---- Ogohlantirish / qarzdorlarga xabar modali ---- */
+function PaymentModal({ tenant, b, onClose }) {
+  const hasNotice = tenant.notice && b.isDebtor;
+  return (
+    <div className="pt-ov">
+      <style>{PT_CSS}</style>
+      <div className="pt-modal">
+        <div className="pt-big">{b.warn ? '⏰' : '⚠️'}</div>
+        <h3 style={{ textAlign: 'center' }}>To'lov haqida eslatma</h3>
+        {hasNotice && <p style={{ background: '#1a2742', borderRadius: 10, padding: 10 }}>{tenant.notice.text}</p>}
+        {b.warn && <p>Oylik to'lov muddati — har oyning <b>{BLOCK_DAY}-sanasigacha</b>. {b.daysLeft > 0 ? <span>Qolgan kun: <b>{b.daysLeft}</b>.</span> : null} Aks holda sayt vaqtincha bloklanadi.</p>}
+        <p><b>To'lanmagan oylar:</b> {b.unpaid.map(monthLabel).join(', ')}</p>
+        <p><b>Oylik to'lov:</b> {fmtMoney(tenant.fee)} · <b>Jami qarz:</b> {fmtMoney(b.debt)}</p>
+        <div className="ft">
+          <a className="pt-btn g" href={SUPPORT_TELEGRAM_URL} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>To'lov uchun bog'lanish</a>
+          <button className="pt-btn" onClick={onClose}>Tushundim</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---- ROOT: qaysi bo'lim (tenant) ochilishini hal qiladi ---- */
+function Root() {
+  const isPart = /[?&]role=part(&|$)/.test(window.location.search);
+  const [tid, setTid] = useState(() => {
+    const t = gGet('active', 'main');
+    LS_PREFIX = tenantPrefix(t);
+    return t;
+  });
+  const [tick, setTick] = useState(0);
+  const [showModal, setShowModal] = useState(true);
+  useEffect(() => { window.__rerootTenant = (t) => { setTid(t); setTick((x) => x + 1); setShowModal(true); }; return () => { window.__rerootTenant = null; }; }, []);
+  useEffect(() => { const i = setInterval(() => setTick((x) => x + 1), 60000); return () => clearInterval(i); }, []);
+
+  const tenant = tid === 'main' ? null : gGet('tenants', []).find((x) => x.id === tid);
+  useEffect(() => { if (tid !== 'main' && !tenant && !isPart) switchTenant('main', null); }, [tid, tenant, isPart]);
+
+  if (isPart) return <PartnerApp />;
+  if (tid !== 'main' && !tenant) return null;
+  if (!tenant) return <App key="main" />;
+
+  const b = tenantBilling(tenant);
+  if (b.blocked) return <BlockedScreen tenant={tenant} b={b} onExit={() => switchTenant('main', null)} />;
+  const needModal = showModal && (b.warn || (tenant.notice && b.isDebtor));
+  return (
+    <React.Fragment>
+      <App key={tid} />
+      {needModal && <PaymentModal tenant={tenant} b={b} onClose={() => setShowModal(false)} />}
+    </React.Fragment>
+  );
+}
+
+/* ---- PARTNER PANELI ---- */
+function PartnerApp() {
+  const [admin, setAdmin] = useState(() => gGet('padmin', null));
+  const [authed, setAuthed] = useState(() => { try { return sessionStorage.getItem('edustream_g_pauth') === '1'; } catch (e) { return false; } });
+  const [tenants, setTenants] = useState(() => gGet('tenants', []));
+  const [tab, setTab] = useState('boss');
+  const [creating, setCreating] = useState(false);
+  const [made, setMade] = useState(null);
+  const [payFor, setPayFor] = useState(null);
+  const [graceFor, setGraceFor] = useState(null);
+  const [editFor, setEditFor] = useState(null);
+  const [noticeOpen, setNoticeOpen] = useState(false);
+  const [msg, setMsg] = useState('');
+  const [err, setErr] = useState('');
+  const [f, setF] = useState({ u: '', p: '', p2: '' });
+  const commit = (next) => { setTenants(next); gSet('tenants', next); };
+  const patchTenant = (id, fn) => commit(tenants.map((t) => (t.id === id ? fn(t) : t)));
+
+  const setupAdmin = (e) => {
+    e.preventDefault(); setErr('');
+    if (f.u.trim().length < 3) return setErr("Login kamida 3 belgi bo'lsin");
+    if (f.p.length < 6) return setErr("Parol kamida 6 belgi bo'lsin");
+    if (f.p !== f.p2) return setErr('Parollar mos emas');
+    const a = { username: f.u.trim(), password: f.p }; gSet('padmin', a); setAdmin(a);
+    try { sessionStorage.setItem('edustream_g_pauth', '1'); } catch (x) {} setAuthed(true);
+  };
+  const loginAdmin = (e) => {
+    e.preventDefault(); setErr('');
+    if (admin && f.u.trim() === admin.username && f.p === admin.password) { try { sessionStorage.setItem('edustream_g_pauth', '1'); } catch (x) {} setAuthed(true); }
+    else setErr("Login yoki parol noto'g'ri");
+  };
+  const logoutAdmin = () => { try { sessionStorage.removeItem('edustream_g_pauth'); } catch (x) {} setAuthed(false); setF({ u: '', p: '', p2: '' }); };
+
+  if (!authed) {
+    return (
+      <div className="pt-wrap"><style>{PT_CSS}</style>
+        <form className="pt-card pt-auth" onSubmit={admin ? loginAdmin : setupAdmin}>
+          <h2>{admin ? 'Partner paneli' : 'Partner paneli — birinchi sozlash'}</h2>
+          <p>{admin ? 'Bosslarni boshqarish uchun kiring.' : "Bu panel uchun yangi login va parol yarating."}</p>
+          <label className="pt-lbl">Login</label>
+          <input value={f.u} onChange={(e) => setF({ ...f, u: e.target.value })} autoComplete="username" />
+          <label className="pt-lbl">Parol</label>
+          <input type="password" value={f.p} onChange={(e) => setF({ ...f, p: e.target.value })} autoComplete="current-password" />
+          {!admin && (<React.Fragment><label className="pt-lbl">Parolni tasdiqlang</label><input type="password" value={f.p2} onChange={(e) => setF({ ...f, p2: e.target.value })} /></React.Fragment>)}
+          {err && <p style={{ color: '#fb7185' }}>{err}</p>}
+          <button className="pt-btn" style={{ width: '100%', marginTop: 14 }}>{admin ? 'Kirish' : 'Yaratish va kirish'}</button>
+        </form>
+      </div>
+    );
+  }
+
+  const rows = tenants.map((t) => ({ t, b: tenantBilling(t), st: tenantStatus(t) }));
+  const debtors = rows.filter((r) => r.b.isDebtor);
+  const blockedRows = rows.filter((r) => r.b.blocked);
+  const now = new Date();
+  const monthIncome = tenants.reduce((s, t) => s + (t.paid || []).filter((p) => (p.date || '').slice(0, 7) === monthKey(now)).reduce((a, p) => a + Number(p.amount || 0), 0), 0);
+  const allPays = []; tenants.forEach((t) => (t.paid || []).forEach((p) => allPays.push({ ...p, tid: t.id, tname: t.name })));
+  allPays.sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.id || '').localeCompare(a.id || ''));
+
+  const flash = (m) => { setMsg(m); setTimeout(() => setMsg(''), 3500); };
+  const removeTenant = (t) => {
+    if (!window.confirm(`«${t.name}» bo'limi va uning BARCHA ma'lumotlari (kurslar, o'quvchilar...) o'chiriladi. Davom etasizmi?`)) return;
+    const p = tenantPrefix(t.id);
+    Object.keys(localStorage).filter((k) => k.indexOf(p) === 0).forEach((k) => localStorage.removeItem(k));
+    commit(tenants.filter((x) => x.id !== t.id)); flash("Boss o'chirildi");
+  };
+  const sendNotice = (text) => {
+    const at = new Date().toISOString();
+    commit(tenants.map((t) => (tenantBilling(t).isDebtor ? { ...t, notice: { id: uid('n'), at, text } } : t)));
+    setNoticeOpen(false); flash(`${debtors.length} ta qarzdorga xabar yuborildi`);
+  };
+  const clearNotice = () => { commit(tenants.map((t) => ({ ...t, notice: null }))); flash('Xabarlar olib tashlandi'); };
+
+  const Row = ({ r, children }) => (
+    <div className="pt-row">
+      <div>
+        <div className="n">{r.t.name} <span className={'pt-chip ' + r.st.c}>{r.st.l}</span></div>
+        <div className="m">CEO: {r.t.ceoName} · login: <b>{r.t.ceoUsername}</b> · oylik: {fmtMoney(r.t.fee)}{r.b.unpaid.length ? ` · qarz: ${r.b.unpaid.map(monthLabel).join(', ')} (${fmtMoney(r.b.debt)})` : ''}{r.b.grace ? ` · ochiq: ${r.t.graceUntil} gacha` : ''}</div>
+      </div>
+      <div className="pt-acts">{children}</div>
+    </div>
+  );
+
+  return (
+    <div className="pt-wrap"><style>{PT_CSS}</style>
+      <div className="pt-in">
+        <div className="pt-top">
+          <div><h1>Partner paneli</h1><small>Bosslar, to'lovlar va bloklash · bugun: {todayISO()}</small></div>
+          <div className="pt-acts"><a className="pt-btn g" href={window.location.pathname} style={{ textDecoration: 'none' }}>Saytga o'tish</a><button className="pt-btn g" onClick={logoutAdmin}>Chiqish</button></div>
+        </div>
+        {msg && <div className="pt-card" style={{ marginBottom: 12, borderColor: '#34d399' }}>{msg}</div>}
+        <div className="pt-stats">
+          <div className="pt-card pt-stat"><span>Bosslar</span><b>{tenants.length}</b></div>
+          <div className="pt-card pt-stat"><span>Qarzdorlar</span><b style={{ color: '#fbbf24' }}>{debtors.length}</b></div>
+          <div className="pt-card pt-stat"><span>Bloklanganlar</span><b style={{ color: '#fb7185' }}>{blockedRows.length}</b></div>
+          <div className="pt-card pt-stat"><span>Shu oy tushum</span><b style={{ color: '#34d399', fontSize: 18 }}>{fmtMoney(monthIncome)}</b></div>
+        </div>
+        <div className="pt-tabs">
+          {[['boss', 'Bosslar', tenants.length], ['pay', "To'lovlar", allPays.length], ['blk', 'Bloklanganlar', blockedRows.length], ['debt', 'Qarzdorlar', debtors.length]].map(([id, l, n]) => (
+            <button key={id} className={'pt-tab' + (tab === id ? ' on' : '')} onClick={() => setTab(id)}>{l} ({n})</button>
+          ))}
+        </div>
+
+        {tab === 'boss' && (
+          <div className="pt-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}><b>Barcha Bosslar</b><button className="pt-btn" onClick={() => setCreating(true)}>+ Yangi Boss</button></div>
+            {rows.length === 0 && <div className="pt-empty">Hali Boss yo'q. «+ Yangi Boss» tugmasi bilan yarating.</div>}
+            {rows.map((r) => (
+              <Row key={r.t.id} r={r}>
+                <button className="pt-btn s" onClick={() => setPayFor(r.t.id)}>To'lov</button>
+                <button className="pt-btn s g" onClick={() => setEditFor(r.t.id)}>Tahrirlash</button>
+                <button className="pt-btn s r" onClick={() => removeTenant(r.t)}>O'chirish</button>
+              </Row>
+            ))}
+          </div>
+        )}
+
+        {tab === 'pay' && (
+          <div className="pt-card">
+            <b>To'lovlar tarixi</b>
+            {allPays.length === 0 && <div className="pt-empty">Hali to'lov qabul qilinmagan.</div>}
+            {allPays.map((p) => (
+              <div className="pt-row" key={p.id}>
+                <div><div className="n">{p.tname} — {monthLabel(p.month)}</div><div className="m">{p.date} · {fmtMoney(p.amount)}{p.note ? ' · ' + p.note : ''}</div></div>
+                <button className="pt-btn s r" onClick={() => { if (window.confirm("To'lovni bekor qilasizmi?")) patchTenant(p.tid, (t) => ({ ...t, paid: (t.paid || []).filter((x) => x.id !== p.id) })); }}>Bekor qilish</button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {tab === 'blk' && (
+          <div className="pt-card">
+            <b>Bloklangan Bosslar</b>
+            {blockedRows.length === 0 && <div className="pt-empty">Bloklangan Boss yo'q.</div>}
+            {blockedRows.map((r) => (
+              <Row key={r.t.id} r={r}>
+                <button className="pt-btn s" onClick={() => setPayFor(r.t.id)}>To'lov qabul qilish</button>
+                <button className="pt-btn s g" onClick={() => setGraceFor(r.t.id)}>Blokdan ochish</button>
+              </Row>
+            ))}
+          </div>
+        )}
+
+        {tab === 'debt' && (
+          <div className="pt-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap', marginBottom: 6 }}>
+              <b>Qarzdorlar</b>
+              <div className="pt-acts">
+                <button className="pt-btn" disabled={!debtors.length} onClick={() => setNoticeOpen(true)}>📢 Qarzdorlarga xabar berish</button>
+                <button className="pt-btn g" onClick={clearNotice}>Xabarlarni olib tashlash</button>
+              </div>
+            </div>
+            {debtors.length === 0 && <div className="pt-empty">Qarzdor yo'q.</div>}
+            {debtors.map((r) => (<Row key={r.t.id} r={r}><button className="pt-btn s" onClick={() => setPayFor(r.t.id)}>To'lov</button></Row>))}
+          </div>
+        )}
+      </div>
+
+      {creating && <NewBossModal onClose={() => setCreating(false)} onCreate={(t, cred) => { commit([...tenants, t]); setCreating(false); setMade(cred); }} />}
+      {made && (
+        <div className="pt-ov"><div className="pt-modal">
+          <h3>Boss yaratildi ✅</h3>
+          <p>CEO shu login va parol bilan oddiy kirish sahifasidan kiradi — u faqat o'z bo'limiga tushadi.</p>
+          <div className="pt-cred">Bo'lim: {made.name}<br />Login: {made.username}<br />Parol: {made.password}</div>
+          <div className="ft"><button className="pt-btn g" onClick={() => { try { navigator.clipboard.writeText(`Login: ${made.username}\nParol: ${made.password}`); } catch (e) {} }}>Nusxalash</button><button className="pt-btn" onClick={() => setMade(null)}>Yopish</button></div>
+        </div></div>
+      )}
+      {payFor && <PayModal t={tenants.find((x) => x.id === payFor)} onClose={() => setPayFor(null)} onSave={(rec) => { patchTenant(payFor, (t) => { const nt = { ...t, paid: [...(t.paid || []), rec], graceUntil: null }; if (!tenantBilling(nt).isDebtor) nt.notice = null; return nt; }); setPayFor(null); flash("To'lov qabul qilindi"); }} />}
+      {graceFor && <GraceModal t={tenants.find((x) => x.id === graceFor)} onClose={() => setGraceFor(null)} onSave={(days) => { const d = new Date(); d.setDate(d.getDate() + days); patchTenant(graceFor, (t) => ({ ...t, graceUntil: isoOf(d) })); setGraceFor(null); flash(`Blokdan ochildi (${days} kun)`); }} />}
+      {editFor && <EditBossModal t={tenants.find((x) => x.id === editFor)} onClose={() => setEditFor(null)} onSave={(patch) => { patchTenant(editFor, (t) => ({ ...t, ...patch })); setEditFor(null); flash('Saqlandi'); }} />}
+      {noticeOpen && <NoticeModal n={debtors.length} onClose={() => setNoticeOpen(false)} onSend={sendNotice} />}
+    </div>
+  );
+}
+
+function NewBossModal({ onClose, onCreate }) {
+  const [v, setV] = useState({ name: '', ceoName: '', username: '', password: randPw(), fee: '', start: 'next', uTouched: false });
+  const [err, setErr] = useState('');
+  const upd = (k, val) => setV((o) => {
+    const n = { ...o, [k]: val };
+    if (k === 'ceoName' && !o.uTouched) n.username = val.trim() ? genUniqueLogin(val.trim().split(' ')[0], allUsernames()) : '';
+    return n;
+  });
+  const save = () => {
+    setErr('');
+    const un = v.username.trim().toLowerCase();
+    if (!v.name.trim() || !v.ceoName.trim()) return setErr("Bo'lim nomi va CEO ismini kiriting");
+    if (un.length < 3) return setErr("Login kamida 3 belgi bo'lsin");
+    if (allUsernames().includes(un)) return setErr('Bu login band, boshqasini tanlang');
+    if (v.password.length < 4) return setErr("Parol kamida 4 belgi bo'lsin");
+    const id = uid('b').replace(/[^a-z0-9]/gi, '').toLowerCase();
+    const p = tenantPrefix(id);
+    const ceoId = uid('u');
+    localStorage.setItem(p + 'staff', JSON.stringify([{ id: ceoId, name: v.ceoName.trim(), username: un, password: v.password, role: 'ceo', createdAt: todayISO() }]));
+    localStorage.setItem(p + 'students', '[]');
+    localStorage.setItem(p + 'categories', '[]');
+    onCreate({ id, name: v.name.trim(), ceoName: v.ceoName.trim(), ceoUsername: un, fee: Number(v.fee) || 0, startMonth: v.start === 'now' ? monthKey(new Date()) : nextMonthKey(), paid: [], graceUntil: null, notice: null, createdAt: todayISO() },
+      { name: v.name.trim(), username: un, password: v.password });
+  };
+  return (
+    <div className="pt-ov"><div className="pt-modal">
+      <h3>Yangi Boss</h3>
+      <p>Bu Boss o'z bo'limiga ega bo'ladi (kurslar, o'quvchilar, xodimlar — alohida) va CEO bo'ladi.</p>
+      <label className="pt-lbl">Bo'lim / markaz nomi</label><input value={v.name} onChange={(e) => upd('name', e.target.value)} />
+      <label className="pt-lbl">CEO (Boss) ismi</label><input value={v.ceoName} onChange={(e) => upd('ceoName', e.target.value)} />
+      <label className="pt-lbl">Login</label><input value={v.username} onChange={(e) => { upd('uTouched', true); upd('username', e.target.value); }} />
+      <label className="pt-lbl">Parol</label><input value={v.password} onChange={(e) => upd('password', e.target.value)} />
+      <label className="pt-lbl">Oylik to'lov (so'm)</label><input type="number" min="0" value={v.fee} onChange={(e) => upd('fee', e.target.value)} />
+      <label className="pt-lbl">To'lov hisobi qachondan boshlanadi</label>
+      <select value={v.start} onChange={(e) => upd('start', e.target.value)}><option value="next">Keyingi oydan (shu oy bepul)</option><option value="now">Shu oydan</option></select>
+      {err && <p style={{ color: '#fb7185' }}>{err}</p>}
+      <div className="ft"><button className="pt-btn g" onClick={onClose}>Bekor</button><button className="pt-btn" onClick={save}>Yaratish</button></div>
+    </div></div>
+  );
+}
+
+function PayModal({ t, onClose, onSave }) {
+  const cur = monthKey(new Date());
+  const b = tenantBilling(t);
+  const opts = [...b.unpaid]; const nm = nextMonthKey(); if (!opts.includes(nm) && !(t.paid || []).some((p) => p.month === nm)) opts.push(nm);
+  const [month, setMonth] = useState(opts[0] || cur);
+  const [amount, setAmount] = useState(String(t.fee || ''));
+  const [note, setNote] = useState('');
+  return (
+    <div className="pt-ov"><div className="pt-modal">
+      <h3>To'lov qabul qilish</h3><p>{t.name}</p>
+      <label className="pt-lbl">Oy</label>
+      <select value={month} onChange={(e) => setMonth(e.target.value)}>{opts.map((k) => <option key={k} value={k}>{monthLabel(k)}</option>)}</select>
+      <label className="pt-lbl">Summa (so'm)</label><input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} />
+      <label className="pt-lbl">Izoh (ixtiyoriy)</label><input value={note} onChange={(e) => setNote(e.target.value)} />
+      <div className="ft"><button className="pt-btn g" onClick={onClose}>Bekor</button><button className="pt-btn" onClick={() => onSave({ id: uid('pay'), month, amount: Number(amount) || 0, date: todayISO(), note: note.trim() })}>Saqlash</button></div>
+    </div></div>
+  );
+}
+
+function GraceModal({ t, onClose, onSave }) {
+  const [days, setDays] = useState('3');
+  return (
+    <div className="pt-ov"><div className="pt-modal">
+      <h3>Blokdan ochish</h3>
+      <p>«{t.name}» saytini vaqtincha ochasiz. Muddat tugagach, to'lov qilinmagan bo'lsa, yana bloklanadi. To'lov qabul qilsangiz — doimiy ochiladi.</p>
+      <label className="pt-lbl">Necha kunga</label><input type="number" min="1" value={days} onChange={(e) => setDays(e.target.value)} />
+      <div className="ft"><button className="pt-btn g" onClick={onClose}>Bekor</button><button className="pt-btn" onClick={() => onSave(Math.max(1, Number(days) || 1))}>Ochish</button></div>
+    </div></div>
+  );
+}
+
+function EditBossModal({ t, onClose, onSave }) {
+  const [name, setName] = useState(t.name); const [fee, setFee] = useState(String(t.fee || '')); const [pw, setPw] = useState('');
+  const save = () => {
+    if (pw.trim().length >= 4) {
+      const p = tenantPrefix(t.id);
+      try { const st = JSON.parse(localStorage.getItem(p + 'staff') || '[]').map((s) => (s.username === t.ceoUsername ? { ...s, password: pw.trim() } : s)); localStorage.setItem(p + 'staff', JSON.stringify(st)); } catch (e) {}
+    }
+    onSave({ name: name.trim() || t.name, fee: Number(fee) || 0 });
+  };
+  return (
+    <div className="pt-ov"><div className="pt-modal">
+      <h3>Tahrirlash</h3>
+      <label className="pt-lbl">Bo'lim nomi</label><input value={name} onChange={(e) => setName(e.target.value)} />
+      <label className="pt-lbl">Oylik to'lov (so'm)</label><input type="number" value={fee} onChange={(e) => setFee(e.target.value)} />
+      <label className="pt-lbl">CEO yangi paroli (bo'sh qoldirsangiz o'zgarmaydi)</label><input value={pw} onChange={(e) => setPw(e.target.value)} />
+      <div className="ft"><button className="pt-btn g" onClick={onClose}>Bekor</button><button className="pt-btn" onClick={save}>Saqlash</button></div>
+    </div></div>
+  );
+}
+
+function NoticeModal({ n, onClose, onSend }) {
+  const [text, setText] = useState("Hurmatli Boss! Platformadan foydalanish uchun oylik to'lov amalga oshirilmagan. Sayt bloklanib qolmasligi uchun iltimos, to'lovni tezroq qiling.");
+  return (
+    <div className="pt-ov"><div className="pt-modal">
+      <h3>Qarzdorlarga xabar</h3>
+      <p>Xabar <b>{n} ta</b> qarzdorga modal oyna bo'lib chiqadi (to'lov qilgunicha, har safar saytga kirganda).</p>
+      <textarea rows="5" value={text} onChange={(e) => setText(e.target.value)} />
+      <div className="ft"><button className="pt-btn g" onClick={onClose}>Bekor</button><button className="pt-btn" disabled={!text.trim()} onClick={() => onSend(text.trim())}>Yuborish</button></div>
+    </div></div>
+  );
+}
+
+/* =========================================================================
    ROOT APP
    ========================================================================= */
 function App() {
@@ -12023,9 +12505,16 @@ function App() {
     if (found) { setSession({ type: 'student', id: found.id }); return true; }
     return false;
   };
+  const doLogout = () => {
+    if (gGet('active', 'main') !== 'main') switchTenant('main', null);
+    else setSession(null);
+  };
   const loginStaff = (username, password) => {
     const found = staff.find((s) => s.username === username && s.password === password && !s.disabled);
     if (found) { setSession({ type: 'staff', id: found.id }); return true; }
+    // Boshqa bo'limdagi (Boss/CEO yoki asosiy) foydalanuvchi bo'lsa — o'sha bo'limga o'tkazamiz
+    const other = findUserInOtherTenants(username, password);
+    if (other) { switchTenant(other.tid, other.session); return true; }
     return false;
   };
 
@@ -12037,7 +12526,7 @@ function App() {
     return (
       <React.Fragment>
         <StaffApp me={me} staff={staff} setStaff={setStaff} roleTpl={roleTpl} setRoleTpl={setRoleTpl} categories={categories} setCategories={setCategories}
-          students={students} setStudents={setStudents} onLogout={() => setSession(null)} notify={notify} />
+          students={students} setStudents={setStudents} onLogout={doLogout} notify={notify} />
         <ToastStack toasts={toasts} onDismiss={dismissToast} />
       </React.Fragment>
     );
@@ -12048,13 +12537,13 @@ function App() {
   return (
     <React.Fragment>
       <StudentApp me={me} categories={categories} students={students} setStudents={setStudents}
-        onLogout={() => setSession(null)} notify={notify} />
+        onLogout={doLogout} notify={notify} />
       <ToastStack toasts={toasts} onDismiss={dismissToast} />
     </React.Fragment>
   );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+ReactDOM.createRoot(document.getElementById('root')).render(<Root />);
 </script>
 <script>
   // To'liq ekranda sichqoncha 2.5 soniya qimirlamasa boshqaruv paneli yashirinadi
