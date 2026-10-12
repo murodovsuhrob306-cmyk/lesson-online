@@ -3878,6 +3878,691 @@ html.theme-switching *, html.theme-switching *::before, html.theme-switching *::
 .sx-kp u{ display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,var(--c),color-mix(in srgb,var(--c) 55%,#fff)); }
 .sx-sp{ display:block; width:100%; height:36px; margin-top:10px; position:relative; z-index:1; }
 </style>
+<style id="edu-payments-v1">
+/* ===== TO'LOVLAR v1 — moliya markazi (Statistika bilan bir xil vizual til) ===== */
+.pv .sx-tabs button em.pv-cnt{ font-style:normal; margin-left:7px; padding:1px 7px; border-radius:99px; font-size:11px; background:rgba(52,211,153,.2); color:inherit; }
+.pv-period{ display:inline-flex; align-items:center; gap:4px; padding:3px; border-radius:14px; border:1px solid var(--bd); background:var(--glass); }
+.pv-period button{ width:30px; height:30px; border-radius:10px; border:0; background:transparent; color:var(--ink); font-size:18px; line-height:1; cursor:pointer; transition:background .15s; }
+.pv-period button:hover{ background:rgba(52,211,153,.16); }
+.pv-period select{ background:transparent; border:0; color:var(--ink); font-size:13px; font-weight:700; font-family:inherit; padding:6px 4px; outline:none; cursor:pointer; }
+.pv-period select option{ color:#0d1f17; }
+.pv-act{ display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:8px 13px; border-radius:11px; border:1px solid var(--bd); background:transparent; color:var(--ink); font-size:12.5px; font-weight:700; font-family:inherit; cursor:pointer; white-space:nowrap; transition:background .15s, border-color .15s, transform .15s, opacity .15s; }
+.pv-act:hover{ background:rgba(52,211,153,.14); border-color:#34d399; }
+.pv-act.pri{ background:linear-gradient(135deg,#34d399,#a3e635); color:#052e1c; border-color:transparent; box-shadow:0 8px 20px -10px rgba(52,211,153,.8); }
+.pv-act.pri:hover{ transform:translateY(-1px); background:linear-gradient(135deg,#34d399,#a3e635); border-color:transparent; }
+.pv-act.ghost{ padding:7px 9px; }
+.pv-act.ghost:hover{ background:rgba(244,63,94,.14); border-color:#f43f5e; color:#f43f5e; }
+.pv-act.danger{ background:#f43f5e; color:#fff; border-color:#f43f5e; }
+.pv-act.danger:hover{ background:#e11d48; border-color:#e11d48; }
+.pv-act:disabled{ opacity:.45; cursor:not-allowed; }
+.pv-tools{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.pv-tools .sx-in{ min-width:200px; }
+.pv-chips{ margin:8px 0 12px; }
+.pv-st{ display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:99px; font-size:11.5px; font-weight:700; color:var(--c); background:color-mix(in srgb,var(--c) 16%,transparent); white-space:nowrap; }
+.pv-st::before{ content:''; width:6px; height:6px; border-radius:50%; background:var(--c); }
+.pv-who{ display:flex; align-items:center; gap:10px; min-width:0; }
+.pv-av{ width:34px; height:34px; font-size:12px; color:var(--ink); background:linear-gradient(135deg,rgba(52,211,153,.28),rgba(163,230,53,.18)); border:1px solid var(--bd); }
+.pv-sub{ display:block; font-size:11.5px; color:var(--mut); margin-top:2px; font-weight:600; }
+.pv-r{ text-align:right !important; }
+.pv-acts{ display:inline-flex; gap:6px; justify-content:flex-end; flex-wrap:nowrap; }
+.pv-li-act{ display:inline-flex; align-items:center; gap:8px; flex-shrink:0; }
+.pv-empty{ text-align:center; padding:26px 10px; color:var(--mut); font-weight:600; font-size:13px; }
+.pv-ins{ display:flex; flex-direction:column; gap:10px; margin-top:14px; }
+.pv-ins-row{ display:flex; gap:10px; align-items:flex-start; }
+.pv-ins-row span{ font-size:15px; line-height:1.3; }
+.pv-ins-row p{ margin:0; font-size:13px; color:var(--mut); font-weight:600; line-height:1.45; }
+.pv-sum{ display:flex; justify-content:flex-end; align-items:baseline; gap:6px; margin-top:12px; font-size:13px; color:var(--mut); font-weight:600; flex-wrap:wrap; }
+.pv-sum b{ color:var(--ink); font-size:15px; }
+.pv .sx-t td b.ok, .pv .sx-t b.ok{ color:#10b981; }
+.pv .sx-t td{ white-space:nowrap; }
+.pv .sx-t td:first-child{ white-space:normal; }
+.pv .sx-t td .pv-sub{ white-space:nowrap; }
+.pv-tbl{ min-width:700px !important; }
+.pv .sx-t td b.bad, .pv .sx-t b.bad, .pv .sx-li b.bad{ color:#f43f5e; }
+.pv .sx-t td.pv-r{ white-space:nowrap; }
+.pv .sx-li{ align-items:center; }
+@media (max-width:700px){
+  .pv-tools{ width:100%; }
+  .pv-tools .sx-in{ min-width:0; width:100%; flex:1 1 100%; }
+  .pv-period{ width:100%; justify-content:space-between; }
+  .pv-period select{ flex:1; }
+}
+
+/* ---- modal (portal — sd- tokenlaridan foydalanadi) ---- */
+.pv-bill{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:4px 0 14px; }
+.pv-bill>div{ border:1px solid var(--sd-line, rgba(127,127,127,.22)); border-radius:14px; padding:10px 12px; background:rgba(127,127,127,.06); display:flex; flex-direction:column; gap:3px; min-width:0; }
+.pv-bill small{ font-size:11.5px; color:var(--sd-muted, #6b7f73); font-weight:700; }
+.pv-bill b{ font-size:14px; color:var(--sd-text, #0d1f17); font-family:'Sora',Manrope,sans-serif; word-break:break-word; }
+.pv-bill b.ok{ color:#10b981; }
+.pv-bill b.bad{ color:#f43f5e; }
+.pv-grid2{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 12px; }
+.pv-quick{ display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+.pv-quick button{ padding:5px 11px; border-radius:99px; border:1px solid var(--sd-line, rgba(127,127,127,.3)); background:transparent; color:var(--sd-text, #0d1f17); font-size:12px; font-weight:700; font-family:inherit; cursor:pointer; }
+.pv-quick button:hover{ border-color:#34d399; background:rgba(52,211,153,.14); }
+.pv-warn{ display:flex; gap:8px; align-items:flex-start; margin-top:8px; padding:9px 11px; border-radius:11px; background:rgba(244,63,94,.1); color:#f43f5e; font-size:12.5px; font-weight:700; line-height:1.4; }
+.pv-hint{ font-size:12px; color:var(--sd-muted, #6b7f73); margin-top:6px; line-height:1.4; }
+.pv-link{ background:none; border:0; padding:6px 0; margin:2px 0 4px; color:#10b981; font-size:13px; font-weight:700; font-family:inherit; cursor:pointer; }
+.pv-link:hover{ text-decoration:underline; }
+.pv-sec{ font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--sd-muted, #6b7f73); margin:16px 0 8px; }
+.pv-row{ display:flex; justify-content:space-between; gap:10px; align-items:center; padding:10px 12px; border:1px solid rgba(127,127,127,.2); border-radius:12px; margin-bottom:8px; font-size:13px; color:var(--sd-text, #0d1f17); }
+.pv-row>div{ min-width:0; }
+.pv-row b{ display:block; font-size:14px; word-break:break-word; }
+.pv-row small{ display:block; color:var(--sd-muted, #6b7f73); font-size:11.5px; margin-top:2px; }
+.pv-row small.bad{ color:#f43f5e; font-weight:700; }
+.pv-list{ max-height:340px; overflow:auto; padding-right:4px; }
+.pv .pv-row .pv-empty{ padding:14px 0; }
+
+@media (max-width:620px){
+  .pv-bill{ grid-template-columns:minmax(0,1fr); }
+  .pv-grid2{ grid-template-columns:minmax(0,1fr); }
+}
+html.theme-dark .pv-av{ color:#eef6f1; }
+</style>
+<style id="edu-profile-v2">
+/* ===== PROFIL v2 — skrinshotdagi tuzilma, zamonaviy ko'rinish ===== */
+.pr{ --pr-card:rgba(255,255,255,.035); --pr-bd:rgba(255,255,255,.09); --pr-ink:#eef0ff; --pr-mut:#8b93b0; --pr-in:#0c0e14; --pr-acc:#818cf8; --pr-acc2:#60a5fa; --pr-red:#f87171;
+  max-width:760px; margin:0 auto; display:flex; flex-direction:column; gap:18px; color:var(--pr-ink); }
+html:not(.theme-dark) .pr{ --pr-card:#ffffff; --pr-bd:rgba(30,27,75,.10); --pr-ink:#1e1b4b; --pr-mut:#6b7280; --pr-in:#f5f6fb; --pr-red:#dc2626; }
+.pr-card{ background:var(--pr-card); border:1px solid var(--pr-bd); border-radius:22px; padding:24px 26px; box-shadow:0 18px 40px -28px rgba(0,0,0,.45); }
+.pr-head{ display:flex; align-items:center; gap:10px; margin-bottom:20px; flex-wrap:wrap; }
+.pr-head h3{ margin:0; font-size:14px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--pr-ink); display:flex; align-items:baseline; gap:8px; }
+.pr-head h3 small{ font-size:12px; font-weight:600; letter-spacing:0; text-transform:none; color:var(--pr-mut); }
+.pr-head .pr-btn{ margin-left:auto; }
+.pr-bar{ width:4px; height:16px; border-radius:99px; background:linear-gradient(180deg,var(--pr-acc),var(--pr-acc2)); }
+.pr-dirty{ font-size:12px; font-weight:700; color:#fbbf24; margin-left:auto; }
+.pr-ok{ font-size:12px; font-weight:700; color:#34d399; margin-left:auto; }
+
+/* avatar row */
+.pr-id{ display:flex; align-items:center; gap:20px; flex-wrap:wrap; margin-bottom:22px; }
+.pr-avwrap{ position:relative; width:104px; height:104px; flex:none; }
+.pr-avimg, .pr-avtxt{ width:104px; height:104px; border-radius:24px; display:flex; align-items:center; justify-content:center; object-fit:cover; box-shadow:0 16px 34px -14px rgba(129,140,248,.6); }
+.pr-avtxt{ background:linear-gradient(135deg,#6366f1,#3b82f6); color:#fff; font-size:32px; font-weight:800; font-family:'Sora',Manrope,sans-serif; }
+.pr-cam{ position:absolute; right:-6px; bottom:-6px; width:34px; height:34px; border-radius:50%; border:3px solid var(--pr-card); background:var(--pr-acc); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .15s; }
+.pr-cam:hover{ transform:scale(1.08); }
+.pr-idtxt{ min-width:0; flex:1; }
+.pr-name{ font-size:22px; font-weight:800; color:var(--pr-ink); letter-spacing:-.01em; word-break:break-word; }
+.pr-sub{ font-size:14px; color:var(--pr-mut); margin-top:2px; }
+.pr-idbtns{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+
+/* buttons */
+.pr-btn{ display:inline-flex; align-items:center; justify-content:center; gap:7px; padding:10px 16px; border-radius:12px; font-size:13.5px; font-weight:700; font-family:inherit; cursor:pointer; border:1px solid transparent; transition:transform .15s, background .15s, border-color .15s, opacity .15s, box-shadow .15s; white-space:nowrap; }
+.pr-btn:disabled{ opacity:.42; cursor:not-allowed; transform:none !important; }
+.pr-btn.blue{ background:rgba(96,165,250,.12); border-color:rgba(96,165,250,.4); color:var(--acc2,#60a5fa); }
+.pr-btn.blue:hover:not(:disabled){ background:rgba(96,165,250,.2); }
+.pr-btn.red{ background:rgba(248,113,113,.10); border-color:rgba(248,113,113,.4); color:var(--pr-red); }
+.pr-btn.red:hover:not(:disabled){ background:rgba(248,113,113,.2); }
+.pr-btn.red:disabled{ background:transparent; }
+.pr-btn.outline-red{ background:transparent; border-color:rgba(248,113,113,.45); color:var(--pr-red); }
+.pr-btn.outline-red:hover{ background:rgba(248,113,113,.1); }
+.pr-btn.primary{ background:linear-gradient(135deg,#818cf8,#6366f1); color:#fff; box-shadow:0 12px 26px -12px rgba(99,102,241,.8); }
+.pr-btn.primary:hover:not(:disabled){ transform:translateY(-1px); box-shadow:0 16px 30px -12px rgba(99,102,241,.9); }
+.pr-btn.ghost{ background:transparent; border-color:var(--pr-bd); color:var(--pr-mut); }
+.pr-btn.ghost:hover:not(:disabled){ color:var(--pr-ink); border-color:var(--pr-mut); }
+.pr-btn.sm{ padding:7px 12px; font-size:12.5px; border-radius:10px; }
+.pr-btn.wide{ flex:1; min-width:180px; }
+.pr-btn.full{ width:100%; margin-top:18px; padding:14px; font-size:15px; border-radius:14px; background:linear-gradient(135deg,rgba(129,140,248,.22),rgba(96,165,250,.16)); border-color:rgba(129,140,248,.5); color:var(--pr-acc); }
+.pr-btn.full:hover:not(:disabled){ background:linear-gradient(135deg,rgba(129,140,248,.32),rgba(96,165,250,.24)); }
+.pr-btn.full:disabled{ background:rgba(129,140,248,.08); }
+
+/* fields */
+.pr-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px 16px; }
+.pr-field{ display:flex; flex-direction:column; gap:7px; min-width:0; margin-bottom:14px; }
+.pr-grid .pr-field{ margin-bottom:0; }
+.pr-field.pr-full{ grid-column:1 / -1; }
+.pr-field label{ display:flex; align-items:center; gap:7px; font-size:11.5px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--pr-mut); }
+.pr-field input, .pr-field select, .pr-newuser input, .pr-newuser select{ width:100%; box-sizing:border-box; padding:13px 15px; border-radius:13px; border:1px solid var(--pr-bd); background:var(--pr-in); color:var(--pr-ink); font-family:inherit; font-size:15px; font-weight:500; outline:none; transition:border-color .15s, box-shadow .15s, background .15s; }
+.pr-field input::placeholder{ color:var(--pr-mut); opacity:.7; }
+.pr-field input:focus, .pr-field select:focus, .pr-newuser input:focus, .pr-newuser select:focus{ border-color:var(--pr-acc); box-shadow:0 0 0 4px rgba(129,140,248,.18); }
+.pr-field select option{ color:#111; }
+.pr-err{ font-size:12px; font-weight:700; color:var(--pr-red); }
+.pr-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:22px; flex-wrap:wrap; }
+.pr-actions .pr-btn.wide{ flex:1; }
+.pr-strength{ display:flex; align-items:center; gap:12px; margin:-2px 0 4px; }
+.pr-bars{ display:flex; gap:6px; flex:1; }
+.pr-bars i{ flex:1; height:6px; border-radius:99px; background:var(--pr-bd); transition:background .25s; }
+.pr-strength small{ font-size:12px; font-weight:800; min-width:90px; text-align:right; }
+.pr-warn{ display:flex; gap:8px; align-items:center; margin:10px 0 0; padding:11px 13px; border-radius:12px; background:rgba(248,113,113,.1); color:var(--pr-red); font-size:13px; font-weight:700; }
+
+/* team */
+.pr-search{ position:relative; margin-bottom:12px; }
+.pr-search svg{ position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--pr-mut); }
+.pr-search input{ width:100%; box-sizing:border-box; padding:11px 14px 11px 38px; border-radius:12px; border:1px solid var(--pr-bd); background:var(--pr-in); color:var(--pr-ink); font-family:inherit; font-size:14px; outline:none; }
+.pr-search input:focus{ border-color:var(--pr-acc); }
+.pr-team{ display:flex; flex-direction:column; gap:8px; }
+.pr-member{ display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:14px; border:1px solid var(--pr-bd); background:var(--pr-in); }
+.pr-mav{ width:38px; height:38px; border-radius:12px; flex:none; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:#fff; background:linear-gradient(135deg,#6366f1,#3b82f6); }
+.pr-mtxt{ flex:1; min-width:0; }
+.pr-mtxt b{ display:block; font-size:14px; color:var(--pr-ink); }
+.pr-mtxt b em{ font-style:normal; font-size:10.5px; font-weight:800; margin-left:8px; padding:2px 8px; border-radius:99px; background:rgba(129,140,248,.2); color:var(--pr-acc); }
+.pr-mtxt small{ font-size:12px; color:var(--pr-mut); }
+.pr-icon{ width:34px; height:34px; border-radius:10px; border:1px solid var(--pr-bd); background:transparent; color:var(--pr-mut); display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none; }
+.pr-icon:hover{ color:var(--pr-red); border-color:rgba(248,113,113,.5); background:rgba(248,113,113,.1); }
+.pr-newuser{ border:1px dashed rgba(129,140,248,.5); border-radius:16px; padding:16px; margin-bottom:14px; background:rgba(129,140,248,.06); }
+.pr-empty{ text-align:center; padding:18px; color:var(--pr-mut); font-size:13px; }
+
+/* logout */
+.pr-logout{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.pr-logout b{ display:block; color:var(--pr-ink); font-size:15px; }
+.pr-logout small{ color:var(--pr-mut); font-size:13px; }
+
+@media (max-width:640px){
+  .pr-grid{ grid-template-columns:minmax(0,1fr); }
+  .pr-card{ padding:20px 18px; border-radius:18px; }
+  .pr-avimg, .pr-avtxt, .pr-avwrap{ width:88px; height:88px; }
+  .pr-name{ font-size:19px; }
+  .pr-logout{ flex-direction:column; align-items:stretch; text-align:center; }
+}
+</style>
+<style id="edu-profile-v3">
+/* ===== PROFIL v3 — ikki ustunli, jonli validatsiya, sozlamalar, saqlash paneli ===== */
+.pr{ max-width:1000px; gap:16px; padding-bottom:96px; }
+.pr-cols{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; align-items:start; }
+.pr-cols > .pr-card{ height:100%; }
+
+/* hero */
+.pr-hero{ display:flex; align-items:center; gap:26px; flex-wrap:wrap; background:radial-gradient(640px 220px at 0% 0%,rgba(129,140,248,.18),transparent 70%),var(--pr-card); }
+.pr-drop{ border-radius:28px; padding:6px; border:2px dashed transparent; transition:border-color .2s, background .2s; }
+.pr-drop.on{ border-color:var(--pr-acc); background:rgba(129,140,248,.08); }
+.pr-avwrap{ width:116px; height:116px; }
+.pr-avimg, .pr-avtxt{ width:116px; height:116px; }
+.pr-avtxt{ font-size:38px; }
+.pr-cam{ width:38px; height:38px; right:-6px; bottom:-6px; }
+.pr-idtxt{ flex:1; min-width:260px; }
+.pr-rolerow{ display:flex; gap:8px; align-items:center; margin-bottom:6px; }
+.pr-status{ font-size:11.5px; font-weight:800; padding:3px 10px; border-radius:99px; background:rgba(16,185,129,.16); color:#10b981; }
+.pr-status.off{ background:rgba(248,113,113,.15); color:var(--pr-red); }
+.pr-role{ display:inline-flex; padding:3px 11px; border-radius:99px; font-size:12px; font-weight:800; color:var(--c); background:color-mix(in srgb,var(--c) 16%,transparent); }
+.pr-role.sm{ font-size:11px; padding:2px 9px; }
+.pr-name{ font-size:26px; }
+.pr-chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+.pr-chips span{ font-size:12px; color:var(--pr-mut); padding:6px 11px; border-radius:10px; border:1px solid var(--pr-bd); background:var(--pr-in); }
+.pr-chips b{ color:var(--pr-ink); font-weight:700; margin-left:4px; }
+.pr-hint{ display:block; margin-top:10px; font-size:12px; color:var(--pr-mut); }
+
+/* head + fields */
+.pr-head h3 small{ font-size:12px; font-weight:600; letter-spacing:0; text-transform:none; color:var(--pr-mut); margin-left:6px; }
+.pr-sub2{ margin-top:22px; }
+.pr-field{ margin-bottom:16px; }
+.pr-field label em.pr-count{ margin-left:auto; font-style:normal; font-size:11px; letter-spacing:0; color:var(--pr-mut); font-weight:600; text-transform:none; }
+.pr-inwrap{ display:flex; align-items:center; gap:8px; padding:0 14px; border-radius:13px; border:1px solid var(--pr-bd); background:var(--pr-in); transition:border-color .15s, box-shadow .15s; }
+.pr-inwrap:focus-within{ border-color:var(--pr-acc); box-shadow:0 0 0 4px rgba(129,140,248,.18); }
+.pr-inwrap.ok{ border-color:rgba(16,185,129,.55); }
+.pr-inwrap.bad{ border-color:rgba(248,113,113,.6); }
+.pr .pr-inwrap input{ flex:1; min-width:0; border:0 !important; background:transparent !important; box-shadow:none !important; padding:13px 0 !important; border-radius:0 !important; }
+.pr-mark{ width:22px; height:22px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; }
+.pr-inwrap.ok .pr-mark{ background:rgba(16,185,129,.2); color:#10b981; }
+.pr-inwrap.bad .pr-mark{ background:rgba(248,113,113,.2); color:var(--pr-red); }
+.pr-inwrap.pw{ padding-right:6px; }
+.pr-eye{ width:32px; height:32px; border-radius:9px; border:0; background:transparent; color:var(--pr-mut); display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none; }
+.pr-eye:hover{ background:rgba(129,140,248,.14); color:var(--pr-ink); }
+.pr-strength{ margin:-4px 0 12px; }
+.pr-reqs{ list-style:none; margin:0 0 14px; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 12px; }
+.pr-reqs li{ display:flex; gap:8px; align-items:center; font-size:12.5px; color:var(--pr-mut); font-weight:600; }
+.pr-reqs li span{ width:18px; height:18px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; background:var(--pr-bd); }
+.pr-reqs li.ok{ color:var(--pr-ink); }
+.pr-reqs li.ok span{ background:rgba(16,185,129,.2); color:#10b981; }
+
+/* toggles */
+.pr-toggles{ display:flex; flex-direction:column; gap:10px; }
+.pr-toggle{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding:13px 14px; border-radius:14px; border:1px solid var(--pr-bd); background:var(--pr-in); }
+.pr-toggle b{ display:block; font-size:14px; color:var(--pr-ink); }
+.pr-toggle small{ font-size:12px; color:var(--pr-mut); }
+.pr-switch{ width:46px; height:26px; border-radius:99px; border:0; background:var(--pr-bd); position:relative; cursor:pointer; flex:none; transition:background .2s; }
+.pr-switch i{ position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,.25); transition:transform .2s; }
+.pr-switch.on{ background:linear-gradient(135deg,#818cf8,#6366f1); }
+.pr-switch.on i{ transform:translateX(20px); }
+
+/* permission bars */
+.pr-permbars{ display:flex; flex-direction:column; gap:12px; }
+.pr-pbt{ display:flex; justify-content:space-between; font-size:13px; color:var(--pr-ink); font-weight:600; margin-bottom:6px; }
+.pr-pbt b{ color:var(--pr-mut); font-weight:700; }
+.pr-pbar{ height:7px; border-radius:99px; background:var(--pr-bd); overflow:hidden; }
+.pr-pbar u{ display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,#818cf8,#60a5fa); transition:width .4s; }
+
+/* tips */
+.pr-tips{ display:flex; flex-direction:column; gap:12px; }
+.pr-tips>div{ display:flex; gap:12px; padding:14px; border-radius:14px; border:1px solid var(--pr-bd); background:var(--pr-in); }
+.pr-tips span{ font-size:18px; line-height:1.2; }
+.pr-tips p{ margin:0; font-size:13px; line-height:1.5; color:var(--pr-mut); font-weight:600; }
+
+/* team select */
+.pr-mrole{ padding:7px 10px; border-radius:10px; border:1px solid var(--pr-bd); background:var(--pr-in); color:var(--pr-ink); font-family:inherit; font-size:12.5px; font-weight:600; outline:none; cursor:pointer; }
+.pr-mrole:focus{ border-color:var(--pr-acc); }
+.pr-mtxt{ min-width:0; }
+.pr-mtxt b{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.pr-member .pr-role.sm{ flex:none; }
+
+/* sticky save bar */
+.pr-savebar{ position:sticky; bottom:16px; z-index:20; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; padding:12px 14px 12px 20px; border-radius:18px; border:1px solid rgba(129,140,248,.45); background:var(--pr-card); box-shadow:0 24px 50px -20px rgba(0,0,0,.55); animation:prIn .25s ease; }
+.pr-savebar > span{ display:flex; align-items:center; gap:10px; font-size:13.5px; font-weight:700; color:var(--pr-ink); }
+.pr-savebar > span i{ width:8px; height:8px; border-radius:50%; background:#fbbf24; box-shadow:0 0 0 4px rgba(251,191,36,.2); }
+.pr-savebar em{ font-style:normal; color:var(--pr-red); font-weight:700; }
+.pr-savebar > div{ display:flex; gap:10px; }
+.pr-savebar kbd{ font-family:inherit; font-size:10.5px; padding:2px 6px; border-radius:6px; background:rgba(255,255,255,.18); margin-left:6px; }
+@keyframes prIn{ from{ opacity:0; transform:translateY(12px); } to{ opacity:1; transform:none; } }
+
+@media (max-width:860px){
+  .pr-cols{ grid-template-columns:minmax(0,1fr); }
+}
+@media (max-width:640px){
+  .pr-reqs{ grid-template-columns:minmax(0,1fr); }
+  .pr-hero{ flex-direction:column; align-items:flex-start; }
+  .pr-name{ font-size:21px; }
+  .pr-savebar{ bottom:10px; }
+  .pr-savebar kbd{ display:none; }
+}
+</style>
+<style id="edu-profile-v4">
+/* ===== PROFIL v4 — redaksion ko'rinish: chap yopishgan panel, raqamlangan bo'limlar ===== */
+.pz{ --pz-ink:#f5f1e8; --pz-mut:#9b957f; --pz-line:rgba(245,241,232,.12); --pz-soft:rgba(245,241,232,.05); --pz-acc:#f59e0b; --pz-acc2:#fb923c; --pz-ok:#84cc16; --pz-bad:#f87171; --pz-bg:#0d0c09;
+  position:relative; display:grid; grid-template-columns:300px minmax(0,1fr); gap:56px; max-width:1100px; margin:0 auto; padding-bottom:110px; color:var(--pz-ink); }
+html:not(.theme-dark) .pz{ --pz-ink:#231d0f; --pz-mut:#7a7258; --pz-line:rgba(35,29,15,.14); --pz-soft:rgba(35,29,15,.04); --pz-bad:#dc2626; --pz-bg:#fbf8f1; }
+
+/* ---- chap panel ---- */
+.pz-side{ position:sticky; top:24px; align-self:start; display:flex; flex-direction:column; gap:18px; }
+.pz-portrait{ position:relative; width:100%; aspect-ratio:1/1; border-radius:6px; overflow:hidden; cursor:pointer; background:linear-gradient(160deg,#3b2a0b,#1c1608); display:flex; align-items:center; justify-content:center; border:1px solid var(--pz-line); transition:outline-color .2s; outline:2px dashed transparent; outline-offset:6px; }
+.pz-portrait.on{ outline-color:var(--pz-acc); }
+.pz-portrait img{ width:100%; height:100%; object-fit:cover; display:block; }
+.pz-portrait > span{ font-family:'Sora',Manrope,sans-serif; font-size:84px; font-weight:800; color:#fde7b0; letter-spacing:-.04em; }
+.pz-portrait-cap{ position:absolute; left:0; right:0; bottom:0; padding:12px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; font-weight:700; color:#fff; background:linear-gradient(0deg,rgba(0,0,0,.7),rgba(0,0,0,0)); opacity:0; transition:opacity .2s; }
+.pz-portrait:hover .pz-portrait-cap, .pz-portrait:focus-visible .pz-portrait-cap, .pz-portrait.on .pz-portrait-cap{ opacity:1; }
+.pz-portrait-act{ display:flex; flex-direction:column; gap:4px; margin-top:-8px; }
+.pz-portrait-act small{ font-size:12px; color:var(--pz-mut); }
+.pz-link{ align-self:flex-start; background:none; border:0; padding:0; font:700 13px inherit; font-family:inherit; color:var(--pz-acc); cursor:pointer; }
+.pz-link.danger{ color:var(--pz-bad); }
+.pz-link:hover{ text-decoration:underline; }
+.pz-name{ font-family:'Sora',Manrope,sans-serif; font-size:30px; font-weight:800; letter-spacing:-.02em; line-height:1.1; margin-top:6px; word-break:break-word; }
+.pz-meta{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:-8px; }
+.pz-role{ display:inline-flex; padding:3px 10px; border-radius:4px; font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--c); border:1px solid color-mix(in srgb,var(--c) 45%,transparent); background:color-mix(in srgb,var(--c) 12%,transparent); }
+.pz-role.sm{ font-size:10.5px; padding:2px 8px; }
+.pz-login{ font-size:14px; color:var(--pz-mut); }
+.pz-facts{ margin:0; border-top:1px solid var(--pz-line); }
+.pz-facts > div{ display:flex; justify-content:space-between; gap:12px; padding:11px 0; border-bottom:1px solid var(--pz-line); font-size:13.5px; }
+.pz-facts dt{ color:var(--pz-mut); }
+.pz-facts dd{ margin:0; font-weight:700; color:var(--pz-ink); text-align:right; }
+.pz-facts dd.ok{ color:var(--pz-ok); }
+.pz-facts dd.bad{ color:var(--pz-bad); }
+.pz-complete > div:first-child{ display:flex; justify-content:space-between; font-size:13px; color:var(--pz-mut); margin-bottom:8px; }
+.pz-complete b{ color:var(--pz-acc); }
+.pz-track{ height:4px; background:var(--pz-line); border-radius:4px; overflow:hidden; }
+.pz-track u{ display:block; height:100%; background:linear-gradient(90deg,var(--pz-acc),var(--pz-acc2)); transition:width .4s; }
+.pz-track.thin{ height:3px; }
+.pz-side-out{ margin-top:4px; }
+
+/* ---- o'ng: bo'limlar ---- */
+.pz-main{ display:flex; flex-direction:column; min-width:0; }
+.pz-sec{ padding:30px 0; border-top:1px solid var(--pz-line); }
+.pz-sec:first-child{ border-top:0; padding-top:4px; }
+.pz-sh{ display:flex; align-items:flex-start; gap:18px; margin-bottom:22px; flex-wrap:wrap; }
+.pz-num{ font-family:'Sora',Manrope,sans-serif; font-size:13px; font-weight:800; letter-spacing:.1em; color:var(--pz-acc); padding-top:9px; min-width:26px; }
+.pz-sh h2{ margin:0; font-family:'Sora',Manrope,sans-serif; font-size:24px; font-weight:800; letter-spacing:-.015em; }
+.pz-sh p{ margin:4px 0 0; font-size:14px; color:var(--pz-mut); }
+.pz-sh > div{ flex:1; min-width:200px; }
+.pz-saved{ font-size:12.5px; font-weight:700; color:var(--pz-ok); padding-top:10px; margin-left:auto; }
+
+/* chiziqli maydonlar */
+.pz-ul{ display:flex; flex-direction:column; gap:4px; margin-bottom:22px; min-width:0; }
+.pz-ul > span{ font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--pz-mut); display:flex; justify-content:space-between; }
+.pz-ul > span b{ font-weight:600; letter-spacing:0; text-transform:none; }
+.pz-ul > em{ font-style:normal; font-size:12px; font-weight:700; color:var(--pz-bad); margin-top:2px; }
+.pz-line{ position:relative; display:flex; align-items:center; border-bottom:1.5px solid var(--pz-line); transition:border-color .2s; }
+.pz-line:focus-within{ border-bottom-color:var(--pz-acc); }
+.pz-line.ok{ border-bottom-color:rgba(132,204,22,.6); }
+.pz-line.bad{ border-bottom-color:var(--pz-bad); }
+.pz .pz-line input, .pz .pz-line select{ flex:1; min-width:0; width:100%; border:0 !important; background:transparent !important; box-shadow:none !important; outline:none; padding:10px 0; font-family:inherit; font-size:17px; font-weight:500; color:var(--pz-ink); }
+.pz .pz-line input::placeholder{ color:var(--pz-mut); opacity:.55; }
+.pz .pz-line select{ cursor:pointer; }
+.pz .pz-line select option{ color:#111; }
+.pz-line > i{ font-style:normal; font-size:13px; font-weight:800; margin-left:8px; }
+.pz-line.ok > i{ color:var(--pz-ok); }
+.pz-line.bad > i{ color:var(--pz-bad); }
+.pz-line.pw input{ padding-right:34px; }
+.pz-eye{ position:absolute; right:0; top:50%; transform:translateY(-50%); width:28px; height:28px; border:0; background:transparent; color:var(--pz-mut); cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.pz-eye:hover{ color:var(--pz-ink); }
+.pz-row2{ display:grid; grid-template-columns:1fr 1fr; gap:0 28px; }
+
+/* bildirishnoma ro'yxati */
+.pz-list{ list-style:none; margin:0; padding:0; }
+.pz-list li{ display:flex; align-items:center; justify-content:space-between; gap:18px; padding:16px 0; border-bottom:1px solid var(--pz-line); }
+.pz-list li:first-child{ border-top:1px solid var(--pz-line); }
+.pz-list b{ display:block; font-size:16px; font-weight:700; }
+.pz-list small{ font-size:13px; color:var(--pz-mut); }
+.pz-switch{ width:48px; height:28px; border-radius:4px; border:1.5px solid var(--pz-line); background:transparent; position:relative; cursor:pointer; flex:none; transition:all .2s; }
+.pz-switch i{ position:absolute; top:4px; left:4px; width:18px; height:18px; border-radius:2px; background:var(--pz-mut); transition:transform .2s, background .2s; }
+.pz-switch.on{ background:var(--pz-acc); border-color:var(--pz-acc); }
+.pz-switch.on i{ transform:translateX(20px); background:#1c1608; }
+
+/* parol */
+.pz-strength{ display:flex; align-items:center; gap:14px; margin:-8px 0 16px; }
+.pz-bars{ display:flex; gap:6px; flex:1; }
+.pz-bars i{ flex:1; height:4px; background:var(--pz-line); transition:background .25s; }
+.pz-strength small{ font-size:12.5px; font-weight:800; min-width:90px; text-align:right; }
+.pz-reqs{ list-style:none; margin:0 0 18px; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:8px 20px; }
+.pz-reqs li{ display:flex; gap:10px; align-items:center; font-size:13px; color:var(--pz-mut); }
+.pz-reqs li span{ width:16px; text-align:center; font-weight:800; }
+.pz-reqs li.ok{ color:var(--pz-ink); }
+.pz-reqs li.ok span{ color:var(--pz-ok); }
+.pz-err-box{ display:flex; gap:10px; align-items:center; margin-bottom:14px; padding:12px 14px; border-left:3px solid var(--pz-bad); background:color-mix(in srgb,var(--pz-bad) 10%,transparent); color:var(--pz-bad); font-size:13.5px; font-weight:700; }
+.pz-foot{ display:flex; justify-content:flex-end; gap:12px; flex-wrap:wrap; margin-top:6px; }
+
+/* ruxsatlar */
+.pz-perms{ display:grid; grid-template-columns:1fr 1fr; gap:20px 36px; }
+.pz-perm > div:first-child{ display:flex; justify-content:space-between; font-size:14px; margin-bottom:8px; }
+.pz-perm b{ font-weight:700; }
+.pz-perm span{ color:var(--pz-mut); font-weight:600; }
+
+/* jamoa */
+.pz-search{ position:relative; margin-bottom:6px; }
+.pz-search svg{ position:absolute; left:0; top:50%; transform:translateY(-50%); color:var(--pz-mut); }
+.pz-search input{ width:100%; box-sizing:border-box; padding:10px 0 10px 26px; border:0; border-bottom:1.5px solid var(--pz-line); background:transparent; color:var(--pz-ink); font-family:inherit; font-size:15px; outline:none; }
+.pz-search input:focus{ border-bottom-color:var(--pz-acc); }
+.pz-team{ list-style:none; margin:0; padding:0; }
+.pz-team li{ display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid var(--pz-line); }
+.pz-team li:first-child{ border-top:0; }
+.pz-tav{ width:40px; height:40px; border-radius:4px; flex:none; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:#1c1608; background:linear-gradient(135deg,#fde68a,#f59e0b); overflow:hidden; }
+.pz-tt{ flex:1; min-width:0; }
+.pz-tt b{ display:block; font-size:15px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.pz-tt b em{ font-style:normal; font-size:10.5px; font-weight:800; margin-left:8px; padding:1px 7px; border:1px solid var(--pz-acc); color:var(--pz-acc); border-radius:3px; letter-spacing:.06em; text-transform:uppercase; }
+.pz-tt small{ font-size:12.5px; color:var(--pz-mut); }
+.pz-tsel{ padding:7px 10px; border:1px solid var(--pz-line); border-radius:4px; background:transparent; color:var(--pz-ink); font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; outline:none; }
+.pz-tsel option{ color:#111; }
+.pz-empty{ color:var(--pz-mut); font-size:14px; padding:18px 0; }
+.pz-adduser{ padding:4px 0 18px; margin-bottom:10px; border-bottom:1px solid var(--pz-line); }
+
+/* tugmalar */
+.pz-btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:11px 18px; border-radius:4px; font-size:14px; font-weight:700; font-family:inherit; cursor:pointer; border:1.5px solid transparent; transition:background .15s, color .15s, transform .15s, opacity .15s; white-space:nowrap; }
+.pz-btn:disabled{ opacity:.4; cursor:not-allowed; }
+.pz-btn.accent{ background:var(--pz-acc); color:#1c1608; }
+.pz-btn.accent:hover:not(:disabled){ background:var(--pz-acc2); }
+.pz-btn.ghost{ background:transparent; color:var(--pz-mut); border-color:var(--pz-line); }
+.pz-btn.ghost:hover:not(:disabled){ color:var(--pz-ink); border-color:var(--pz-mut); }
+.pz-btn.solid-red{ background:var(--pz-bad); color:#fff; }
+.pz-btn.sm{ padding:7px 12px; font-size:12.5px; }
+.pz-btn.ghost:has(svg), .pz-btn.solid-red:has(svg){ justify-content:flex-start; }
+.pz-side-out .pz-btn{ width:100%; }
+.pz-icon{ width:34px; height:34px; border:1px solid var(--pz-line); border-radius:4px; background:transparent; color:var(--pz-mut); display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none; }
+.pz-icon:hover{ color:var(--pz-bad); border-color:var(--pz-bad); }
+
+/* sticky savebar */
+.pz-bar{ position:fixed; left:50%; transform:translateX(-50%); bottom:20px; z-index:50; width:min(880px,calc(100% - 40px)); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; padding:14px 16px 14px 20px; background:var(--pz-bg); border:1px solid var(--pz-acc); border-radius:6px; box-shadow:0 26px 60px -22px rgba(0,0,0,.6); animation:pzIn .25s ease; }
+.pz-bar > span{ display:flex; align-items:center; gap:10px; font-size:14px; font-weight:700; }
+.pz-bar > span i{ width:8px; height:8px; background:var(--pz-acc); transform:rotate(45deg); }
+.pz-bar em{ font-style:normal; color:var(--pz-bad); }
+.pz-bar > div{ display:flex; gap:10px; }
+.pz-bar kbd{ font-family:inherit; font-size:10.5px; padding:2px 6px; border-radius:3px; background:rgba(0,0,0,.2); margin-left:6px; }
+@keyframes pzIn{ from{ opacity:0; transform:translate(-50%,14px); } to{ opacity:1; transform:translate(-50%,0); } }
+
+@media (max-width:920px){
+  .pz{ grid-template-columns:minmax(0,1fr); gap:28px; }
+  .pz-side{ position:static; display:grid; grid-template-columns:200px minmax(0,1fr); gap:6px 24px; align-items:start; }
+  .pz-portrait{ grid-row:span 6; }
+  .pz-portrait-act{ margin-top:0; }
+  .pz-side-out{ grid-column:2; }
+}
+@media (max-width:640px){
+  .pz-side{ grid-template-columns:minmax(0,1fr); }
+  .pz-portrait{ aspect-ratio:auto; height:220px; }
+  .pz-row2, .pz-reqs, .pz-perms{ grid-template-columns:minmax(0,1fr); }
+  .pz-name{ font-size:24px; }
+  .pz-bar{ bottom:10px; }
+  .pz-bar kbd{ display:none; }
+}
+</style>
+<style id="edu-profile-v5">
+/* ===== PROFIL v5 — bento grid, ilova bilan bir xil emerald til ===== */
+.pb{ --pb-solid:#0e1814; --pb-card:rgba(255,255,255,.035); --pb-bd:rgba(255,255,255,.085); --pb-ink:#ecf8f2; --pb-mut:#8ea79b; --pb-in:rgba(255,255,255,.04);
+  --pb-acc:#34d399; --pb-acc2:#a3e635; --pb-red:#fb7185; --pb-ok:#10b981;
+  position:relative; max-width:1120px; margin:0 auto; padding-bottom:100px; color:var(--pb-ink); display:flex; flex-direction:column; gap:18px; }
+html:not(.theme-dark) .pb{ --pb-solid:#ffffff; --pb-card:#ffffff; --pb-bd:rgba(15,23,42,.08); --pb-ink:#0f1f17; --pb-mut:#64766d; --pb-in:#f3f7f5; --pb-red:#e11d48; --pb-ok:#059669; }
+
+/* ---- hero ---- */
+.pb-hero{ position:relative; overflow:hidden; display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; padding:30px 32px; border-radius:30px; border:1px solid var(--pb-bd);
+  background:linear-gradient(135deg,rgba(52,211,153,.14),rgba(163,230,53,.05) 45%,transparent),var(--pb-card); }
+.pb-hero-glow{ position:absolute; width:420px; height:420px; right:-120px; top:-160px; border-radius:50%; background:radial-gradient(closest-side,rgba(52,211,153,.28),transparent); pointer-events:none; }
+.pb-hero-main{ position:relative; display:flex; align-items:center; gap:28px; min-width:0; flex-wrap:wrap; }
+.pb-avatar{ position:relative; width:132px; height:132px; flex:none; border-radius:38px; padding:4px; background:linear-gradient(135deg,var(--pb-acc),var(--pb-acc2)); box-shadow:0 22px 44px -18px rgba(52,211,153,.7); transition:transform .2s; }
+.pb-avatar.drag{ transform:scale(1.04); }
+.pb-avatar > span, .pb-avatar > img{ display:flex; width:100%; height:100%; border-radius:34px; object-fit:cover; align-items:center; justify-content:center; background:linear-gradient(145deg,#0f2a20,#06160f); color:#d1fae5; font-family:'Sora',Manrope,sans-serif; font-size:44px; font-weight:800; letter-spacing:-.03em; }
+.pb-cam{ position:absolute; right:2px; bottom:2px; width:40px; height:40px; border-radius:50%; border:3px solid var(--pb-card); background:var(--pb-acc); color:#052e1c; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .15s; }
+.pb-cam:hover{ transform:scale(1.08); }
+.pb-id{ min-width:0; }
+.pb-kicker{ font-size:12px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--pb-acc); }
+.pb-id h1{ margin:6px 0 10px; font-family:'Sora',Manrope,sans-serif; font-size:clamp(26px,3vw,36px); font-weight:800; letter-spacing:-.025em; line-height:1.1; word-break:break-word; }
+.pb-tags{ display:flex; flex-wrap:wrap; gap:8px; }
+.pb-tag{ display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:99px; font-size:12.5px; font-weight:700; background:var(--pb-in); color:var(--pb-mut); border:1px solid var(--pb-bd); }
+.pb-tag[style*="--c"]{ color:var(--c); background:color-mix(in srgb,var(--c) 14%,transparent); border-color:color-mix(in srgb,var(--c) 35%,transparent); }
+.pb-tag.on{ color:var(--pb-ok); background:rgba(16,185,129,.12); border-color:rgba(16,185,129,.3); }
+.pb-tag.off{ color:var(--pb-red); background:rgba(251,113,133,.12); border-color:rgba(251,113,133,.3); }
+.pb-tag.sm{ padding:3px 10px; font-size:11.5px; }
+.pb-hero-act{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+.pb-ring-wrap{ position:relative; display:flex; flex-direction:column; align-items:flex-end; gap:14px; }
+.pb-ring{ --p:0; width:116px; height:116px; border-radius:50%; background:conic-gradient(var(--pb-acc) calc(var(--p) * 1%),var(--pb-bd) 0); display:flex; align-items:center; justify-content:center; }
+.pb-ring > div{ width:92px; height:92px; border-radius:50%; background:var(--pb-solid); display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.pb-ring b{ font-family:'Sora',Manrope,sans-serif; font-size:24px; font-weight:800; }
+.pb-ring small{ font-size:11px; color:var(--pb-mut); font-weight:600; }
+
+/* ---- buttons ---- */
+.pb-btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:11px 18px; border-radius:14px; border:1px solid transparent; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:transform .15s, background .15s, box-shadow .15s, opacity .15s, border-color .15s; white-space:nowrap; }
+.pb-btn:hover:not(:disabled){ transform:translateY(-1px); }
+.pb-btn:disabled{ opacity:.42; cursor:not-allowed; transform:none; }
+.pb-btn.solid{ background:linear-gradient(135deg,var(--pb-acc),var(--pb-acc2)); color:#052e1c; box-shadow:0 12px 24px -14px rgba(52,211,153,.9); }
+.pb-btn.solid.danger{ background:var(--pb-red); color:#fff; box-shadow:none; }
+.pb-btn.soft{ background:rgba(52,211,153,.12); color:var(--pb-acc); border-color:rgba(52,211,153,.25); }
+.pb-btn.soft.danger{ background:rgba(251,113,133,.1); color:var(--pb-red); border-color:rgba(251,113,133,.25); }
+.pb-btn.ghost{ background:transparent; color:var(--pb-mut); border-color:var(--pb-bd); }
+.pb-btn.ghost:hover:not(:disabled){ color:var(--pb-ink); background:var(--pb-in); }
+.pb-btn.sm{ padding:8px 13px; font-size:13px; border-radius:12px; }
+.pb-btn.wide{ width:100%; margin-top:6px; }
+
+/* ---- grid & cards ---- */
+.pb-grid{ display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:18px; }
+.span-12{ grid-column:span 12; } .span-7{ grid-column:span 7; } .span-6{ grid-column:span 6; } .span-5{ grid-column:span 5; }
+.pb-card{ position:relative; background:var(--pb-card); border:1px solid var(--pb-bd); border-radius:26px; padding:26px; box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 24px 50px -36px rgba(0,0,0,.6); min-width:0; }
+.pb-ch{ display:flex; align-items:center; gap:14px; margin-bottom:22px; flex-wrap:wrap; }
+.pb-ch > div{ flex:1; min-width:180px; }
+.pb-ch h2{ margin:0; font-family:'Sora',Manrope,sans-serif; font-size:18px; font-weight:800; letter-spacing:-.01em; }
+.pb-ch p{ margin:3px 0 0; font-size:13px; color:var(--pb-mut); }
+.pb-ico{ --c:#34d399; width:42px; height:42px; border-radius:14px; flex:none; display:flex; align-items:center; justify-content:center; color:var(--c); background:color-mix(in srgb,var(--c) 15%,transparent); border:1px solid color-mix(in srgb,var(--c) 30%,transparent); }
+.pb-ico.sm{ width:34px; height:34px; border-radius:11px; }
+.pb-okpill{ margin-left:auto; display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:99px; font-size:12px; font-weight:700; color:var(--pb-ok); background:rgba(16,185,129,.14); }
+
+/* ---- fields ---- */
+.pb-fields{ display:grid; grid-template-columns:1fr 1fr; gap:16px 16px; }
+.pb-field{ display:flex; flex-direction:column; gap:8px; min-width:0; }
+.pb-field.full{ grid-column:1 / -1; }
+.pb-field > span{ font-size:12.5px; font-weight:700; color:var(--pb-mut); display:flex; justify-content:space-between; }
+.pb-field > span b{ font-weight:600; }
+.pb-field > em{ font-style:normal; font-size:12px; font-weight:700; color:var(--pb-red); }
+.pb-input{ display:flex; align-items:center; gap:10px; height:50px; padding:0 14px; border-radius:15px; background:var(--pb-in); border:1px solid transparent; color:var(--pb-mut); transition:border-color .15s, box-shadow .15s, background .15s; min-width:0; }
+.pb-input:focus-within{ border-color:var(--pb-acc); box-shadow:0 0 0 4px rgba(52,211,153,.14); background:transparent; color:var(--pb-acc); }
+.pb-input.ok{ border-color:rgba(16,185,129,.4); }
+.pb-input.bad{ border-color:rgba(251,113,133,.5); }
+.pb .pb-input input, .pb .pb-input select{ flex:1; min-width:0; height:100%; border:0 !important; background:transparent !important; box-shadow:none !important; outline:none; font-family:inherit; font-size:15px; font-weight:600; color:var(--pb-ink); padding:0; }
+.pb .pb-input input::placeholder{ color:var(--pb-mut); opacity:.6; font-weight:500; }
+.pb .pb-input select{ cursor:pointer; }
+.pb .pb-input select option{ color:#111; }
+.pb-chk{ width:22px; height:22px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; font-style:normal; font-size:12px; font-weight:800; }
+.pb-input.ok .pb-chk{ background:rgba(16,185,129,.18); color:var(--pb-ok); }
+.pb-input.bad .pb-chk{ background:rgba(251,113,133,.18); color:var(--pb-red); }
+.pb-cardfoot{ display:flex; justify-content:flex-end; gap:10px; margin-top:22px; flex-wrap:wrap; }
+.pb-eye{ width:30px; height:30px; border:0; border-radius:10px; background:transparent; color:var(--pb-mut); display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none; }
+.pb-eye:hover{ background:var(--pb-in); color:var(--pb-ink); }
+
+/* ---- statistika kartasi ---- */
+.pb-stats{ display:flex; flex-direction:column; align-items:flex-start; gap:18px; background:linear-gradient(160deg,rgba(52,211,153,.12),transparent 60%),var(--pb-card); }
+.pb-stat-ring{ --p:0; width:150px; height:150px; border-radius:50%; background:conic-gradient(var(--pb-acc) calc(var(--p) * 1%),var(--pb-bd) 0); display:flex; align-items:center; justify-content:center; align-self:center; }
+.pb-stat-ring > div{ width:118px; height:118px; border-radius:50%; background:var(--pb-solid); display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.pb-stat-ring b{ font-family:'Sora',Manrope,sans-serif; font-size:34px; font-weight:800; line-height:1; }
+.pb-stat-ring small{ font-size:13px; color:var(--pb-mut); font-weight:600; margin-top:4px; }
+.pb-stats h2{ margin:0; font-family:'Sora',Manrope,sans-serif; font-size:18px; font-weight:800; }
+.pb-stats p{ margin:4px 0 0; font-size:13.5px; color:var(--pb-mut); line-height:1.5; }
+.pb-mini{ width:100%; display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:auto; }
+.pb-mini > div{ padding:14px; border-radius:16px; background:var(--pb-in); display:flex; flex-direction:column; gap:4px; }
+.pb-mini small{ font-size:11.5px; color:var(--pb-mut); font-weight:600; }
+.pb-mini b{ font-size:14px; font-weight:700; }
+
+/* ---- parol ---- */
+.pb-strength{ display:flex; align-items:center; gap:12px; margin:-2px 0 14px; }
+.pb-bars{ display:flex; gap:6px; flex:1; }
+.pb-bars i{ flex:1; height:6px; border-radius:99px; background:var(--pb-bd); transition:background .25s; }
+.pb-strength small{ font-size:12.5px; font-weight:800; min-width:90px; text-align:right; }
+.pb-chips{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+.pb-chip{ display:inline-flex; align-items:center; gap:6px; padding:6px 11px; border-radius:99px; font-size:12px; font-weight:700; color:var(--pb-mut); background:var(--pb-in); border:1px solid var(--pb-bd); transition:all .2s; }
+.pb-chip i{ width:6px; height:6px; border-radius:50%; background:var(--pb-mut); opacity:.6; }
+.pb-chip.ok{ color:var(--pb-ok); background:rgba(16,185,129,.12); border-color:rgba(16,185,129,.3); }
+.pb-err{ display:flex; align-items:center; gap:8px; margin-bottom:12px; padding:11px 13px; border-radius:14px; background:rgba(251,113,133,.1); color:var(--pb-red); font-size:13px; font-weight:700; }
+
+/* ---- bildirishnoma ---- */
+.pb-prefs{ display:flex; flex-direction:column; gap:10px; }
+.pb-pref{ display:flex; align-items:center; gap:14px; padding:14px 16px; border-radius:18px; background:var(--pb-in); }
+.pb-pref-t{ flex:1; min-width:0; }
+.pb-pref-t b{ display:block; font-size:14.5px; font-weight:700; }
+.pb-pref-t small{ font-size:12.5px; color:var(--pb-mut); }
+.pb-switch{ width:48px; height:28px; border-radius:99px; border:0; background:var(--pb-bd); position:relative; cursor:pointer; flex:none; transition:background .25s; }
+.pb-switch i{ position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.3); transition:transform .25s; }
+.pb-switch.on{ background:linear-gradient(135deg,var(--pb-acc),var(--pb-acc2)); }
+.pb-switch.on i{ transform:translateX(20px); }
+
+/* ---- modullar ---- */
+.pb-modules{ display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:12px; }
+.pb-mod{ padding:16px; border-radius:20px; background:var(--pb-in); border:1px solid var(--pb-bd); display:flex; flex-direction:column; gap:10px; }
+.pb-mod.off{ opacity:.55; }
+.pb-mod-top{ display:flex; justify-content:space-between; align-items:center; }
+.pb-mod-top b{ font-size:13px; color:var(--pb-mut); font-weight:700; }
+.pb-mod strong{ font-size:14.5px; font-weight:700; }
+.pb-bar{ height:6px; border-radius:99px; background:var(--pb-bd); overflow:hidden; }
+.pb-bar u{ display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,var(--pb-acc),var(--pb-acc2)); transition:width .4s; }
+
+/* ---- jamoa ---- */
+.pb-ch-act{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.pb-search{ display:flex; align-items:center; gap:8px; height:40px; padding:0 12px; border-radius:12px; background:var(--pb-in); color:var(--pb-mut); min-width:200px; }
+.pb-search input{ flex:1; border:0; background:transparent; outline:none; font-family:inherit; font-size:13.5px; color:var(--pb-ink); min-width:0; }
+.pb-adduser{ padding:18px; border-radius:20px; background:var(--pb-in); margin-bottom:18px; border:1px dashed rgba(52,211,153,.4); }
+.pb-team{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.pb-member{ display:flex; align-items:center; gap:12px; padding:14px; border-radius:20px; background:var(--pb-in); border:1px solid transparent; transition:border-color .2s; min-width:0; }
+.pb-member:hover{ border-color:var(--pb-bd); }
+.pb-member.self{ border-color:rgba(52,211,153,.3); }
+.pb-mav{ width:44px; height:44px; border-radius:15px; flex:none; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; color:#052e1c; background:linear-gradient(135deg,var(--pb-acc),var(--pb-acc2)); overflow:hidden; }
+.pb-mt{ flex:1; min-width:0; }
+.pb-mt b{ display:flex; align-items:center; gap:6px; font-size:14.5px; font-weight:700; overflow:hidden; white-space:nowrap; }
+.pb-mt b em{ font-style:normal; font-size:10.5px; font-weight:800; padding:2px 7px; border-radius:99px; background:rgba(52,211,153,.18); color:var(--pb-acc); }
+.pb-mt small{ font-size:12.5px; color:var(--pb-mut); }
+.pb-member-act{ display:flex; align-items:center; gap:8px; flex:none; }
+.pb-mrole{ padding:7px 10px; border-radius:11px; border:1px solid var(--pb-bd); background:var(--pb-card); color:var(--pb-ink); font-family:inherit; font-size:12.5px; font-weight:700; outline:none; cursor:pointer; }
+.pb-iconbtn{ width:34px; height:34px; border-radius:11px; border:1px solid var(--pb-bd); background:transparent; color:var(--pb-mut); display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.pb-iconbtn:hover{ color:var(--pb-red); border-color:rgba(251,113,133,.5); background:rgba(251,113,133,.1); }
+.pb-empty{ grid-column:1 / -1; text-align:center; padding:24px; color:var(--pb-mut); font-size:14px; }
+
+/* ---- suzuvchi saqlash paneli ---- */
+.pb-float{ position:fixed; left:50%; transform:translateX(-50%); bottom:22px; z-index:60; width:min(640px,calc(100% - 32px)); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; padding:12px 12px 12px 20px; border-radius:20px; background:rgba(12,22,18,.82); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); border:1px solid rgba(52,211,153,.35); box-shadow:0 30px 60px -20px rgba(0,0,0,.6); animation:pbUp .3s ease; color:#ecf8f2; }
+html:not(.theme-dark) .pb-float{ background:rgba(255,255,255,.9); color:#0f1f17; }
+.pb-float > span{ display:flex; align-items:center; gap:10px; font-size:14px; font-weight:700; }
+.pb-float > span i{ width:9px; height:9px; border-radius:50%; background:var(--pb-acc); box-shadow:0 0 0 4px rgba(52,211,153,.2); }
+.pb-float em{ font-style:normal; color:#fb7185; }
+.pb-float > div{ display:flex; gap:8px; }
+.pb-float kbd{ font-family:inherit; font-size:10.5px; padding:2px 6px; border-radius:6px; background:rgba(5,46,28,.25); margin-left:6px; }
+@keyframes pbUp{ from{ opacity:0; transform:translate(-50%,12px); } to{ opacity:1; transform:translate(-50%,0); } }
+
+/* ---- moslashuvchanlik ---- */
+@media (max-width:1000px){
+  .span-7,.span-6,.span-5{ grid-column:span 12; }
+  .pb-stats{ flex-direction:row; flex-wrap:wrap; }
+  .pb-stats > div:nth-child(2){ flex:1; min-width:200px; }
+}
+@media (max-width:720px){
+  .pb-hero{ padding:22px; }
+  .pb-ring-wrap{ width:100%; flex-direction:row; justify-content:space-between; align-items:center; }
+  .pb-avatar{ width:104px; height:104px; border-radius:30px; }
+  .pb-avatar > span, .pb-avatar > img{ border-radius:26px; font-size:34px; }
+  .pb-card{ padding:20px; border-radius:22px; }
+  .pb-fields, .pb-team{ grid-template-columns:minmax(0,1fr); }
+  .pb-float kbd{ display:none; }
+}
+</style>
+<style id="edu-profile-v5-fix">
+/* ===== PROFIL v5 tuzatish: jamoa va rol tanlagich ===== */
+.pb-team{ grid-template-columns:minmax(0,1fr); }
+@media (min-width:1120px){ .pb-team{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+.pb-member{ flex-wrap:wrap; row-gap:12px; }
+.pb-mt{ flex:1 1 150px; }
+.pb-member-act{ margin-left:auto; flex-wrap:nowrap; }
+.pb .pb-mrole{
+  -webkit-appearance:none; appearance:none; height:38px; box-sizing:border-box;
+  padding:0 34px 0 14px; min-width:118px;
+  border-radius:12px; border:1px solid var(--pb-bd); background-color:rgba(255,255,255,.07);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238ea79b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 13px center;
+  color:var(--pb-ink); font-family:inherit; font-size:13px; font-weight:700; outline:none; cursor:pointer; color-scheme:dark;
+  transition:border-color .15s, box-shadow .15s; }
+html:not(.theme-dark) .pb .pb-mrole{ color-scheme:light; background-color:#ffffff; }
+html.theme-dark .pb .pb-mrole{ background-color:rgba(255,255,255,.07) !important; color:var(--pb-ink) !important; }
+html.theme-dark .pb .pb-mrole option{ background-color:#101c17 !important; color:#eef6f1 !important; }
+html.theme-dark .pb .pb-search{ background:rgba(255,255,255,.05) !important; }
+html.theme-dark .pb .pb-search input, html.theme-dark .pb .pb-adduser input, html.theme-dark .pb .pb-adduser select{ background-color:transparent !important; }
+html.theme-dark .pb .pb-adduser .pb-input input, html.theme-dark .pb .pb-adduser .pb-input select{ background-color:transparent !important; }
+.pb .pb-mrole:focus{ border-color:var(--pb-acc); box-shadow:0 0 0 4px rgba(52,211,153,.14); }
+.pb .pb-mrole option{ background:var(--pb-solid); color:var(--pb-ink); }
+.pb .pb-iconbtn{ width:38px; height:38px; }
+.pb .pb-member-act .pb-btn.sm{ height:38px; padding:0 14px; }
+.pb .pb-tag.sm{ height:38px; display:inline-flex; align-items:center; padding:0 14px; }
+@media (max-width:560px){ .pb-member-act{ width:100%; margin-left:0; justify-content:space-between; } .pb .pb-mrole{ flex:1; } }
+</style>
+<style id="edu-profile-pw-v1">
+/* ===== PAROL bo'limi — zamonaviy ko'rinish ===== */
+.pb-pw{ display:flex; flex-direction:column; }
+.pb-pw-head{ display:flex; align-items:center; gap:16px; margin-bottom:22px; flex-wrap:wrap; }
+.pb-pw-head > div{ flex:1; min-width:180px; }
+.pb-pw-head h2{ margin:0; font-family:'Sora',Manrope,sans-serif; font-size:19px; font-weight:800; letter-spacing:-.01em; }
+.pb-pw-head p{ margin:4px 0 0; font-size:13px; color:var(--pb-mut); line-height:1.45; }
+.pb-pw-tile{ width:52px; height:52px; border-radius:18px; flex:none; display:flex; align-items:center; justify-content:center; color:#052e1c; background:linear-gradient(135deg,#34d399,#a3e635); box-shadow:0 14px 28px -14px rgba(52,211,153,.9); }
+
+.pb-pw-meter{ display:flex; flex-direction:column; gap:12px; padding:16px 18px; border-radius:20px; background:var(--pb-in); border:1px solid var(--pb-bd); margin-bottom:20px; }
+.pb-pw-meter-top{ display:flex; justify-content:space-between; align-items:center; font-size:13px; color:var(--pb-mut); font-weight:600; }
+.pb-pw-meter-top b{ font-size:14px; font-weight:800; color:var(--pb-mut); }
+.pb-pw-seg{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.pb-pw-seg i{ height:7px; border-radius:99px; background:var(--pb-bd); transition:background .3s ease; }
+
+.pb-pw-field{ display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+.pb-pw-field > span{ display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; color:var(--pb-mut); }
+.pb-fok{ width:18px; height:18px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; background:rgba(16,185,129,.18); color:var(--pb-ok); font-style:normal; }
+.pb-pw-input{ display:flex; align-items:center; gap:12px; height:54px; padding:0 8px 0 16px; border-radius:18px; background:var(--pb-in); border:1px solid transparent; color:var(--pb-mut); transition:border-color .2s, box-shadow .2s, background .2s; }
+.pb-pw-input:focus-within{ border-color:var(--pb-acc); box-shadow:0 0 0 4px rgba(52,211,153,.14); background:transparent; color:var(--pb-acc); }
+.pb-pw-input.good{ border-color:rgba(16,185,129,.35); }
+.pb .pb-pw-input input{ flex:1; min-width:0; height:100%; border:0 !important; background:transparent !important; box-shadow:none !important; outline:none; font-family:inherit; font-size:15.5px; font-weight:600; color:var(--pb-ink); letter-spacing:.02em; }
+.pb .pb-pw-input input::placeholder{ color:var(--pb-mut); opacity:.6; font-weight:500; letter-spacing:0; }
+.pb-pw-input .pb-eye{ width:36px; height:36px; }
+.pb-pw-err{ font-style:normal; font-size:12px; font-weight:700; color:var(--pb-red); }
+
+.pb-req-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:4px 0 20px; }
+.pb-req{ display:flex; align-items:center; gap:10px; padding:11px 13px; border-radius:16px; background:var(--pb-in); border:1px solid var(--pb-bd); font-size:12.5px; font-weight:600; color:var(--pb-mut); transition:color .2s, border-color .2s, background .2s; }
+.pb-req .dot{ width:20px; height:20px; border-radius:50%; flex:none; display:inline-flex; align-items:center; justify-content:center; border:1.5px solid var(--pb-bd); font-size:11px; font-weight:800; color:#052e1c; transition:all .25s; }
+.pb-req.ok{ color:var(--pb-ink); border-color:rgba(16,185,129,.3); background:rgba(16,185,129,.07); }
+.pb-req.ok .dot{ background:linear-gradient(135deg,#34d399,#a3e635); border-color:transparent; transform:scale(1.06); }
+
+.pb-pw-banner{ display:flex; align-items:center; gap:10px; margin-bottom:14px; padding:12px 14px; border-radius:16px; background:rgba(251,113,133,.1); border:1px solid rgba(251,113,133,.25); color:var(--pb-red); font-size:13px; font-weight:700; }
+.pb-pw-submit{ width:100%; height:54px; border-radius:18px; font-size:15px; margin-top:auto; }
+.pb-pw-submit:disabled{ opacity:.45; }
+
+@media (max-width:560px){ .pb-req-grid{ grid-template-columns:minmax(0,1fr); } }
+</style>
+<style id="edu-picker-v1">
+.pk{ position:relative; }
+.pk-box{ position:relative; display:flex; align-items:center; }
+.pk-ic{ position:absolute; left:12px; color:var(--sd-muted); display:flex; pointer-events:none; }
+.pk-in{ padding-left:36px !important; padding-right:40px !important; }
+.pk-chev{ position:absolute; right:6px; width:30px; height:30px; border-radius:9px; border:0; background:transparent; color:var(--sd-muted); cursor:pointer; font-size:14px; }
+.pk-chev:hover{ background:var(--sd-hover, rgba(127,127,127,.14)); color:var(--sd-text); }
+.pk-list{ position:absolute; left:0; right:0; top:calc(100% + 6px); z-index:60; max-height:280px; overflow:auto; padding:6px; border-radius:14px; border:1px solid var(--sd-line); background:var(--sd-card, var(--sd-bg)); box-shadow:0 22px 40px -18px rgba(0,0,0,.45); }
+.pk-empty{ padding:14px; text-align:center; font-size:13px; color:var(--sd-muted); font-weight:600; }
+.pk-opt{ width:100%; display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:10px; border:0; background:transparent; color:var(--sd-text); font-family:inherit; text-align:left; cursor:pointer; }
+.pk-opt.act{ background:var(--sd-hover, rgba(127,127,127,.14)); }
+.pk-opt.sel b{ color:#10b981; }
+.pk-av{ width:30px; height:30px; border-radius:10px; flex:none; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff; background:linear-gradient(135deg,#6366f1,#3b82f6); }
+.pk-t{ display:flex; flex-direction:column; min-width:0; flex:1; }
+.pk-t b{ font-size:14px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.pk-t small{ font-size:12px; color:var(--sd-muted); }
+.pk-tick{ color:#10b981; display:flex; }
+</style>
 <script type="text/plain" id="app-source">
 const { useState, useMemo, useRef, useEffect, useLayoutEffect } = React;
 
@@ -4912,7 +5597,7 @@ function DashV2({ me, canEdit, stats, revenue, students, categories, overdueStud
   );
 }
 
-function Sidebar({ roleLabel, navItems, activePage, onNavigate, footerName, footerSub, footerInitials, onFooterClick, mobileOpen, onCloseMobile }) {
+function Sidebar({ roleLabel, navItems, activePage, onNavigate, footerName, footerSub, footerInitials, footerAvatar, onFooterClick, mobileOpen, onCloseMobile }) {
   const [collapsed, setCollapsed] = useState(false);
 
   const handleNavigate = (id) => {
@@ -4955,7 +5640,7 @@ function Sidebar({ roleLabel, navItems, activePage, onNavigate, footerName, foot
 
         <div className="side-footer" onClick={() => { onFooterClick(); if (onCloseMobile) onCloseMobile(); }} title={footerName}>
           <span className="side-footer-avatar-wrap">
-            <span className="avatar w-9 h-9 bg-gold text-ink text-sm shrink-0">{footerInitials}</span>
+            <AvatarBubble src={footerAvatar} text={footerInitials} className="avatar w-9 h-9 bg-gold text-ink text-sm shrink-0" />
             <span className="side-footer-status" />
           </span>
           <div className="side-footer-info">
@@ -5276,7 +5961,7 @@ function Topbar({ me, roleLabel, initials, theme, onToggleTheme, notifications, 
 
         <div className="topbar-profile-wrap">
           <button className="topbar-profile-btn" onClick={() => setProfileOpen((v) => !v)}>
-            <span className="avatar w-9 h-9 bg-gold text-ink text-sm">{initials}</span>
+            <AvatarBubble src={me.avatar} text={initials} className="avatar w-9 h-9 bg-gold text-ink text-sm" />
             <span className="topbar-profile-name">{me.name}</span>
             <Icon.chevron width="12" height="12" className={`chev ${profileOpen ? 'open' : ''}`} />
           </button>
@@ -5285,7 +5970,7 @@ function Topbar({ me, roleLabel, initials, theme, onToggleTheme, notifications, 
               <div className="dropdown-backdrop" onClick={() => setProfileOpen(false)} />
               <div className="profile-dropdown">
                 <div className="profile-dropdown-head">
-                  <span className="avatar w-10 h-10 bg-gold text-ink text-sm">{initials}</span>
+                  <AvatarBubble src={me.avatar} text={initials} className="avatar w-10 h-10 bg-gold text-ink text-sm" />
                   <div className="min-w-0">
                     <div className="profile-dropdown-name truncate">{me.name}</div>
                     <div className="profile-dropdown-role truncate">@{me.username} · {roleLabel}</div>
@@ -5412,7 +6097,7 @@ function StaffApp({ me, staff, setStaff, roleTpl, setRoleTpl, categories, setCat
       )}
       <Sidebar roleLabel={roleLabel} navItems={nav}
         activePage={curPage} onNavigate={goTo}
-        footerName={me.name} footerSub="Profilni ko'rish" footerInitials={initials}
+        footerName={me.name} footerSub="Profilni ko'rish" footerInitials={initials} footerAvatar={me.avatar}
         onFooterClick={() => goTo('profile')}
         mobileOpen={mobileMenuOpen} onCloseMobile={() => setMobileMenuOpen(false)} />
 
@@ -5443,7 +6128,8 @@ function StaffApp({ me, staff, setStaff, roleTpl, setRoleTpl, categories, setCat
         )}
 
         {curPage === 'payments' && (
-          <PaymentsPage students={students} categories={categories} />
+          <PaymentsPage students={students} categories={categories} setStudents={setStudents}
+            notify={notify} canEdit={can('payments.edit')} />
         )}
 
         {curPage === 'blocked' && (
@@ -5539,6 +6225,60 @@ function SxDonut({ seg, center, sub }) {
 const SxHB = ({ rows, empty }) => { const mx = Math.max(1, ...rows.map((r) => r.v)); return rows.length ? rows.map((r) => (<div key={r.l} className="sx-hb"><div><span>{r.l}</span><b>{r.t}</b></div><i><u style={{ width: Math.max(2, (r.v / mx) * 100) + '%', background: r.c || '#34d399' }} /></i></div>)) : <p className="sx-em">{empty}</p>; };
 
 const SxSpark = ({ v, c }) => { const m = Math.max(1, ...v), pts = v.map((x, i) => ((i * 100) / Math.max(1, v.length - 1)).toFixed(1) + ',' + (30 - (x / m) * 26).toFixed(1)).join(' '); return <svg viewBox="0 0 100 32" preserveAspectRatio="none" className="sx-sp"><polyline points={pts + ' 100,32 0,32'} fill={c} opacity=".16" /><polyline points={pts} fill="none" stroke={c} strokeWidth="2.2" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" /></svg>; };
+/* =========================================================================
+   STATISTIKA — shu oydagi to'lovlar ro'yxati: eng katta 10 ta birinchi
+   sahifada, qolganlari sahifalanadi.
+   ========================================================================= */
+function StatMonthPayments({ students, categories }) {
+  const [pg, setPg] = useState(1);
+  const cur = curPeriod();
+  const curIdx = periodIndex(cur.m, cur.y);
+  const list = useMemo(() => {
+    const out = [];
+    students.forEach((s) => (s.payments || []).forEach((p) => {
+      if (periodIndex(p.month, p.year) !== curIdx) return;
+      const c = categories.find((x) => x.id === p.catId);
+      out.push({ id: p.id, name: s.name || '', course: p.courseName || (c ? c.name : "Oylik to'lov"), note: p.note || '', date: p.date || '', amount: Number(p.amount) || 0, extra: Number(p.extra) || 0 });
+    }));
+    return out.map((x) => ({ ...x, total: x.amount + x.extra })).sort((a, b) => b.total - a.total);
+  }, [students, categories, curIdx]);
+  const total = list.reduce((t, x) => t + x.total, 0);
+  const pages = Math.max(1, Math.ceil(list.length / 10)), cp = Math.min(pg, pages);
+  const shown = list.slice((cp - 1) * 10, cp * 10);
+  const exportList = () => sxCsv(`tolovlar-${cur.m}-${cur.y}.csv`, [["O'quvchi", 'Kurs / izoh', 'Asosiy', "Qo'shimcha", 'Jami', 'Sana'], ...list.map((x) => [x.name, x.course, x.amount, x.extra, x.total, x.date])]);
+  return (
+    <section className="v2-c sx-box">
+      <div className="sx-bh">
+        <h2>Shu oydagi to'lovlar <small>{cur.m} {cur.y} · {list.length} ta · jami {fmtMoney(total)}</small></h2>
+        <button type="button" className="sx-btn" onClick={exportList} disabled={!list.length}>↓ CSV</button>
+      </div>
+      {list.length === 0 ? <p className="sx-em" style={{ padding: '18px 0' }}>Bu oy hali to'lov qabul qilinmagan.</p> : (
+        <React.Fragment>
+          <div className="sx-tw">
+            <table className="sx-t">
+              <thead><tr><th>#</th><th>O'quvchi</th><th>Kurs / izoh</th><th>Sana</th><th>Asosiy</th><th>Qo'shimcha</th><th>Jami</th></tr></thead>
+              <tbody>
+                {shown.map((x, i) => (
+                  <tr key={x.id}>
+                    <td className="sx-mut">{(cp - 1) * 10 + i + 1}</td>
+                    <td><b>{x.name}</b></td>
+                    <td>{x.course}{x.note ? <small className="sx-mut" style={{ display: 'block' }}>{x.note}</small> : null}</td>
+                    <td className="sx-mut">{fmtDate(x.date)}</td>
+                    <td>{fmtMoney(x.amount)}</td>
+                    <td>{x.extra > 0 ? <span className="sx-tag warn">+ {fmtMoney(x.extra)}</span> : <span className="sx-mut">—</span>}</td>
+                    <td><b className="ok">{fmtMoney(x.total)}</b></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <Pagination page={cp} pageCount={pages} onChange={setPg} />
+        </React.Fragment>
+      )}
+    </section>
+  );
+}
+
 function StatisticsPage({ stats, revenue, students, categories }) {
   const [tab, setTab] = useState('all'); const [range, setRange] = useState(6); const [cid, setCid] = useState('all'); const [kind, setKind] = useState('bar');
   const [q, setQ] = useState(''); const [flt, setFlt] = useState('all'); const [sort, setSort] = useState(['prog', -1]); const [pg, setPg] = useState(0); const [allDebt, setAllDebt] = useState(false);
@@ -5670,6 +6410,7 @@ function StatisticsPage({ stats, revenue, students, categories }) {
       </>)}
 
       {tab === 'fin' && (<>
+        <StatMonthPayments students={students} categories={categories} />
         <section className="v2-c sx-box sx-coll">
           <div className="sx-cl1"><small>Yig'ish darajasi</small><b>{rate}%</b><span>{fmtMoney(D.collected)} / {fmtMoney(D.expected)}</span></div>
           <div className="sx-cl2">
@@ -5845,63 +6586,620 @@ function BlockedPage({ students, categories, onOpenStudent }) {
   );
 }
 
-function PaymentsPage({ students, categories }) {
-  const [query, setQuery] = useState('');
-  const [pg, setPg] = useState(1);
-  const PAGE_SIZE = 10;
-  const catName = (id) => categories.find((c) => c.id === id)?.name || id;
+/* =========================================================================
+   TO'LOVLAR — moliya markazi: davr tanlash, KPI, grafik, holat jadvali,
+   tranzaksiyalar tarixi, to'lov qabul qilish / bekor qilish, qarzdorlarga
+   eslatma yuborish va CSV eksport. Statistika bilan bir xil vizual til.
+   ========================================================================= */
+const PV_ST = {
+  paid: { l: "To'langan", c: '#34d399' },
+  partial: { l: 'Qisman', c: '#fbbf24' },
+  pending: { l: 'Kutilmoqda', c: '#38bdf8' },
+  overdue: { l: "Muddati o'tgan", c: '#fb7185' },
+  frozen: { l: 'Bloklangan', c: '#94a3b8' },
+};
+const pvIni = (name) => String(name || '?').split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+const pvShift = (m, y, d) => {
+  const idx = periodIndex(m, y) + d, yy = Math.floor(idx / 12);
+  return { m: MONTH_NAMES[idx - yy * 12], y: String(yy) };
+};
+const pvReminderText = (s, b) => (b.blocked
+  ? `Hurmatli ${s.name}, ${b.month} oyi uchun ${fmtMoney(b.blockedDebt)} to'lov qolgan. Iltimos, kursni davom ettirish uchun to'lovni amalga oshiring.`
+  : `Hurmatli ${s.name}, ${b.month} oyi uchun ${fmtMoney(b.debt)} to'lov qolgan. Iltimos, to'lovni o'z vaqtida amalga oshiring.`);
 
-  const rows = students.flatMap((s) => Object.entries(s.access)
-    .filter(([, a]) => a && a.active)
-    .map(([catId, a]) => ({ student: s, catId, access: a, overdue: isCourseBlocked(s, categories, catId) })));
+/* ---------- O'quvchi tanlash: qidiruv + filtrlangan ro'yxat ---------- */
+function PvStudentPicker({ students, value, onChange }) {
+  const cur = students.find((x) => x.id === value) || null;
+  const [text, setText] = useState(cur ? cur.name : '');
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(0);
+  const [typed, setTyped] = useState(false);
+  const boxRef = useRef(null);
 
-  const filtered = rows.filter((r) => r.student.name.toLowerCase().includes(query.toLowerCase()));
-  const sorted = [...filtered].sort((a, b) => (b.overdue - a.overdue));
-  const pageCount = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
-  const curPage = Math.min(pg, pageCount);
-  const shown = sorted.slice((curPage - 1) * PAGE_SIZE, curPage * PAGE_SIZE);
+  /* Ro'yxat yopilganda yoki tanlov o'zgarganda matnni tanlangan ism bilan to'g'rilaymiz */
+  useEffect(() => { if (!open) { setText(cur ? cur.name : ''); setTyped(false); } }, [open, value]);
+  useEffect(() => {
+    const h = (e) => { if (boxRef.current && !boxRef.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
+  }, []);
+
+  const q = typed ? text.trim().toLowerCase() : '';
+  const qd = q.replace(/\D/g, '');
+  const list = students
+    .filter((s) => !q || String(s.name || '').toLowerCase().includes(q) || (qd.length > 0 && String(s.phone || '').replace(/\D/g, '').includes(qd)))
+    .slice(0, 60);
+  const pick = (s) => { onChange(s.id); setText(s.name); setOpen(false); };
+  const onKey = (e) => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); setOpen(true); setActive((a) => Math.min(list.length - 1, a + 1)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setActive((a) => Math.max(0, a - 1)); }
+    else if (e.key === 'Enter') { if (open && list[active]) { e.preventDefault(); pick(list[active]); } }
+    else if (e.key === 'Escape') { setOpen(false); }
+  };
 
   return (
-    <div>
-      <h1 className="font-display text-3xl text-ink mb-1">O'quvchilar to'lovlari</h1>
-      <p className="text-slate text-sm mb-6">Barcha o'quvchilarning kurslar bo'yicha to'lov holati.</p>
-
-      <input value={query} onChange={(e) => { setQuery(e.target.value); setPg(1); }} placeholder="O'quvchini qidirish..."
-        className="w-full sm:w-72 border border-line rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-gold mb-4" />
-
-      <div className="bg-card rounded-xl border border-line p-5 overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-left text-xs text-slate uppercase tracking-wide border-b border-line">
-              <th className="py-2 pr-3">O'quvchi</th>
-              <th className="py-2 pr-3">Kurs</th>
-              <th className="py-2 pr-3">Keyingi to'lov</th>
-              <th className="py-2 pr-3">Holat</th>
-            </tr>
-          </thead>
-          <tbody>
-            {shown.map((r, i) => (
-              <tr key={r.student.id + r.catId + i} className="border-b border-line last:border-b-0">
-                <td className="py-2 pr-3 text-ink font-medium flex items-center gap-2">
-                  <span className="avatar w-6 h-6 bg-paper text-ink text-xs border border-line">{r.student.name.split(' ').map((w)=>w[0]).slice(0,2).join('')}</span>
-                  {r.student.name}
-                </td>
-                <td className="py-2 pr-3 text-slate">{catName(r.catId)}</td>
-                <td className="py-2 pr-3 text-slate">{r.access.isFullyPaid ? "To'liq to'langan" : fmtDate(r.access.nextPaymentDate)}</td>
-                <td className="py-2 pr-3">
-                  {r.access.isFullyPaid ? <span className="pill" style={{ background: 'rgba(5,150,105,.12)', color: '#059669' }}>To'liq</span>
-                    : r.overdue ? <span className="pill pill-warn">Muddati o'tgan</span>
-                    : <span className="pill" style={{ background: 'rgba(5,150,105,.12)', color: '#059669' }}>Faol</span>}
-                </td>
-              </tr>
-            ))}
-            {shown.length === 0 && (
-              <tr><td colSpan="4" className="py-4 text-slate text-sm">Ma'lumot topilmadi.</td></tr>
-            )}
-          </tbody>
-        </table>
-        <Pagination page={curPage} pageCount={pageCount} onChange={setPg} />
+    <div className="sd-field pk" ref={boxRef}>
+      <label className="sd-label">O'quvchi</label>
+      <div className="pk-box">
+        <span className="pk-ic"><Icon.search width="15" height="15" /></span>
+        <input className="sd-input pk-in" role="combobox" aria-expanded={open} placeholder="Ism yoki telefon bo'yicha qidiring..."
+          value={text}
+          onFocus={() => { setTyped(false); setOpen(true); setActive(0); }}
+          onChange={(e) => { setText(e.target.value); setTyped(true); setOpen(true); setActive(0); }}
+          onKeyDown={onKey} />
+        <button type="button" className="pk-chev" aria-label="Ro'yxatni ochish" onMouseDown={(e) => e.preventDefault()} onClick={() => { setTyped(false); setOpen(!open); setActive(0); }}>▾</button>
       </div>
+      {open && (
+        <div className="pk-list" role="listbox">
+          {list.length === 0 && <div className="pk-empty">O'quvchi topilmadi</div>}
+          {list.map((s, i) => (
+            <button type="button" key={s.id} role="option" aria-selected={s.id === value}
+              className={'pk-opt' + (i === active ? ' act' : '') + (s.id === value ? ' sel' : '')}
+              onMouseEnter={() => setActive(i)}
+              onMouseDown={(e) => { e.preventDefault(); pick(s); }}>
+              <span className="pk-av">{pvIni(s.name)}</span>
+              <span className="pk-t"><b>{s.name}</b><small>{s.phone || "Telefon ko'rsatilmagan"}</small></span>
+              {s.id === value && <span className="pk-tick"><Icon.check width="14" height="14" /></span>}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------- To'lov qabul qilish modali ---------- */
+function PvPayModal({ students, setStudents, categories, notify, initialSid, initialPer, onClose }) {
+  const sorted = useMemo(() => [...students].sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''))), [students]);
+  const [sid, setSid] = useState(initialSid || (sorted[0] ? sorted[0].id : ''));
+  const [m, setM] = useState(initialPer.m);
+  const [y, setY] = useState(initialPer.y);
+  const [amount, setAmount] = useState('');
+  const [extraOn, setExtraOn] = useState(false);
+  const [extra, setExtra] = useState('');
+  const [note, setNote] = useState('');
+  const [date, setDate] = useState(todayISO());
+
+  const s = students.find((x) => x.id === sid) || null;
+  const billing = s ? studentBilling(s, categories, m, y) : null;
+  const paidMain = s ? paidInPeriod(s, m, y) : 0;
+  const already = paidMain > 0;
+  const left = billing ? Math.max(0, billing.total - paidMain) : 0;
+
+  /* O'quvchi yoki davr o'zgarganda summani qolgan qarzga moslaymiz */
+  useEffect(() => { setAmount(already || !left ? '' : groupDigits(left)); }, [sid, m, y]);
+
+  const amt = s && !already ? (Number(onlyDigits(amount)) || 0) : 0;
+  const ext = s && extraOn ? (Number(onlyDigits(extra)) || 0) : 0;
+  const over = !already && amt > left;
+  const valid = !!s && (amt > 0 || ext > 0) && !over;
+
+  const save = () => {
+    if (!valid) return;
+    const cur = curPeriod();
+    const isNow = m === cur.m && y === cur.y;
+    const names = Object.entries(s.access || {})
+      .filter(([, a]) => a && a.active && !a.isFullyPaid)
+      .map(([id]) => { const c = categories.find((x) => x.id === id); return c ? c.name : null; })
+      .filter(Boolean).join(', ');
+    const rec = { id: uid('pay'), catId: '', courseName: names || "Oylik to'lov", amount: amt, extra: ext, note: note.trim(), month: m, year: y, date: date || todayISO() };
+    setStudents(students.map((x) => {
+      if (x.id !== s.id) return x;
+      const nx = { ...x, payments: [...(x.payments || []), rec] };
+      return isNow ? syncCycleDates(nx, categories) : nx;
+    }));
+    notify(`${s.name}: ${fmtMoney(amt + ext)} to'lov qabul qilindi`);
+    onClose();
+  };
+
+  return (
+    <SdModal title="To'lov qabul qilish" icon={<span style={{ color: '#34d399', display: 'inline-flex' }}><Icon.cash width="18" height="18" /></span>} onClose={onClose}>
+      <PvStudentPicker students={sorted} value={sid} onChange={setSid} />
+
+      {s && billing && (
+        <React.Fragment>
+          <div className="pv-bill">
+            <div><small>Jami narx</small><b>{fmtMoney(billing.total)}</b></div>
+            <div><small>To'langan</small><b className="ok">{fmtMoney(paidMain)}</b></div>
+            <div><small>Qolgan</small><b className={left > 0 ? 'bad' : 'ok'}>{fmtMoney(left)}</b></div>
+          </div>
+
+          <div className="pv-grid2">
+            <div className="sd-field">
+              <label className="sd-label">Oy</label>
+              <select className="sd-select" value={m} onChange={(e) => setM(e.target.value)}>
+                {MONTH_NAMES.map((x) => <option key={x} value={x}>{x}</option>)}
+              </select>
+            </div>
+            <div className="sd-field">
+              <label className="sd-label">Yil</label>
+              <input className="sd-input" inputMode="numeric" value={y} onChange={(e) => setY(onlyDigits(e.target.value).slice(0, 4))} />
+            </div>
+          </div>
+
+          <div className="sd-field">
+            <label className="sd-label">Summa (so'm) *</label>
+            <input className="sd-input" inputMode="numeric" placeholder="0" value={amount} disabled={already} autoFocus={!already}
+              onChange={(e) => setAmount(groupDigits(e.target.value))}
+              onKeyDown={(e) => { if (e.key === 'Enter') save(); }} />
+            {!already && (
+              <div className="pv-quick">
+                <button type="button" onClick={() => setAmount(groupDigits(left))}>Qolgan summa</button>
+                <button type="button" onClick={() => setAmount(groupDigits(billing.total))}>Oylik narx</button>
+              </div>
+            )}
+            {already && <div className="pv-hint">Bu oy uchun asosiy to'lov allaqachon kiritilgan — faqat qo'shimcha summa qabul qilish mumkin.</div>}
+            {over && <div className="pv-warn"><Icon.warn width="14" height="14" />Qolgan summadan ko'p. Ortiqcha qismini qo'shimcha summa sifatida kiriting.</div>}
+          </div>
+
+          <button type="button" className="pv-link" onClick={() => { if (extraOn) { setExtra(''); setNote(''); } setExtraOn(!extraOn); }}>
+            {extraOn ? "− Qo'shimcha summani olib tashlash" : "+ Qo'shimcha summa qo'shish"}
+          </button>
+          {extraOn && (
+            <div className="sd-field" style={{ marginTop: 10 }}>
+              <label className="sd-label">Qo'shimcha summa (so'm)</label>
+              <input className="sd-input" inputMode="numeric" placeholder="0" value={extra} onChange={(e) => setExtra(groupDigits(e.target.value))} />
+            </div>
+          )}
+
+          <div className="pv-grid2">
+            <div className="sd-field">
+              <label className="sd-label">Sana</label>
+              <input className="sd-input" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+            </div>
+            <div className="sd-field">
+              <label className="sd-label">Izoh</label>
+              <input className="sd-input" placeholder="Ixtiyoriy" value={note} onChange={(e) => setNote(e.target.value)} />
+            </div>
+          </div>
+        </React.Fragment>
+      )}
+
+      <div className="sd-foot">
+        <button type="button" className="sd-btn sd-btn-ghost" onClick={onClose}>Bekor qilish</button>
+        <button type="button" className="sd-btn sd-btn-primary" disabled={!valid} onClick={save}>
+          <Icon.check width="15" height="15" /> Saqlash
+        </button>
+      </div>
+    </SdModal>
+  );
+}
+
+/* ---------- O'quvchi to'lovlari tarixi modali ---------- */
+function PvHistModal({ student, categories, per, canEdit, onPay, onDelete, onClose }) {
+  const [confirmId, setConfirmId] = useState(null);
+  useEffect(() => {
+    if (!confirmId) return undefined;
+    const t = setTimeout(() => setConfirmId(null), 3500);
+    return () => clearTimeout(t);
+  }, [confirmId]);
+  if (!student) return null;
+
+  const b = studentBilling(student, categories, per.m, per.y);
+  const active = Object.entries(student.access || {}).filter(([, a]) => a && a.active);
+  const list = [...(student.payments || [])].sort((x, y) => (y.date || '').localeCompare(x.date || ''));
+  const totalPaid = list.reduce((t, p) => t + (Number(p.amount) || 0) + (Number(p.extra) || 0), 0);
+
+  return (
+    <SdModal title={`${student.name} — to'lovlar`} icon={<span style={{ color: '#38bdf8', display: 'inline-flex' }}><Icon.card width="18" height="18" /></span>} onClose={onClose} size="lg">
+      <div className="pv-bill">
+        <div><small>{per.m} {per.y} · jami narx</small><b>{fmtMoney(b.total)}</b></div>
+        <div><small>To'langan</small><b className="ok">{fmtMoney(b.paid)}</b></div>
+        <div><small>Qarz</small><b className={b.debt > 0 ? 'bad' : 'ok'}>{fmtMoney(b.debt)}</b></div>
+      </div>
+
+      <div className="pv-sec">Kurslar</div>
+      {active.length === 0 && <div className="pv-empty">Kurs biriktirilmagan</div>}
+      {active.map(([catId, a]) => {
+        const c = categories.find((x) => x.id === catId);
+        const bc = b.courses.find((x) => x.catId === catId);
+        const fee = bc ? bc.fee : courseFeeOf(student, categories, catId);
+        const debt = bc ? bc.debt : 0;
+        return (
+          <div className="pv-row" key={catId}>
+            <div>
+              <b>{c ? c.name : catId}</b>
+              <small>Keyingi to'lov: {a.isFullyPaid ? "to'liq to'langan" : fmtDate(a.nextPaymentDate)}</small>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <b>{fmtMoney(fee)}</b>
+              <small className={debt > 0 ? 'bad' : ''}>{debt > 0 ? `qarz ${fmtMoney(debt)}` : "to'langan"}</small>
+            </div>
+          </div>
+        );
+      })}
+
+      <div className="pv-sec">To'lovlar tarixi · jami {fmtMoney(totalPaid)}</div>
+      <div className="pv-list">
+        {list.length === 0 && <div className="pv-empty">Hali to'lov yo'q</div>}
+        {list.map((p) => (
+          <div className="pv-row" key={p.id}>
+            <div>
+              <b>{fmtMoney((Number(p.amount) || 0) + (Number(p.extra) || 0))}</b>
+              <small>{fmtDate(p.date)} · {p.month} {p.year}{p.courseName ? ` · ${p.courseName}` : ''}</small>
+              {p.note ? <small>{p.note}</small> : null}
+            </div>
+            {canEdit && (confirmId === p.id
+              ? <button type="button" className="pv-act danger" onClick={() => onDelete(student.id, p.id)}>Tasdiqlash</button>
+              : <button type="button" className="pv-act ghost" title="Bekor qilish" onClick={() => setConfirmId(p.id)}><Icon.trash width="14" height="14" /></button>)}
+          </div>
+        ))}
+      </div>
+
+      <div className="sd-foot">
+        <button type="button" className="sd-btn sd-btn-ghost" onClick={onClose}>Yopish</button>
+        {canEdit && <button type="button" className="sd-btn sd-btn-primary" onClick={() => onPay(student.id)}>+ To'lov qabul qilish</button>}
+      </div>
+    </SdModal>
+  );
+}
+
+/* ---------- Asosiy sahifa ---------- */
+function PaymentsPage({ students, categories, setStudents, notify, canEdit }) {
+  const cur = curPeriod();
+  const [per, setPer] = useState({ m: cur.m, y: cur.y });
+  const [cid, setCid] = useState('all');
+  const [tab, setTab] = useState('holat');
+  const [chartKind, setChartKind] = useState('bar');
+  const [hq, setHq] = useState('');
+  const [hflt, setHflt] = useState('all');
+  const [hsort, setHsort] = useState(['name', 1]);
+  const [hpg, setHpg] = useState(1);
+  const [tq, setTq] = useState('');
+  const [tscope, setTscope] = useState('period');
+  const [tkind, setTkind] = useState('all');
+  const [tpg, setTpg] = useState(1);
+  const [modal, setModal] = useState(null);
+  const [confirmDel, setConfirmDel] = useState(null);
+
+  useEffect(() => {
+    if (!confirmDel) return undefined;
+    const t = setTimeout(() => setConfirmDel(null), 3500);
+    return () => clearTimeout(t);
+  }, [confirmDel]);
+
+  const isCur = per.m === cur.m && per.y === cur.y;
+  const yearOpts = useMemo(() => {
+    const set = new Set([per.y]);
+    for (let i = -4; i <= 1; i++) set.add(String(Number(cur.y) + i));
+    return [...set].sort();
+  }, [per.y, cur.y]);
+
+  /* Asosiy hisob-kitob: tanlangan davr bo'yicha */
+  const D = useMemo(() => {
+    const today = todayISO(), soonISO = addDays(today, 7);
+    const st = { paid: 0, partial: 0, pending: 0, overdue: 0 };
+    const rows = [], byCat = {}, ins = [];
+    let expected = 0, collected = 0, extraSum = 0, extraN = 0, debtTotal = 0, debtors = 0;
+    let overdueN = 0, overdueDebt = 0, topDebt = null, soon = 0, studentsN = 0;
+
+    students.forEach((s) => {
+      const b = studentBilling(s, categories, per.m, per.y);
+      const active = Object.entries(s.access || {}).filter(([, a]) => a && a.active);
+      const mainP = paidInPeriod(s, per.m, per.y), extraP = extraInPeriod(s, per.m, per.y);
+      if (!active.length && !mainP && !extraP) return;
+      studentsN++;
+      expected += b.total;
+      collected += mainP;
+      extraSum += extraP;
+      extraN += (s.payments || []).filter((p) => p.month === per.m && String(p.year) === per.y && Number(p.extra) > 0).length;
+      if (b.debt > 0) {
+        debtors++; debtTotal += b.debt;
+        if (!topDebt || b.debt > topDebt.debt) topDebt = { s, debt: b.debt };
+      }
+      if (b.blocked) { overdueN++; overdueDebt += b.blockedDebt; }
+      if (active.some(([, a]) => !a.isFullyPaid && a.nextPaymentDate && a.nextPaymentDate >= today && a.nextPaymentDate <= soonISO)) soon++;
+
+      const sStatus = !active.length ? null : b.blocked ? 'overdue' : (b.total > 0 && b.debt === 0) ? 'paid' : b.paid > 0 ? 'partial' : 'pending';
+      if (sStatus) st[sStatus]++;
+
+      active.forEach(([catId, a]) => {
+        const c = categories.find((x) => x.id === catId);
+        const bc = b.courses.find((x) => x.catId === catId);
+        const fee = bc ? bc.fee : courseFeeOf(s, categories, catId);
+        const paid = bc ? bc.paid : fee;
+        const debt = bc ? bc.debt : 0;
+        const status = (a.manualBlocked || a.frozen) ? 'frozen' : (bc && bc.blocked) ? 'overdue' : debt === 0 ? 'paid' : paid > 0 ? 'partial' : 'pending';
+        const name = c ? c.name : catId;
+        rows.push({ key: `${s.id}:${catId}`, s, catId, courseName: name, fee, paid, debt, next: a.nextPaymentDate || '', status });
+        const agg = byCat[catId] || (byCat[catId] = { l: name, paid: 0, fee: 0 });
+        agg.paid += paid; agg.fee += fee;
+      });
+    });
+
+    /* So'nggi 12 oy tushumi */
+    const series = [];
+    for (let i = 11; i >= 0; i--) {
+      const p = pvShift(per.m, per.y, -i), idx = periodIndex(p.m, p.y);
+      let v = 0, n = 0;
+      students.forEach((s) => (s.payments || []).forEach((x) => {
+        if (periodIndex(x.month, x.year) === idx) { v += (Number(x.amount) || 0) + (Number(x.extra) || 0); n++; }
+      }));
+      series.push({ v, n, label: p.m.slice(0, 3), full: `${p.m} ${p.y}` });
+    }
+    const cash = collected + extraSum;
+    const prevCash = series[10].v;
+    const rate = expected > 0 ? Math.min(100, Math.round((collected / expected) * 100)) : 0;
+    const best = series.reduce((bs, x) => (x.v > bs.v ? x : bs), series[0]);
+    const avg = Math.round(series.reduce((t, x) => t + x.v, 0) / series.length);
+
+    if (overdueN) ins.push(['⚠️', `${overdueN} ta o'quvchining to'lov muddati o'tgan — jami ${fmtMoney(overdueDebt)} qarz.`]);
+    if (topDebt) ins.push(['💸', `Eng katta qarz: ${topDebt.s.name} — ${fmtMoney(topDebt.debt)}.`]);
+    if (soon) ins.push(['🗓️', `${soon} ta o'quvchining keyingi to'lov muddati 7 kun ichida.`]);
+    if (extraN) ins.push(['➕', `Bu davrda ${extraN} ta qo'shimcha to'lov qabul qilingan (${fmtMoney(extraSum)}).`]);
+    if (expected > 0) ins.push([rate >= 90 ? '🎯' : '📌', `Yig'ish darajasi ${rate}%${rate >= 90 ? " — a'lo natija." : '.'}`]);
+    if (!ins.length) ins.push(['✨', "Ma'lumotlar to'planishi bilan tavsiyalar shu yerda paydo bo'ladi."]);
+
+    const fRows = rows.filter((r) => cid === 'all' || r.catId === cid);
+    const rowCnt = { paid: 0, partial: 0, pending: 0, overdue: 0, frozen: 0 };
+    fRows.forEach((r) => { rowCnt[r.status]++; });
+
+    return {
+      rows: fRows, studentsN, expected, collected, extraSum, extraN, cash, prevCash,
+      debtTotal, debtors, overdueN, series, seriesRev: [...series].reverse(), best, avg, rate, st, rowCnt,
+      courseRows: Object.values(byCat).map((x) => ({ l: x.l, v: x.paid, t: `${fmtMoney(x.paid)} / ${fmtMoneyShort(x.fee)}` })),
+      urgent: rows.filter((r) => r.status === 'overdue').sort((a, b) => b.debt - a.debt).slice(0, 6),
+      ins,
+    };
+  }, [students, categories, per.m, per.y, cid]);
+
+  const donutSeg = ['paid', 'partial', 'pending', 'overdue'].map((k) => ({ l: PV_ST[k].l, v: D.st[k], c: PV_ST[k].c }));
+  const dCash = sxDelta(D.cash, D.prevCash);
+  const kpis = [
+    ['Tushum', fmtMoney(D.cash), `${D.series[11].n} ta to'lov · ${D.extraN} ta qo'shimcha`, '#34d399', dCash, Icon.cash, null, D.series.map((x) => x.v)],
+    ["Kutilgan", fmtMoney(D.expected), `${D.studentsN} ta o'quvchi`, '#38bdf8', null, Icon.users, null, null],
+    ['Qarz', fmtMoney(D.debtTotal), `${D.debtors} ta qarzdor · ${D.overdueN} ta muddati o'tgan`, '#fb7185', null, Icon.warn, D.expected > 0 ? Math.round((D.debtTotal / D.expected) * 100) : 0, null],
+    ["Yig'ish darajasi", D.rate + '%', `${fmtMoneyShort(D.collected)} / ${fmtMoneyShort(D.expected)}`, '#a78bfa', null, Icon.check, D.rate, null],
+  ];
+
+  /* Holat jadvali: saralash va filtr */
+  const holat = useMemo(() => {
+    const q = hq.trim().toLowerCase();
+    const list = D.rows.filter((r) => (hflt === 'all' || r.status === hflt) && (!q || String(r.s.name || '').toLowerCase().includes(q)));
+    const [k, dir] = hsort;
+    const cmp = {
+      name: (a, b) => String(a.s.name || '').localeCompare(String(b.s.name || '')),
+      paid: (a, b) => a.paid - b.paid,
+      debt: (a, b) => a.debt - b.debt,
+      next: (a, b) => (a.next || '9999').localeCompare(b.next || '9999'),
+    }[k];
+    return [...list].sort((a, b) => cmp(a, b) * dir);
+  }, [D.rows, hq, hflt, hsort]);
+
+  /* Tranzaksiyalar tarixi */
+  const hist = useMemo(() => {
+    const q = tq.trim().toLowerCase(), pIdx = periodIndex(per.m, per.y);
+    const list = [];
+    students.forEach((s) => (s.payments || []).forEach((p) => list.push({ ...p, sid: s.id, sname: s.name || '' })));
+    return list
+      .filter((p) => tscope === 'all' || periodIndex(p.month, p.year) === pIdx)
+      .filter((p) => tkind === 'all' || Number(p.extra) > 0)
+      .filter((p) => !q || `${p.sname} ${p.courseName || ''} ${p.note || ''}`.toLowerCase().includes(q))
+      .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  }, [students, per.m, per.y, tscope, tkind, tq]);
+  const histTot = hist.reduce((t, p) => t + (Number(p.amount) || 0) + (Number(p.extra) || 0), 0);
+
+  const hPages = Math.max(1, Math.ceil(holat.length / 10)), hCur = Math.min(hpg, hPages);
+  const holShown = holat.slice((hCur - 1) * 10, hCur * 10);
+  const tPages = Math.max(1, Math.ceil(hist.length / 12)), tCur = Math.min(tpg, tPages);
+  const tShown = hist.slice((tCur - 1) * 12, tCur * 12);
+
+  /* Amallar */
+  const sendAlert = (s, text) => setStudents(students.map((x) => (x.id === s.id
+    ? { ...x, alerts: [...(x.alerts || []), { id: uid('al'), text, read: false, createdAt: Date.now() }] }
+    : x)));
+  const remind = (s) => {
+    const b = studentBilling(s, categories, per.m, per.y);
+    if (b.debt <= 0) { notify(`${s.name}da qarz yo'q`); return; }
+    sendAlert(s, pvReminderText(s, b));
+    notify(`${s.name}ga eslatma yuborildi`);
+  };
+  const deletePay = (sid, pid) => {
+    const c = curPeriod();
+    setStudents(students.map((x) => {
+      if (x.id !== sid) return x;
+      const removed = (x.payments || []).find((p) => p.id === pid);
+      const nx = { ...x, payments: (x.payments || []).filter((p) => p.id !== pid) };
+      return removed && removed.month === c.m && String(removed.year) === c.y ? syncCycleDates(nx, categories, true) : nx;
+    }));
+    setConfirmDel(null);
+    notify("To'lov yozuvi bekor qilindi");
+  };
+
+  /* CSV eksport */
+  const exportHolat = () => sxCsv(`tolovlar-holati-${per.m}-${per.y}.csv`, [
+    ["O'quvchi", 'Kurs', "Oylik narx", "To'langan", 'Qarz', 'Holat', "Keyingi to'lov"],
+    ...holat.map((r) => [r.s.name, r.courseName, r.fee, r.paid, r.debt, PV_ST[r.status].l, r.status === 'paid' ? "To'liq" : (r.next || '')]),
+  ]);
+  const exportHist = () => sxCsv('tolovlar-tarixi.csv', [
+    ['Sana', "O'quvchi", 'Kurs / izoh', 'Oy', 'Yil', 'Asosiy', "Qo'shimcha", 'Izoh'],
+    ...hist.map((p) => [p.date || '', p.sname, p.courseName || '', p.month, p.year, p.amount || 0, p.extra || 0, p.note || '']),
+  ]);
+  const exportSeries = () => sxCsv('tushum-oylar.csv', [['Oy', 'Tushum', "To'lovlar soni"], ...D.series.map((x) => [x.full, x.v, x.n])]);
+
+  const thS = (k, l) => (
+    <th className={'sx-sort' + (hsort[0] === k ? ' on' : '')} onClick={() => { setHsort(hsort[0] === k ? [k, -hsort[1]] : [k, k === 'name' ? 1 : -1]); setHpg(1); }}>
+      {l}{hsort[0] === k ? (hsort[1] > 0 ? ' ↑' : ' ↓') : ''}
+    </th>
+  );
+
+  return (
+    <div className="v2 sx pv">
+      <div className="sx-hero">
+        <div className="sx-hl">
+          <span className="sx-eye"><i />Moliya markazi · {per.m} {per.y}</span>
+          <h1>To'lovlar</h1>
+          <p>O'quvchilarning oylik to'lovlari, qarzlari va barcha tranzaksiyalar bir joyda</p>
+          <div className="sx-ctl">
+            <div className="pv-period">
+              <button type="button" aria-label="Oldingi oy" onClick={() => setPer(pvShift(per.m, per.y, -1))}>‹</button>
+              <select value={per.m} onChange={(e) => setPer({ m: e.target.value, y: per.y })} aria-label="Oy">
+                {MONTH_NAMES.map((x) => <option key={x} value={x}>{x}</option>)}
+              </select>
+              <select value={per.y} onChange={(e) => setPer({ m: per.m, y: e.target.value })} aria-label="Yil">
+                {yearOpts.map((x) => <option key={x} value={x}>{x}</option>)}
+              </select>
+              <button type="button" aria-label="Keyingi oy" onClick={() => setPer(pvShift(per.m, per.y, 1))}>›</button>
+            </div>
+            <select value={cid} onChange={(e) => { setCid(e.target.value); setHpg(1); }} aria-label="Kurs">
+              <option value="all">Barcha kurslar</option>
+              {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+            {!isCur && <button type="button" className="pv-act" onClick={() => setPer({ m: cur.m, y: cur.y })}>Joriy oy</button>}
+            {canEdit && <button type="button" className="pv-act pri" onClick={() => setModal({ type: 'pay', sid: null })}>+ To'lov qabul qilish</button>}
+          </div>
+        </div>
+      </div>
+
+  <div className="sx-kpis k4">
+        {kpis.map(([l, v, sub, c, d, Ic, pc, sp]) => (
+          <div key={l} className="v2-c sx-k" style={{ '--c': c }}>
+            <div className="sx-kh"><i><Ic width="18" height="18" /></i><span>{l}</span><SxDelta d={d} /></div>
+            <b>{v}</b><small>{sub}</small>
+            {sp ? <SxSpark v={sp} c={c} /> : pc != null ? <div className="sx-kp"><u style={{ width: Math.min(100, Math.max(0, pc)) + '%' }} /></div> : null}
+          </div>
+        ))}
+      </div>
+
+      <div className="sx-tabs" role="tablist">
+        {[['holat', 'Holat', Icon.users, D.debtors || null], ['tarix', 'Tranzaksiyalar', Icon.cash, hist.length || null]].map(([id, l, Ic, n]) => (
+          <button key={id} type="button" role="tab" aria-selected={tab === id} className={tab === id ? 'on' : ''} onClick={() => setTab(id)}>
+            <Ic width="14" height="14" style={{ marginRight: 6, verticalAlign: '-2px' }} />{l}
+            {n ? <em className="pv-cnt">{n}</em> : null}
+          </button>
+        ))}
+      </div>
+
+      {/* ---------- HOLAT ---------- */}
+      {tab === 'holat' && (
+        <div className="v2-c sx-box">
+          <div className="sx-bh">
+            <h2>O'quvchilar holati <small>{per.m} {per.y}</small></h2>
+            <div className="pv-tools">
+              <input className="sx-in" placeholder="O'quvchini qidirish..." value={hq} onChange={(e) => { setHq(e.target.value); setHpg(1); }} />
+              <button type="button" className="sx-btn" onClick={exportHolat}>↓ CSV</button>
+            </div>
+          </div>
+          <div className="sx-chipsel pv-chips">
+            <button type="button" className={hflt === 'all' ? 'on' : ''} onClick={() => { setHflt('all'); setHpg(1); }}>Hammasi<b>{D.rows.length}</b></button>
+            {Object.keys(PV_ST).map((k) => (
+              <button key={k} type="button" className={hflt === k ? 'on' : ''} onClick={() => { setHflt(k); setHpg(1); }}>{PV_ST[k].l}<b>{D.rowCnt[k]}</b></button>
+            ))}
+          </div>
+          <div className="sx-tw">
+            <table className="sx-t pv-tbl">
+              <thead>
+                <tr>
+                  {thS('name', "O'quvchi")}<th>Kurs</th>{thS('paid', "To'langan")}{thS('debt', 'Qarz')}<th>Progress</th>{thS('next', "Keyingi to'lov")}<th>Holat</th><th className="pv-r">Amallar</th>
+                </tr>
+              </thead>
+              <tbody>
+                {holShown.map((r) => {
+                  const pct = r.fee > 0 ? Math.min(100, Math.round((r.paid / r.fee) * 100)) : 100;
+                  return (
+                    <tr key={r.key}>
+                      <td><div className="pv-who"><span className="avatar pv-av">{pvIni(r.s.name)}</span><b>{r.s.name}</b></div></td>
+                      <td><span>{r.courseName}</span><small className="pv-sub">{fmtMoney(r.fee)} / oy</small></td>
+                      <td><b>{fmtMoney(r.paid)}</b></td>
+                      <td><b className={r.debt > 0 ? 'bad' : 'ok'}>{r.debt > 0 ? fmtMoney(r.debt) : '—'}</b></td>
+                      <td style={{ minWidth: 120 }}><span className="sx-pr"><i style={{ width: pct + '%' }} /></span><small className="sx-mut">{pct}%</small></td>
+                      <td className="sx-mut">{r.status === 'paid' ? "To'liq" : fmtDate(r.next)}</td>
+                      <td><span className="pv-st" style={{ '--c': PV_ST[r.status].c }}>{PV_ST[r.status].l}</span></td>
+                      <td className="pv-r">
+                        <div className="pv-acts">
+                          <button type="button" className="pv-act ghost" title="Tarix" onClick={() => setModal({ type: 'hist', sid: r.s.id })}><Icon.eye width="14" height="14" /></button>
+                          {canEdit && r.debt > 0 && <button type="button" className="pv-act ghost" title="Eslatma yuborish" aria-label="Eslatma yuborish" onClick={() => remind(r.s)}><Icon.send width="13" height="13" /></button>}
+                          {canEdit && <button type="button" className="pv-act pri" onClick={() => setModal({ type: 'pay', sid: r.s.id })}>To'lov</button>}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {holShown.length === 0 && <tr><td colSpan="8"><div className="pv-empty">Ma'lumot topilmadi</div></td></tr>}
+              </tbody>
+            </table>
+          </div>
+          <Pagination page={hCur} pageCount={hPages} onChange={setHpg} />
+        </div>
+      )}
+
+      {/* ---------- TRANZAKSIYALAR ---------- */}
+      {tab === 'tarix' && (
+        <div className="v2-c sx-box">
+          <div className="sx-bh">
+            <h2>Tranzaksiyalar <small>{tscope === 'period' ? `${per.m} ${per.y}` : 'barcha davr'}</small></h2>
+            <div className="pv-tools">
+              <div className="sx-seg s">
+                <button type="button" className={tscope === 'period' ? 'on' : ''} onClick={() => { setTscope('period'); setTpg(1); }}>Davr</button>
+                <button type="button" className={tscope === 'all' ? 'on' : ''} onClick={() => { setTscope('all'); setTpg(1); }}>Barchasi</button>
+              </div>
+              <input className="sx-in" placeholder="Ism, kurs yoki izoh..." value={tq} onChange={(e) => { setTq(e.target.value); setTpg(1); }} />
+              <button type="button" className="sx-btn" onClick={exportHist}>↓ CSV</button>
+            </div>
+          </div>
+          <div className="sx-chipsel pv-chips">
+            <button type="button" className={tkind === 'all' ? 'on' : ''} onClick={() => { setTkind('all'); setTpg(1); }}>Hammasi</button>
+            <button type="button" className={tkind === 'extra' ? 'on' : ''} onClick={() => { setTkind('extra'); setTpg(1); }}>Qo'shimcha bilan</button>
+          </div>
+          <div className="sx-tw">
+            <table className="sx-t pv-tbl">
+              <thead>
+                <tr><th>Sana</th><th>O'quvchi</th><th>Kurs / izoh</th><th>Davr</th><th>Asosiy</th><th>Qo'shimcha</th><th className="pv-r">Amal</th></tr>
+              </thead>
+              <tbody>
+                {tShown.map((p) => (
+                  <tr key={p.id}>
+                    <td className="sx-mut">{fmtDate(p.date)}</td>
+                    <td><b>{p.sname}</b></td>
+                    <td><span>{p.courseName || '—'}</span>{p.note ? <small className="pv-sub">{p.note}</small> : null}</td>
+                    <td className="sx-mut">{p.month} {p.year}</td>
+                    <td><b className="ok">{fmtMoney(p.amount)}</b></td>
+                    <td>{Number(p.extra) > 0 ? <span className="sx-tag warn">+ {fmtMoney(p.extra)}</span> : <span className="sx-mut">—</span>}</td>
+                    <td className="pv-r">
+                      {canEdit && (confirmDel === p.id
+                        ? <button type="button" className="pv-act danger" onClick={() => deletePay(p.sid, p.id)}>Tasdiqlash</button>
+                        : <button type="button" className="pv-act ghost" title="Bekor qilish" onClick={() => setConfirmDel(p.id)}><Icon.trash width="14" height="14" /></button>)}
+                    </td>
+                  </tr>
+                ))}
+                {tShown.length === 0 && <tr><td colSpan="7"><div className="pv-empty">Tranzaksiya topilmadi</div></td></tr>}
+              </tbody>
+            </table>
+          </div>
+          <div className="pv-sum">Jami: <b>{fmtMoney(histTot)}</b><span>· {hist.length} ta yozuv</span></div>
+          <Pagination page={tCur} pageCount={tPages} onChange={setTpg} />
+        </div>
+      )}
+
+      {modal && modal.type === 'pay' && (
+        <PvPayModal students={students} setStudents={setStudents} categories={categories} notify={notify}
+          initialSid={modal.sid} initialPer={per} onClose={() => setModal(null)} />
+      )}
+      {modal && modal.type === 'hist' && (
+        <PvHistModal student={students.find((x) => x.id === modal.sid)} categories={categories} per={per}
+          canEdit={canEdit} onDelete={deletePay} onClose={() => setModal(null)}
+          onPay={(sid) => setModal({ type: 'pay', sid })} />
+      )}
     </div>
   );
 }
@@ -8528,7 +9826,7 @@ const PERM_GROUPS = [
   { id: 'students', label: "O'quvchilar", items: [['students.view', "Ko'rish", "O'quvchilar ro'yxati va profillari"], ['students.edit', 'Boshqarish', "Qo'shish, tahrirlash, to'lov va kirish sozlamalari"]] },
   { id: 'courses', label: 'Kurslar', items: [['courses.view', "Ko'rish", "Kurslar va darslarni ko'rish"], ['courses.edit', 'Boshqarish', "Kurs, bo'lim, dars va narxlarni o'zgartirish"]] },
   { id: 'statistics', label: 'Statistika va moliya', items: [['statistics.view', "Ko'rish", 'Tushum, qarz va tahlillar, CSV eksport']] },
-  { id: 'payments', label: "To'lovlar", items: [['payments.view', "Ko'rish", "Muddati o'tgan to'lovlar"]] },
+  { id: 'payments', label: "To'lovlar", items: [['payments.view', "Ko'rish", "Moliya markazi, holat va tranzaksiyalar"], ['payments.edit', 'Boshqarish', "To'lov qabul qilish, bekor qilish va qarzdorlarga eslatma"]] },
   { id: 'blocked', label: 'Bloklanganlar', items: [['blocked.view', "Ko'rish", "Bloklangan o'quvchilar va sabablari"]] },
   { id: 'staff', label: 'Xodimlar', items: [['staff.view', "Ko'rish", "Jamoa ro'yxati"], ['staff.manage', 'Boshqarish', "Xodim qo'shish, tahrirlash, o'chirish (CEO'ni tahrirlab bo'lmaydi)"]] },
 ];
@@ -8549,13 +9847,13 @@ const ROLE_META = { ceo: { l: 'CEO', c: '#fbbf24' }, ceo_support: { l: 'CEO Supp
 
 const PERM_LABEL = Object.fromEntries(PERM_GROUPS.flatMap((g) => g.items.map(([k, l]) => [k, g.label + ' · ' + l])));
 const PERM_PRESETS = [
-  { id: 'kassir', ic: 'card', l: 'Kassir', d: "To'lovlar va qarzdorlar bilan ishlaydi", p: ['dashboard.view', 'students.view', 'payments.view', 'blocked.view'] },
+  { id: 'kassir', ic: 'card', l: 'Kassir', d: "To'lovlar va qarzdorlar bilan ishlaydi", p: ['dashboard.view', 'students.view', 'payments.view', 'payments.edit', 'blocked.view'] },
   { id: 'analitik', ic: 'chart', l: 'Analitik', d: "Statistika va moliyani kuzatadi", p: ['dashboard.view', 'students.view', 'courses.view', 'statistics.view', 'payments.view'] },
   { id: 'kontent', ic: 'video', l: 'Kontent menejer', d: "Kurs va darslarni boshqaradi", p: ['dashboard.view', 'courses.view', 'courses.edit', 'students.view'] },
   { id: 'moder', ic: 'lock', l: 'Moderator', d: "O'quvchilar va bloklarni boshqaradi", p: ['dashboard.view', 'students.view', 'students.edit', 'blocked.view', 'payments.view'] },
   { id: 'view', ic: 'eye', l: "Faqat ko'rish", d: "Hech narsani o'zgartira olmaydi", p: ALL_PERMS.filter((k) => k.endsWith('.view') && k !== 'staff.view') },
 ];
-const NAV_PREVIEW = [['dashboard.view', 'Dashboard', 'dashboard.edit'], ['students.view', "O'quvchilar", 'students.edit'], ['courses.view', 'Kurslar', 'courses.edit'], ['statistics.view', 'Statistika'], ['payments.view', "To'lovlar"], ['blocked.view', 'Bloklanganlar'], ['staff.view', 'Xodimlar', 'staff.manage']];
+const NAV_PREVIEW = [['dashboard.view', 'Dashboard', 'dashboard.edit'], ['students.view', "O'quvchilar", 'students.edit'], ['courses.view', 'Kurslar', 'courses.edit'], ['statistics.view', 'Statistika'], ['payments.view', "To'lovlar", 'payments.edit'], ['blocked.view', 'Bloklanganlar'], ['staff.view', 'Xodimlar', 'staff.manage']];
 
 function PermList({ perms, onChange, disabled }) {
   return (
@@ -8770,161 +10068,424 @@ function StaffPage({ me, staff, setStaff, roleTpl, notify, onGoPerms }) {
   );
 }
 
+/* Rasm bor bo'lsa rasm, yo'q bo'lsa bosh harflar — topbar/sidebar/jamoa uchun umumiy */
+function AvatarBubble({ src, text, className }) {
+  if (src) {
+    return (
+      <span className={className} style={{ padding: 0, overflow: 'hidden' }}>
+        <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+      </span>
+    );
+  }
+  return <span className={className}>{text}</span>;
+}
+
+/* =========================================================================
+   PROFIL — bento-grid tuzilmasi: hero, shaxsiy ma'lumot, statistika,
+   parol, bildirishnomalar, ruxsatlar, jamoa (CEO) va chiqish.
+   ========================================================================= */
+const PB_PW_LABEL = ['Juda zaif', 'Zaif', "O'rtacha", 'Yaxshi', 'Kuchli'];
+const PB_PW_COLOR = ['#fb7185', '#fb923c', '#fbbf24', '#34d399', '#10b981'];
+const PB_PREFS = [
+  ['debtAlerts', 'Qarzdorlik ogohlantirishlari', "Muddati o'tgan to'lovlar haqida xabar", Icon.warn, '#fb7185'],
+  ['newStudents', "Yangi o'quvchilar", "Yangi o'quvchi qo'shilganda xabar", Icon.users, '#38bdf8'],
+  ['weeklyReport', 'Haftalik hisobot', "Har dushanba moliya xulosasi", Icon.chart, '#a78bfa'],
+];
+const PB_MODULE_ICON = { dashboard: Icon.home, students: Icon.users, courses: Icon.book, payments: Icon.cash, blocked: Icon.lock, staff: Icon.user, roles: Icon.key, stats: Icon.chart };
+const pbPwScore = (v) => {
+  let sc = 0;
+  if (v.length >= 4) sc++;
+  if (v.length >= 8) sc++;
+  if (/[A-Za-z]/.test(v) && /\d/.test(v)) sc++;
+  if (/[^A-Za-z0-9]/.test(v) || v.length >= 12) sc++;
+  return sc;
+};
+const pbIni = (n) => String(n || '?').split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+
 function StaffProfile({ me, staff, setStaff, notify, onLogout }) {
-  const [form, setForm] = useState({ ...me });
+  const stored = staff.find((u) => u.id === me.id) || me;
+  const isCeo = me.role === 'ceo';
+  const fileRef = useRef(null);
+  const roleMeta = ROLE_META[me.role] || ROLE_META.support;
+  const prefs = { debtAlerts: true, newStudents: true, weeklyReport: false, ...(stored.prefs || {}) };
+  const myPerms = permsOf(stored, null);
+  const permPct = Math.round((myPerms.length / ALL_PERMS.length) * 100);
+
+  const base = { name: me.name || '', phone: me.phone || '', address: me.address || '', avatar: me.avatar || null };
+  const [form, setForm] = useState(base);
   const [pw, setPw] = useState({ cur: '', next: '', confirm: '' });
+  const [pwShow, setPwShow] = useState({ cur: false, next: false, confirm: false });
+  const [pwErr, setPwErr] = useState('');
+  const [pwSaved, setPwSaved] = useState(false);
+  const [drag, setDrag] = useState(false);
+  const [q, setQ] = useState('');
   const [addingUser, setAddingUser] = useState(false);
-  const [newUser, setNewUser] = useState({ name: '', username: '', password: '', role: 'admin_teacher' });
-  const roleLabel = (r) => (ROLE_META[r] || ROLE_META.support).l;
-  const initials = (n) => n.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+  const [newUser, setNewUser] = useState({ name: '', username: '', password: '', role: 'admin_teacher', uAuto: true });
+  const [confirmDel, setConfirmDel] = useState(null);
+  const [confirmOut, setConfirmOut] = useState(false);
+
+  useEffect(() => { if (!confirmDel) return undefined; const t = setTimeout(() => setConfirmDel(null), 3500); return () => clearTimeout(t); }, [confirmDel]);
+  useEffect(() => { if (!confirmOut) return undefined; const t = setTimeout(() => setConfirmOut(false), 3500); return () => clearTimeout(t); }, [confirmOut]);
+  useEffect(() => { if (!pwSaved) return undefined; const t = setTimeout(() => setPwSaved(false), 2500); return () => clearTimeout(t); }, [pwSaved]);
+
+  const phoneDigits = onlyDigits(form.phone);
+  const nameOk = form.name.trim().length >= 3;
+  const phoneOk = !phoneDigits || phoneDigits.length === 12;
+  const addrOk = form.address.length <= 120;
+  const valid = nameOk && phoneOk && addrOk;
+  const dirty = form.name !== base.name || form.phone !== base.phone || form.address !== base.address || form.avatar !== base.avatar;
+  const completeness = Math.round(([form.name, form.phone, form.address, form.avatar].filter((v) => String(v || '').trim()).length / 4) * 100);
+
+  const saveRef = useRef(null);
+  useEffect(() => {
+    const h = (e) => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); if (saveRef.current) saveRef.current(); } };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, []);
+
+  const loadImage = (f) => {
+    if (!f) return;
+    if (!f.type.startsWith('image/')) { notify('Faqat rasm fayli tanlang', 'danger'); return; }
+    if (f.size > 2 * 1024 * 1024) { notify("Rasm hajmi 2 MB dan oshmasin", 'danger'); return; }
+    const reader = new FileReader();
+    reader.onload = () => setForm((x) => ({ ...x, avatar: reader.result }));
+    reader.readAsDataURL(f);
+  };
+  const onPickFile = (e) => { const f = e.target.files && e.target.files[0]; e.target.value = ''; loadImage(f); };
+  const onDrop = (e) => { e.preventDefault(); setDrag(false); loadImage(e.dataTransfer.files && e.dataTransfer.files[0]); };
 
   const saveProfile = () => {
-    setStaff(staff.map((u) => u.id === me.id ? { ...u, name: form.name, phone: form.phone, address: form.address } : u));
+    if (!valid) {
+      notify(!nameOk ? "Ism familiya kamida 3 belgi bo'lishi kerak" : !phoneOk ? "Telefon raqamni to'liq kiriting" : 'Manzil juda uzun', 'danger');
+      return;
+    }
+    setStaff(staff.map((u) => (u.id === me.id
+      ? { ...u, name: form.name.trim(), phone: form.phone, address: form.address.trim(), avatar: form.avatar, updatedAt: new Date().toISOString() }
+      : u)));
     notify('Profil yangilandi');
-    // API: PATCH /api/admin/staff/{id}/  (name, phone, address)
+    // API: PATCH /api/admin/staff/{id}/
+  };
+  saveRef.current = dirty && valid ? saveProfile : null;
+  const resetProfile = () => setForm(base);
+
+  const setPref = (k, v) => {
+    setStaff(staff.map((u) => (u.id === me.id ? { ...u, prefs: { ...prefs, [k]: v } } : u)));
+    notify('Sozlama saqlandi');
+    // API: PATCH /api/admin/staff/{id}/prefs/
   };
 
+  const reqs = [
+    ['4 belgidan kam emas', pw.next.length >= 4],
+    ['Harf va raqam', /[A-Za-z]/.test(pw.next) && /\d/.test(pw.next)],
+    ['Eskisidan farqli', pw.next.length > 0 && pw.next !== pw.cur],
+    ['Tasdiq mos', pw.confirm.length > 0 && pw.confirm === pw.next],
+  ];
+  const strength = pbPwScore(pw.next);
+  const pwReady = !!pw.cur && reqs.every(([, ok]) => ok);
+
   const changePassword = () => {
-    if (!pw.next || pw.next !== pw.confirm) { notify("Parollar mos kelmadi"); return; }
-    notify('Parol yangilandi');
+    if (stored.password !== undefined && pw.cur !== stored.password) { setPwErr("Joriy parol noto'g'ri"); return; }
+    if (!pwReady) { setPwErr('Barcha talablarni bajaring'); return; }
+    setStaff(staff.map((u) => (u.id === me.id ? { ...u, password: pw.next, updatedAt: new Date().toISOString() } : u)));
     setPw({ cur: '', next: '', confirm: '' });
+    setPwErr('');
+    setPwSaved(true);
+    notify('Parol yangilandi');
     // API: POST /api/admin/staff/{id}/change-password/
   };
 
-  const removeUser = (id) => {
-    setStaff(staff.filter((u) => u.id !== id));
-    notify("Foydalanuvchi o'chirildi", 'danger');
-    // API: DELETE /api/admin/staff/{id}/
+  const setRole = (id, role) => { setStaff(staff.map((u) => (u.id === id ? { ...u, role } : u))); notify("Rol o'zgartirildi"); };
+  const removeUser = (id) => { setStaff(staff.filter((u) => u.id !== id)); setConfirmDel(null); notify("Foydalanuvchi o'chirildi", 'danger'); };
+  const addUser = () => {
+    const nm = newUser.name.trim(), un = newUser.username.trim(), pass = newUser.password.trim();
+    if (!nm || !un || !pass) { notify("Ism, login va parolni to'ldiring", 'danger'); return; }
+    if (staff.some((u) => u.username === un)) { notify('Bu login band — boshqasini tanlang', 'danger'); return; }
+    setStaff([...staff, { id: uid('u'), name: nm, username: un, password: pass, role: newUser.role, createdAt: todayISO(), disabled: false, prefs: {} }]);
+    notify(`Qo'shildi — login: ${un} · parol: ${pass}`);
+    setNewUser({ name: '', username: '', password: '', role: 'admin_teacher', uAuto: true });
+    setAddingUser(false);
   };
 
-  const addUser = () => {
-    if (!newUser.name.trim() || !newUser.username.trim() || !newUser.password.trim()) return;
-    if (staff.some((u) => u.username === newUser.username.trim())) { notify('Bu login band — boshqasini tanlang', 'danger'); return; }
-    setStaff([...staff, { id: uid('u'), name: newUser.name.trim(), username: newUser.username.trim(), password: newUser.password.trim(), role: newUser.role, createdAt: todayISO(), disabled: false }]);
-    notify(`Qo'shildi — login: ${newUser.username.trim()} · parol: ${newUser.password.trim()}`);
-    setNewUser({ name: '', username: '', password: '', role: 'admin_teacher' });
-    setAddingUser(false);
-    // API: POST /api/admin/staff/  (name, username, password, role)
-  };
+  const team = staff.filter((u) => !q.trim() || u.name.toLowerCase().includes(q.trim().toLowerCase()) || u.username.toLowerCase().includes(q.trim().toLowerCase()));
+  const fieldCls = (ok, filled) => (!filled ? '' : ok ? ' ok' : ' bad');
 
   return (
-    <div className="max-w-lg">
-      {/* SHAXSIY MA'LUMOTLAR */}
-      <div className="bg-card border border-line rounded-xl p-5 mb-4">
-        <h3 className="font-semibold text-ink text-sm uppercase tracking-wide mb-4 flex items-center gap-2">
-          <span className="w-1 h-4 bg-forest rounded-full inline-block" /> Shaxsiy ma'lumotlar
-        </h3>
-        <div className="flex items-center gap-3 mb-4">
-          <div className="relative">
-            <span className="avatar w-14 h-14 bg-gold text-ink text-lg">{initials(form.name || '?')}</span>
-            <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-ink text-white flex items-center justify-center border-2 border-card">
-              <Icon.video width="11" height="11" />
-            </span>
+    <div className="pb">
+      {/* ---------- HERO ---------- */}
+      <section className="pb-hero">
+        <div className="pb-hero-glow" aria-hidden="true" />
+        <div className="pb-hero-main">
+          <div
+            className={'pb-avatar' + (drag ? ' drag' : '')}
+            onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
+            onDragLeave={() => setDrag(false)}
+            onDrop={onDrop}
+          >
+            {form.avatar ? <img src={form.avatar} alt="Profil rasmi" /> : <span>{pbIni(form.name || me.name)}</span>}
+            <button type="button" className="pb-cam" aria-label="Rasmni o'zgartirish" onClick={() => fileRef.current && fileRef.current.click()}>
+              <Icon.camera width="14" height="14" />
+            </button>
+            <input ref={fileRef} type="file" accept="image/*" hidden onChange={onPickFile} />
           </div>
-          <div>
-            <div className="text-base font-semibold text-ink">{form.name}</div>
-            <div className="text-xs text-slate">@{form.username} · {roleLabel(form.role)}</div>
-          </div>
-        </div>
-        <div className="grid sm:grid-cols-2 gap-3">
-          <div>
-            <label className="text-xs font-semibold text-slate uppercase tracking-wide">Ism familiya</label>
-            <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="mt-1 w-full border border-line rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-gold" />
-          </div>
-          <div>
-            <label className="text-xs font-semibold text-slate uppercase tracking-wide">Telefon</label>
-            <input value={form.phone || ''} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+998 9X XXX XX XX" className="mt-1 w-full border border-line rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-gold" />
-          </div>
-        </div>
-        <div className="mt-3">
-          <label className="text-xs font-semibold text-slate uppercase tracking-wide">Manzil</label>
-          <input value={form.address || ''} onChange={(e) => setForm({ ...form, address: e.target.value })} placeholder="Tuman, MFY" className="mt-1 w-full border border-line rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-gold" />
-        </div>
-        <button onClick={saveProfile} className="mt-4 bg-forest text-white text-sm px-4 py-2 rounded-lg w-full flex items-center justify-center gap-2">
-          <Icon.check width="14" height="14" /> Saqlash
-        </button>
-      </div>
-
-      {/* PAROL O'ZGARTIRISH */}
-      <div className="bg-card border border-line rounded-xl p-5 mb-4">
-        <h3 className="font-semibold text-ink text-sm uppercase tracking-wide mb-4 flex items-center gap-2">
-          <Icon.lock width="13" height="13" /> Parol o'zgartirish
-        </h3>
-        <div className="space-y-3">
-          <div>
-            <label className="text-xs font-semibold text-slate uppercase tracking-wide">Joriy parol</label>
-            <input type="password" placeholder="Joriy parolni kiriting" value={pw.cur} onChange={(e) => setPw({ ...pw, cur: e.target.value })} className="mt-1 w-full border border-line rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-gold" />
-          </div>
-          <div className="grid sm:grid-cols-2 gap-3">
-            <div>
-              <label className="text-xs font-semibold text-slate uppercase tracking-wide">Yangi parol</label>
-              <input type="password" placeholder="Kamida 4 belgi" value={pw.next} onChange={(e) => setPw({ ...pw, next: e.target.value })} className="mt-1 w-full border border-line rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-gold" />
+          <div className="pb-id">
+            <span className="pb-kicker">Shaxsiy kabinet</span>
+            <h1>{me.name}</h1>
+            <div className="pb-tags">
+              <span className="pb-tag" style={{ '--c': roleMeta.c }}>{roleMeta.l}</span>
+              <span className={'pb-tag ' + (stored.disabled ? 'off' : 'on')}>{stored.disabled ? 'Faol emas' : 'Faol'}</span>
+              <span className="pb-tag plain">@{stored.username}</span>
             </div>
-            <div>
-              <label className="text-xs font-semibold text-slate uppercase tracking-wide">Tasdiqlang</label>
-              <input type="password" placeholder="Qaytaring" value={pw.confirm} onChange={(e) => setPw({ ...pw, confirm: e.target.value })} className="mt-1 w-full border border-line rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-gold" />
+            <div className="pb-hero-act">
+              <button type="button" className="pb-btn soft" onClick={() => fileRef.current && fileRef.current.click()}><Icon.camera width="14" height="14" /> Rasm yuklash</button>
+              {form.avatar && <button type="button" className="pb-btn soft danger" onClick={() => setForm({ ...form, avatar: null })}><Icon.trash width="14" height="14" /> Olib tashlash</button>}
             </div>
           </div>
         </div>
-        <button onClick={changePassword} className="mt-4 bg-ink text-white text-sm px-4 py-2 rounded-lg w-full flex items-center justify-center gap-2">
-          <Icon.lock width="13" height="13" /> Parolni o'zgartirish
-        </button>
-      </div>
+        <div className="pb-ring-wrap">
+          <div className="pb-ring" style={{ '--p': completeness }}>
+            <div><b>{completeness}%</b><small>to'liqlik</small></div>
+          </div>
+          {confirmOut
+            ? <button type="button" className="pb-btn solid" onClick={onLogout}>Ha, chiqish</button>
+            : <button type="button" className="pb-btn ghost" onClick={() => setConfirmOut(true)}><Icon.logout width="14" height="14" /> Chiqish</button>}
+        </div>
+      </section>
 
-      {/* FOYDALANUVCHILAR */}
-      {me.role === 'ceo' && (
-        <div className="bg-card border border-line rounded-xl p-5 mb-4">
-          <h3 className="font-semibold text-ink text-sm uppercase tracking-wide mb-4 flex items-center gap-2">
-            <Icon.users width="14" height="14" /> Foydalanuvchilar
-          </h3>
-          <div className="divide-y divide-line -mx-1">
-            {staff.map((u) => (
-              <div key={u.id} className="flex items-center justify-between px-1 py-2.5">
-                <div className="flex items-center gap-2.5">
-                  <span className="avatar w-8 h-8 bg-paper text-ink text-xs border border-line">{initials(u.name)}</span>
-                  <div className="text-sm text-ink">{u.name} <span className="text-slate text-xs">@{u.username}{u.id === me.id ? ' (siz)' : ''}</span></div>
-                </div>
-                {u.id !== me.id && (
-                  <button onClick={() => removeUser(u.id)} className="w-7 h-7 rounded-lg bg-clay/10 text-clay flex items-center justify-center hover:bg-clay/20">
-                    <Icon.warn width="13" height="13" />
-                  </button>
-                )}
+      <div className="pb-grid">
+        {/* ---------- SHAXSIY MA'LUMOTLAR (7) ---------- */}
+        <section className="pb-card span-7">
+          <header className="pb-ch">
+            <span className="pb-ico" style={{ '--c': '#34d399' }}><Icon.user width="16" height="16" /></span>
+            <div><h2>Shaxsiy ma'lumotlar</h2><p>Tizimda ko'rinadigan asosiy ma'lumotlar</p></div>
+          </header>
+          <div className="pb-fields">
+            <label className="pb-field">
+              <span>Ism familiya</span>
+              <div className={'pb-input' + fieldCls(nameOk, form.name.length > 0)}>
+                <Icon.user width="15" height="15" />
+                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Ism familiya" />
+                {form.name.length > 0 && <i className="pb-chk">{nameOk ? <Icon.check width="13" height="13" /> : '!'}</i>}
+              </div>
+              {!nameOk && form.name.length > 0 && <em>Kamida 3 belgi</em>}
+            </label>
+            <label className="pb-field">
+              <span>Telefon</span>
+              <div className={'pb-input' + fieldCls(phoneOk, phoneDigits.length > 0)}>
+                <Icon.phone width="15" height="15" />
+                <input inputMode="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: formatPhone(e.target.value) })} placeholder="+998 90 123 45 67" />
+                {phoneDigits.length > 0 && <i className="pb-chk">{phoneOk ? <Icon.check width="13" height="13" /> : '!'}</i>}
+              </div>
+              {!phoneOk && <em>Raqam to'liq emas</em>}
+            </label>
+            <label className="pb-field full">
+              <span>Manzil <b>{form.address.length}/120</b></span>
+              <div className={'pb-input' + fieldCls(addrOk, form.address.length > 0)}>
+                <Icon.pin width="15" height="15" />
+                <input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} placeholder="Tuman, MFY, ko'cha" />
+              </div>
+            </label>
+          </div>
+          <div className="pb-cardfoot">
+            <button type="button" className="pb-btn ghost" onClick={resetProfile} disabled={!dirty}>Bekor qilish</button>
+            <button type="button" className="pb-btn solid" onClick={saveProfile} disabled={!dirty || !valid}><Icon.check width="14" height="14" /> Saqlash</button>
+          </div>
+        </section>
+
+        {/* ---------- STATISTIKA (5) ---------- */}
+        <section className="pb-card span-5 pb-stats">
+          <div className="pb-stat-ring" style={{ '--p': permPct }}>
+            <div><b>{myPerms.length}</b><small>/ {ALL_PERMS.length}</small></div>
+          </div>
+          <div>
+            <h2>Ruxsatlar</h2>
+            <p>Sizga ochiq modullar soni. {permPct >= 100 ? "Barcha bo'limlarga to'liq kirish." : `${permPct}% ochiq.`}</p>
+          </div>
+          <div className="pb-mini">
+            <div><small>A'zo bo'lgan</small><b>{stored.createdAt ? fmtDate(stored.createdAt) : '—'}</b></div>
+            <div><small>Oxirgi o'zgarish</small><b>{stored.updatedAt ? fmtDate(stored.updatedAt.slice(0, 10)) : '—'}</b></div>
+          </div>
+        </section>
+
+        {/* ---------- PAROL (6) ---------- */}
+        <section className="pb-card span-6 pb-pw">
+          <header className="pb-pw-head">
+            <span className="pb-pw-tile"><Icon.lock width="20" height="20" /></span>
+            <div>
+              <h2>Parolni yangilash</h2>
+              <p>Hisobingizni himoya qilish uchun kuchli parol tanlang</p>
+            </div>
+            {pwSaved && <span className="pb-okpill"><Icon.check width="12" height="12" /> Yangilandi</span>}
+          </header>
+
+          <div className="pb-pw-meter">
+            <div className="pb-pw-meter-top">
+              <span>Parol kuchi</span>
+              <b style={{ color: pw.next ? PB_PW_COLOR[strength] : undefined }}>{pw.next ? PB_PW_LABEL[strength] : 'Kiritilmagan'}</b>
+            </div>
+            <div className="pb-pw-seg">
+              {[0, 1, 2, 3].map((i) => <i key={i} style={{ background: pw.next && i < strength ? PB_PW_COLOR[strength] : undefined }} />)}
+            </div>
+          </div>
+
+          {[
+            ['cur', 'Joriy parol', 'Joriy parolni kiriting', pw.cur.length > 0],
+            ['next', 'Yangi parol', 'Kamida 4 belgi', pw.next.length >= 4],
+            ['confirm', 'Tasdiqlang', 'Yangi parolni qaytaring', pw.confirm.length > 0 && pw.confirm === pw.next],
+          ].map(([k, l, ph, good]) => (
+            <label key={k} className="pb-pw-field">
+              <span>
+                {l}
+                {good && <i className="pb-fok"><Icon.check width="11" height="11" /></i>}
+              </span>
+              <div className={'pb-pw-input' + (good ? ' good' : '')}>
+                <Icon.key width="16" height="16" />
+                <input
+                  type={pwShow[k] ? 'text' : 'password'}
+                  placeholder={ph}
+                  value={pw[k]}
+                  onChange={(e) => { setPw({ ...pw, [k]: e.target.value }); setPwErr(''); }}
+                  onKeyDown={(e) => { if (e.key === 'Enter') changePassword(); }}
+                />
+                <button type="button" className="pb-eye" aria-label={pwShow[k] ? 'Yashirish' : "Ko'rsatish"} onClick={() => setPwShow({ ...pwShow, [k]: !pwShow[k] })}>
+                  {pwShow[k] ? <Icon.eyeOff width="16" height="16" /> : <Icon.eye width="16" height="16" />}
+                </button>
+              </div>
+              {k === 'confirm' && pw.confirm && pw.confirm !== pw.next && <em className="pb-pw-err">Parollar mos emas</em>}
+            </label>
+          ))}
+
+          <div className="pb-req-grid">
+            {reqs.map(([t, ok]) => (
+              <div key={t} className={'pb-req' + (ok ? ' ok' : '')}>
+                <span className="dot">{ok ? '✓' : ''}</span>
+                {t}
               </div>
             ))}
           </div>
 
-          {addingUser ? (
-            <div className="mt-3 space-y-2 border-t border-line pt-3">
-              <input value={newUser.name} onChange={(e) => setNewUser({ ...newUser, name: e.target.value, username: newUser.uAuto === false ? newUser.username : nxLogin(e.target.value, staff) })} placeholder="Ism familiya" className="w-full border border-line rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-gold" />
-              <div className="grid grid-cols-2 gap-2">
-                <input value={newUser.username} onChange={(e) => setNewUser({ ...newUser, username: e.target.value.replace(/\s+/g, ''), uAuto: false })} placeholder="Username" className="w-full border border-line rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-gold" />
-                <input value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} placeholder="Parol" className="w-full border border-line rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-gold" />
+          {pwErr && <div className="pb-pw-banner"><Icon.warn width="15" height="15" />{pwErr}</div>}
+
+          <button type="button" className="pb-btn solid pb-pw-submit" onClick={changePassword} disabled={!pwReady}>
+            <Icon.key width="16" height="16" /> Parolni yangilash
+          </button>
+        </section>
+
+        {/* ---------- BILDIRISHNOMALAR (6) ---------- */}
+        <section className="pb-card span-6">
+          <header className="pb-ch">
+            <span className="pb-ico" style={{ '--c': '#38bdf8' }}><Icon.send width="16" height="16" /></span>
+            <div><h2>Bildirishnomalar</h2><p>Qaysi voqealar haqida xabar olasiz</p></div>
+          </header>
+          <div className="pb-prefs">
+            {PB_PREFS.map(([k, l, d, Ic, c]) => (
+              <div key={k} className="pb-pref">
+                <span className="pb-ico sm" style={{ '--c': c }}><Ic width="15" height="15" /></span>
+                <div className="pb-pref-t"><b>{l}</b><small>{d}</small></div>
+                <button type="button" role="switch" aria-checked={!!prefs[k]} className={'pb-switch' + (prefs[k] ? ' on' : '')} onClick={() => setPref(k, !prefs[k])}><i /></button>
               </div>
-              <select value={newUser.role} onChange={(e) => setNewUser({ ...newUser, role: e.target.value })} className="w-full border border-line rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-gold">
-                <option value="admin_teacher">Teacher</option>
-                <option value="support">Support</option>
-              </select>
-              <div className="flex gap-2">
-                <button onClick={addUser} className="flex-1 bg-forest text-white text-sm px-4 py-2 rounded-lg">Qo'shish</button>
-                <button onClick={() => setAddingUser(false)} className="px-4 py-2 rounded-lg text-sm text-slate">Bekor qilish</button>
+            ))}
+          </div>
+        </section>
+
+        {/* ---------- RUXSATLAR (12) ---------- */}
+        <section className="pb-card span-12">
+          <header className="pb-ch">
+            <span className="pb-ico" style={{ '--c': '#fbbf24' }}><Icon.key width="16" height="16" /></span>
+            <div><h2>Modullar bo'yicha ruxsatlar</h2><p>Har bir bo'limdagi ochiq amallar</p></div>
+          </header>
+          <div className="pb-modules">
+            {PERM_GROUPS.map((g) => {
+              const n = g.items.filter(([k]) => myPerms.includes(k)).length;
+              const pct = Math.round((n / g.items.length) * 100);
+              const Ic = PB_MODULE_ICON[g.id] || Icon.card;
+              return (
+                <div key={g.id} className={'pb-mod' + (n === 0 ? ' off' : '')}>
+                  <div className="pb-mod-top"><span className="pb-ico sm" style={{ '--c': n ? '#34d399' : '#64748b' }}><Ic width="15" height="15" /></span><b>{n}/{g.items.length}</b></div>
+                  <strong>{g.label}</strong>
+                  <div className="pb-bar"><u style={{ width: pct + '%' }} /></div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ---------- JAMOA (12, CEO) ---------- */}
+        {isCeo && (
+          <section className="pb-card span-12">
+            <header className="pb-ch">
+              <span className="pb-ico" style={{ '--c': '#f472b6' }}><Icon.users width="16" height="16" /></span>
+              <div><h2>Jamoa</h2><p>{staff.length} ta xodim · rollar va hisoblar</p></div>
+              <div className="pb-ch-act">
+                <div className="pb-search"><Icon.search width="14" height="14" /><input value={q} placeholder="Qidirish..." onChange={(e) => setQ(e.target.value)} /></div>
+                {!addingUser && (
+                  <button type="button" className="pb-btn solid" onClick={() => { setNewUser({ name: '', username: nxLogin('', staff), password: nxPass(), role: 'admin_teacher', uAuto: true }); setAddingUser(true); }}>
+                    <Icon.plus width="14" height="14" /> Xodim
+                  </button>
+                )}
               </div>
+            </header>
+
+            {addingUser && (
+              <div className="pb-adduser">
+                <div className="pb-fields">
+                  <label className="pb-field"><span>Ism familiya</span>
+                    <div className="pb-input"><Icon.user width="15" height="15" /><input value={newUser.name} placeholder="Ism familiya" onChange={(e) => setNewUser({ ...newUser, name: e.target.value, username: newUser.uAuto === false ? newUser.username : nxLogin(e.target.value, staff) })} /></div>
+                  </label>
+                  <label className="pb-field"><span>Rol</span>
+                    <div className="pb-input"><Icon.medal width="15" height="15" /><select value={newUser.role} onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}><option value="admin_teacher">Teacher</option><option value="support">Support</option></select></div>
+                  </label>
+                  <label className="pb-field"><span>Login</span>
+                    <div className="pb-input"><Icon.card width="15" height="15" /><input value={newUser.username} placeholder="login" onChange={(e) => setNewUser({ ...newUser, username: e.target.value.replace(/\s+/g, ''), uAuto: false })} /></div>
+                  </label>
+                  <label className="pb-field"><span>Parol</span>
+                    <div className="pb-input"><Icon.lock width="15" height="15" /><input value={newUser.password} placeholder="parol" onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} /></div>
+                  </label>
+                </div>
+                <div className="pb-cardfoot">
+                  <button type="button" className="pb-btn ghost" onClick={() => setAddingUser(false)}>Bekor qilish</button>
+                  <button type="button" className="pb-btn solid" onClick={addUser}><Icon.check width="14" height="14" /> Qo'shish</button>
+                </div>
+              </div>
+            )}
+
+            <div className="pb-team">
+              {team.map((u) => {
+                const rm = ROLE_META[u.role] || ROLE_META.support;
+                const self = u.id === me.id;
+                return (
+                  <div key={u.id} className={'pb-member' + (self ? ' self' : '')}>
+                    <AvatarBubble src={u.avatar} text={pbIni(u.name)} className="pb-mav" />
+                    <div className="pb-mt">
+                      <b>{u.name}{self && <em>siz</em>}</b>
+                      <small>@{u.username}</small>
+                    </div>
+                    <div className="pb-member-act">
+                      {!self && !isTopRole(u.role)
+                        ? <select className="pb-mrole" value={u.role} onChange={(e) => setRole(u.id, e.target.value)} aria-label="Rol"><option value="admin_teacher">Teacher</option><option value="support">Support</option></select>
+                        : <span className="pb-tag sm" style={{ '--c': rm.c }}>{rm.l}</span>}
+                      {!self && (confirmDel === u.id
+                        ? <button type="button" className="pb-btn solid danger sm" onClick={() => removeUser(u.id)}>Tasdiqlash</button>
+                        : <button type="button" className="pb-iconbtn" title="O'chirish" aria-label="O'chirish" onClick={() => setConfirmDel(u.id)}><Icon.trash width="14" height="14" /></button>)}
+                    </div>
+                  </div>
+                );
+              })}
+              {team.length === 0 && <div className="pb-empty">Xodim topilmadi</div>}
             </div>
-          ) : (
-            <button onClick={() => { setNewUser({ name: '', username: nxLogin('', staff), password: nxPass(), role: 'admin_teacher', uAuto: true }); setAddingUser(true); }} className="mt-3 w-full border border-dashed border-forest/50 text-forest text-sm px-4 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-forest/5">
-              <Icon.plus width="14" height="14" /> Yangi foydalanuvchi
-            </button>
-          )}
+          </section>
+        )}
+      </div>
+
+      {/* ---------- SUZIB TURADIGAN SAQLASH PANELI ---------- */}
+      {dirty && (
+        <div className="pb-float" role="status">
+          <span><i /> Saqlanmagan o'zgarishlar{!valid && <em> · xatolarni tuzating</em>}</span>
+          <div>
+            <button type="button" className="pb-btn ghost sm" onClick={resetProfile}>Bekor qilish</button>
+            <button type="button" className="pb-btn solid sm" onClick={saveProfile} disabled={!valid}><Icon.check width="13" height="13" /> Saqlash <kbd>Ctrl S</kbd></button>
+          </div>
         </div>
       )}
-
-      {/* TIZIMDAN CHIQISH */}
-      <div className="bg-card border border-line rounded-xl p-5">
-        <h3 className="font-semibold text-clay text-sm uppercase tracking-wide mb-2">Tizimdan chiqish</h3>
-        <p className="text-xs text-slate mb-3">Tizimdan chiqsangiz, qayta kirishda login va parol so'raladi.</p>
-        <button onClick={onLogout} className="w-full border border-clay/40 text-clay text-sm px-4 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-clay/10">
-          <Icon.logout width="14" height="14" /> Chiqish
-        </button>
-      </div>
     </div>
   );
 }
