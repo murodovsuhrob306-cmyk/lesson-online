@@ -3026,38 +3026,8 @@ html.theme-dark .notif-row{ border-top-color:rgba(255,255,255,.07); }
 .notif-row:nth-child(4){ animation-delay:.12s; } .notif-row:nth-child(n+5){ animation-delay:.16s; }
 @keyframes eduRowIn{ from{ opacity:0; transform:translateX(10px); } }
 
-/* =====================================================================
-   3) BO'LIMGA O'TGANDA ANIMATSIYA — barcha bloklar ketma-ket chiqib keladi
-   ===================================================================== */
-@keyframes eduPageIn{ from{ opacity:0; transform:translateY(18px) scale(.985); } }
-@keyframes eduBlockIn{ from{ opacity:0; transform:translateY(22px) scale(.97); } }
-
-/* 1-daraja: sahifaning asosiy bloklari */
-.page-enter > *{ animation:eduPageIn .5s cubic-bezier(.2,.8,.2,1) backwards; }
-.page-enter > *:nth-child(2){ animation-delay:.06s; }
-.page-enter > *:nth-child(3){ animation-delay:.12s; }
-.page-enter > *:nth-child(4){ animation-delay:.18s; }
-.page-enter > *:nth-child(n+5){ animation-delay:.24s; }
-
-/* 2-daraja: ichidagi kartalar, statistika bloklari, ro'yxat qatorlari, jadval qatorlari */
-.page-enter .bg-card, .page-enter .stat-modern, .page-enter .monthly-chart-card,
-.page-enter [class*="v2-c"], .page-enter [class*="card"], .page-enter table tbody tr,
-.page-enter .pill-tabs > *, .page-enter [class*="student-row"], .page-enter [class*="-row"]:not(.notif-row){
-  animation:eduBlockIn .55s cubic-bezier(.2,.8,.2,1) backwards;
-}
-.page-enter .grid > *:nth-child(1){ animation-delay:.10s; }
-.page-enter .grid > *:nth-child(2){ animation-delay:.16s; }
-.page-enter .grid > *:nth-child(3){ animation-delay:.22s; }
-.page-enter .grid > *:nth-child(4){ animation-delay:.28s; }
-.page-enter .grid > *:nth-child(5){ animation-delay:.34s; }
-.page-enter .grid > *:nth-child(n+6){ animation-delay:.40s; }
-.page-enter table tbody tr:nth-child(1){ animation-delay:.12s; } .page-enter table tbody tr:nth-child(2){ animation-delay:.17s; }
-.page-enter table tbody tr:nth-child(3){ animation-delay:.22s; } .page-enter table tbody tr:nth-child(4){ animation-delay:.27s; }
-.page-enter table tbody tr:nth-child(n+5){ animation-delay:.32s; }
-
-@media (prefers-reduced-motion:reduce){
-  .page-enter, .page-enter *, .notif-row{ animation:none !important; }
-}
+/* (eski 3-bo'lim animatsiyasi yangi <style id="edu-reveal-v1"> + <script id="edu-reveal-js"> bilan almashtirildi) */
+@media (prefers-reduced-motion:reduce){ .notif-row{ animation:none !important; } }
 </style>
 <style id="edu-dark-solid">
 /* =====================================================================
@@ -4562,6 +4532,38 @@ html.theme-dark .pb .pb-adduser .pb-input input, html.theme-dark .pb .pb-adduser
 .pk-t b{ font-size:14px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .pk-t small{ font-size:12px; color:var(--sd-muted); }
 .pk-tick{ color:#10b981; display:flex; }
+</style>
+<style id="edu-reveal-v1">
+/* =====================================================================
+   BO'LIMGA KIRGANDA — HAMMA BLOKLAR ANIMATSIYA BILAN PAYDO BO'LADI
+   (JS dvigateli <script id="edu-reveal-js"> bloklarni avtomatik topadi:
+    sarlavha, kartalar, statistika, jadval qatorlari, ro'yxatlar, tablar...)
+   data-rv="1" — hozir ko'rinib turgan blok, animatsiya ishga tushadi
+   data-rv="w" — ekran ostidagi blok, skroll qilganda animatsiya bilan chiqadi
+   ===================================================================== */
+@keyframes rvIn   { from { opacity:0; transform:translate3d(0,28px,0) scale(.96); } }
+@keyframes rvIn2  { from { opacity:0; transform:translate3d(0,16px,0) scale(.975); } }
+
+/* tugagan blok: animatsiya "none" — eski CSS animatsiyalari qayta ishga tushmaydi */
+[data-rv="d"] { animation:none !important; }
+/* Bo'limning o'rami (fadeUp) va eski kirish animatsiyalari endi o'chiq — faqat bitta ketma-ket animatsiya qoladi */
+.page-enter, main > .page-enter { animation:none !important; }
+[data-rk] { animation:none !important; }
+[data-rv="w"] { opacity:0; transform:translate3d(0,28px,0) scale(.96); }
+
+[data-rv="1"] {
+  animation-name:rvIn !important;
+  animation-duration:.62s !important;
+  animation-timing-function:cubic-bezier(.2,.8,.2,1) !important;
+  animation-delay:var(--rd,0ms) !important;
+  animation-fill-mode:backwards !important;
+  animation-iteration-count:1 !important;
+}
+[data-rv="1"][data-rl="2"] { animation-name:rvIn2 !important; animation-duration:.52s !important; }
+
+@media (prefers-reduced-motion:reduce) {
+  [data-rv], [data-rv="w"], [data-rv="1"], [data-rv="d"], [data-rk] { animation:none !important; opacity:1 !important; transform:none !important; }
+}
 </style>
 <script type="text/plain" id="app-source">
 const { useState, useMemo, useRef, useEffect, useLayoutEffect } = React;
@@ -11893,5 +11895,208 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App />);
     c.style.setProperty('--my', (e.clientY - b.top) + 'px');
   }, { passive: true });
 </script>
+<script id="edu-reveal-js">
+/* Bo'limlarga kirganda va tab/ro'yxat almashganda yangi paydo bo'lgan HAMMA bloklarni
+   ketma-ket (stagger) animatsiya bilan chiqaradi. React kodiga tegmaydi: faqat DOM'ni kuzatadi. */
+(function () {
+  'use strict';
+  var STEP = 48, MAX_DELAY = 720, MAX_BLOCKS = 260, MAX_LEVEL = 1;
+  var EXCL = '[data-no-rv],script,style,svg,video,iframe,canvas,select,textarea,input,option,' +
+    '[role="dialog"],[role="alert"],[aria-modal="true"],.bs-alert,[class*="modal"],[class*="backdrop"],' +
+    '[class*="toast"],[class*="dropdown"],[class*="popover"],[class*="tooltip"],[class*="notif"]';
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+
+  var io = null;
+  if ('IntersectionObserver' in window) {
+    io = new IntersectionObserver(function (entries) {
+      var vis = entries.filter(function (e) { return e.isIntersecting; })
+        .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top || a.boundingClientRect.left - b.boundingClientRect.left; });
+      vis.forEach(function (e, i) { reveal(e.target, Math.min(i * 60, 360)); io.unobserve(e.target); });
+    }, { rootMargin: '0px 0px -24px 0px', threshold: 0.02 });
+  }
+
+  function reveal(el, delay) {
+    if (!el.isConnected) return;
+    el.style.setProperty('--rd', delay + 'ms');
+    el.setAttribute('data-rv', '1');
+    schedule(el, delay);
+  }
+  function schedule(el, delay) {
+    setTimeout(function () {
+      /* belgini O'CHIRMAYMIZ: o'chirsak elementning eski (v2Up, nxIn...) animatsiyasi qaytib, ikkinchi marta o'ynardi */
+      if (el.getAttribute('data-rv') === '1') { el.setAttribute('data-rv', 'd'); el.style.removeProperty('--rd'); }
+    }, delay + 900);
+  }
+
+  function isBox(cs) {
+    if (cs.boxShadow && cs.boxShadow !== 'none') return true;
+    if (cs.backgroundImage && cs.backgroundImage !== 'none') return true;
+    var bg = cs.backgroundColor;
+    if (bg && bg !== 'transparent') {
+      var m = bg.match(/[\d.]+/g);
+      var a = (m && m.length >= 4) ? parseFloat(m[3]) : 1;
+      if (a > 0.04) return true;
+    }
+    var bw = (parseFloat(cs.borderTopWidth) || 0) + (parseFloat(cs.borderBottomWidth) || 0) + (parseFloat(cs.borderLeftWidth) || 0) + (parseFloat(cs.borderRightWidth) || 0);
+    return bw > 0 && cs.borderTopStyle !== 'none';
+  }
+  function elKids(el) { var n = 0, c = el.children; for (var i = 0; i < c.length; i++) if (c[i].tagName !== 'SCRIPT' && c[i].tagName !== 'STYLE') n++; return n; }
+
+  /* Ichida 3 tadan ko'p jadval qatori / ro'yxat elementi bor quti: quti o'zi emas, QATORLAR ketma-ket chiqadi
+     (aks holda quti chiqib bo'lgach, qatorlar yana animatsiya qilinib, "ikki marta" ko'rinadi) */
+  /* Bo'sh (qutisiz) grid/flex konteyner ichida 2+ katta element (masalan KPI kartalar) — konteyner emas, kartalarning o'zi chiqadi */
+  function multiItems(el, cs) {
+    var d = cs.display;
+    if (!(d.indexOf('grid') > -1 || (d.indexOf('flex') > -1 && cs.flexDirection.indexOf('row') === 0))) return false;
+    var c = el.children, k = 0;
+    for (var i = 0; i < c.length; i++) {
+      if (c[i].tagName === 'BUTTON' || c[i].tagName === 'A') continue;
+      var r = c[i].getBoundingClientRect();
+      if (r.width >= 110 && r.height >= 44) k++;
+    }
+    return k >= 2;
+  }
+  /* Nechta "katta" (>=90x34) bola bor — sahifa o'rami (konteyner) yoki oddiy blok ekanini aniqlash uchun */
+  function bigKids(el) {
+    var c = el.children, k = 0;
+    for (var i = 0; i < c.length; i++) {
+      var t = c[i].tagName; if (t === 'SCRIPT' || t === 'STYLE') continue;
+      var r = c[i].getBoundingClientRect();
+      if (r.width >= 90 && r.height >= 34) k++;
+    }
+    return k;
+  }
+  function hasRows(el) { return el.querySelectorAll('tbody tr, li').length >= 3; }
+
+  function visit(el, plvl, top, st) {
+    if (st.list.length >= MAX_BLOCKS || el.nodeType !== 1) return;
+    if (el.matches(EXCL)) return;
+    var cs = getComputedStyle(el);
+    if (cs.display === 'none' || cs.visibility === 'hidden' || cs.position === 'fixed') return;
+    var tag = el.tagName, already = el.hasAttribute('data-rv');
+    var r = el.getBoundingClientRect();
+    var n = elKids(el), box = isBox(cs);
+    var vh = window.innerHeight || 800, vw = window.innerWidth || 1200;
+    var mark = false, pass = false;
+
+    if (top && !already) {
+      // katta "o'rama" konteynerlar (app-main, main, page-enter) va bitta bolali bo'sh o'ramalar belgilanmaydi —
+      // animatsiya ularning ichidagi haqiqiy bloklarga o'tadi
+      var huge = r.height >= vh * 0.9 && r.width >= vw * 0.55;
+      var bk = bigKids(el);
+      var tallBox = box && r.height >= vh * 0.5 && r.width >= vw * 0.45;
+      pass = n >= 1 && ((n === 1 && !box) || (huge && n >= 2) || (!box && n >= 2 && (bk >= 2 || multiItems(el, cs))) || (tallBox && bk >= 2));
+    }
+    if (!pass && !already && plvl < MAX_LEVEL && cs.display !== 'inline' && cs.position !== 'absolute') {
+      var big = r.width >= 90 && r.height >= 34;
+      var par = el.parentElement, pcs = par ? getComputedStyle(par) : null;
+      var inRow = pcs && (pcs.display.indexOf('grid') > -1 || (pcs.display.indexOf('flex') > -1 && pcs.flexDirection.indexOf('row') === 0)) && elKids(par) >= 2;
+      if (tag === 'TR') mark = !!el.closest('tbody') && r.height > 0;
+      else if (tag === 'LI') mark = r.height >= 24 && r.width > 40;
+      else if (/^H[1-3]$/.test(tag)) mark = plvl === 0 && r.height > 0;
+      else if (top) mark = r.width > 0 && r.height > 0;
+      else if (big && box) mark = !hasRows(el);
+      else if (big && inRow && r.width >= 110 && r.height >= 44 && tag !== 'BUTTON' && tag !== 'A') mark = true;
+      if (mark) st.list.push({ el: el, top: r.top, lvl: plvl + 1 });
+    }
+    if (already || mark || tag === 'BUTTON') return;
+    var lvl = plvl;
+    var kids = el.children;
+    for (var i = 0; i < kids.length; i++) visit(kids[i], lvl, pass, st);
+  }
+
+  function isContainerRoot(el) {
+    if (el.id === 'root' || el.classList.contains('page-enter')) return true;
+    var tag = el.tagName;
+    if (tag === 'TR' || tag === 'LI') return false;
+    return false;
+  }
+
+  function flush(roots) {
+    var uniq = [];
+    roots.forEach(function (n) {
+      if (!n.isConnected || n.nodeType !== 1) return;
+      for (var i = 0; i < roots.length; i++) if (roots[i] !== n && roots[i].isConnected && roots[i].contains(n)) return;
+      uniq.push(n);
+    });
+    uniq.sort(function (a, b) { return (a.compareDocumentPosition(b) & 4) ? -1 : 1; });
+    var st = { list: [] }, vh = window.innerHeight || 800;
+    uniq.forEach(function (root) {
+      if (root.matches(EXCL) || root.closest(EXCL)) return;
+      var plvl = 0, p = root.parentElement;
+      while (p && p.id !== 'root') { var rv = p.getAttribute('data-rv'); if (rv === '1' || rv === 'w') plvl++; p = p.parentElement; }
+      plvl = Math.min(plvl, MAX_LEVEL);
+      if (isContainerRoot(root)) {
+        for (var i = 0; i < root.children.length; i++) visit(root.children[i], plvl, true, st);
+      } else {
+        visit(root, plvl, true, st);
+      }
+    });
+    // Himoya: bo'limda hech qanday blok topilmasa (g'alati tuzilma) — sahifaning o'zi animatsiya bilan chiqadi
+    uniq.forEach(function (root) {
+      if (!root.classList.contains('page-enter')) return;
+      for (var q = 0; q < st.list.length; q++) if (root.contains(st.list[q].el)) return;
+      var rr = root.getBoundingClientRect();
+      if (rr.width > 0 && rr.height > 0 && !root.hasAttribute('data-rv')) st.list.push({ el: root, top: rr.top, lvl: 1 });
+    });
+    // Marker qilinmagan, lekin O'Z kirish animatsiyasi bor bloklar (v2Up, nxIn, fadeUp...) — ikkinchi marta o'ynamasligi uchun o'chiramiz
+    var ENTR = /^(fadeUp|v2Up|nxIn|chartCardIn|eduRowIn|eduPageIn|eduBlockIn|[a-zA-Z0-9]*(In|Up|Enter)\d?)$/;
+    var kill = [], marked = new Set(st.list.map(function (b) { return b.el; }));
+    uniq.forEach(function (root) {
+      var all = [root].concat([].slice.call(root.querySelectorAll('*')));
+      for (var k = 0; k < all.length && k < 1800; k++) {
+        var e = all[k];
+        if (marked.has(e) || e.hasAttribute('data-rv') || e.hasAttribute('data-rk') || e.closest('svg') || e.closest(EXCL)) continue;
+        var c = getComputedStyle(e);
+        if (c.animationName === 'none' || c.animationIterationCount.indexOf('infinite') > -1) continue;
+        var names = c.animationName.split(',');
+        for (var q = 0; q < names.length; q++) if (ENTR.test(names[q].trim())) { kill.push(e); break; }
+      }
+    });
+    kill.forEach(function (e) { e.setAttribute('data-rk', '1'); });
+    if (!st.list.length) return;
+    // o'qish bosqichi tugadi — endi yozamiz (layout thrash bo'lmasligi uchun)
+    var i = 0;
+    st.list.forEach(function (b) {
+      var el = b.el;
+      el.setAttribute('data-rl', b.lvl);
+      if (b.top > vh - 30 && io) {
+        el.setAttribute('data-rv', 'w');
+        io.observe(el);
+      } else {
+        reveal(el, Math.min(i * STEP, MAX_DELAY)); i++;
+      }
+    });
+  }
+
+  var queue = [], pending = false;
+  function onMut(recs) {
+    var rootEl = document.getElementById('root');
+    if (!rootEl) return;
+    for (var i = 0; i < recs.length; i++) {
+      var add = recs[i].addedNodes;
+      for (var j = 0; j < add.length; j++) {
+        var n = add[j];
+        if (n.nodeType === 1 && rootEl.contains(n)) queue.push(n);
+      }
+    }
+    if (queue.length && !pending) {
+      pending = true;
+      // mikrotask: React commit'idan keyin, birinchi paint'dan OLDIN — "yaltillash" bo'lmaydi
+      Promise.resolve().then(function () {
+        pending = false;
+        var q = queue; queue = [];
+        try { flush(q); } catch (e) { /* animatsiya xatosi ilovani to'xtatmasin */ }
+      });
+    }
+  }
+  function start() {
+    new MutationObserver(onMut).observe(document.documentElement, { childList: true, subtree: true });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
+</script>
+
 </body>
 </html>
