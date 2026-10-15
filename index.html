@@ -23,25 +23,72 @@
   var db = null;
   var SEEN = {};
   var dirty = false;
+  /* Brauzer xotirasi (localStorage ~5MB) to'lib, baza yozilmay qolsa, eng so'nggi holat shu yerda (RAM) turadi.
+     Shunda yangi xodim, sessiya va Umumiy chat a'zoligi hech qachon yo'qolmaydi. */
+  var mem = {};
+  var warned = {};
+
+  function warnStorage(level) {
+    if (warned[level]) return;
+    warned[level] = 1;
+    try { window.dispatchEvent(new CustomEvent('chat-storage', { detail: { level: level } })); } catch (e) {}
+  }
 
   function load() {
     var d = null;
-    try { d = JSON.parse(localStorage.getItem(dbKey())); } catch (e) { d = null; }
+    var k = dbKey();
+    try { d = JSON.parse(localStorage.getItem(k)); } catch (e) { d = null; }
+    if (mem[k] && (!d || !d.users || (d.rev || 0) < mem[k].rev)) {
+      try { d = JSON.parse(mem[k].json); } catch (e2) { /* RAM nusxa buzilgan bo'lsa, saqlangani ishlatiladi */ }
+    }
     if (!d || !d.users) d = { users: [], convs: [], msgs: [], reads: {}, sessions: {}, hidden: {}, nextId: 1 };
     d.convs = d.convs || []; d.msgs = d.msgs || []; d.reads = d.reads || {};
     d.sessions = d.sessions || {}; d.hidden = d.hidden || {}; d.nextId = d.nextId || 1;
     return d;
   }
-  function save() {
-    for (var i = 0; i < 4; i++) {
-      try { localStorage.setItem(dbKey(), JSON.stringify(db)); return; }
-      catch (e) {
-        /* xotira to'lsa, eng eski xabarlarning 25% ini o'chirib qayta urinamiz */
-        var cut = Math.ceil(db.msgs.length * 0.25);
-        if (!cut) return;
-        db.msgs = db.msgs.slice(cut);
-      }
+  /* Chat bazasi brauzer xotirasining (~5MB) katta qismini egallab, ilovaning o'z ma'lumotlariga (xodim, kurs...)
+     joy qoldirmay qo'ymasligi uchun chegara. Oshsa — eng eski fayllardan boshlab tozalanadi. */
+  var CAP = window.EDU_CHAT_CAP || 2500000;
+  function stripAttachments(list, size, limit) {
+    for (var i = 0; i < list.length; i++) {
+      var m = list[i];
+      if (!m.attachment) continue;
+      if (limit && size <= limit) break;
+      size -= String(m.attachment.data || '').length;
+      if (!m.body) m.body = '\uD83D\uDCCE ' + (m.attachment.name || 'fayl') + ' (xotira to\u2018lgani uchun o\u2018chirildi)';
+      m.attachment = null;
     }
+    return size;
+  }
+  function save() {
+    var k = dbKey();
+    db.rev = (db.rev || 0) + 1;
+    var full = null;
+    try { full = JSON.stringify(db); } catch (e) { return; }
+    var over = full.length > CAP;
+    /* Xotira yetmasa (yoki chegaradan oshsa), eng kam kerakli narsadan boshlab bosqichma-bosqich tozalaymiz:
+       fayllar -> eski xabarlar -> rasmlar. Foydalanuvchilar, sessiyalar va suhbatlar HECH QACHON o'chirilmaydi. */
+    var stages = [
+      function () {},
+      function () { stripAttachments(db.msgs, full.length, over ? CAP : 0); },
+      function () { db.msgs = db.msgs.slice(Math.ceil(db.msgs.length * 0.25)); },
+      function () { db.msgs = db.msgs.slice(Math.ceil(db.msgs.length * 0.5)); },
+      function () { db.users.forEach(function (u) { u.avatar = null; }); },
+      function () { db.msgs = []; db.reads = {}; }
+    ];
+    for (var i = 0; i < stages.length; i++) {
+      stages[i]();
+      var str = i ? JSON.stringify(db) : full;
+      if (over && str.length > CAP && i < stages.length - 1) continue;
+      try {
+        localStorage.setItem(k, str);
+        delete mem[k];
+        if (i) warnStorage('trimmed');
+        return;
+      } catch (e) { /* keyingi bosqich */ }
+    }
+    mem[k] = { json: full, rev: db.rev };
+    warnStorage('memory');
   }
   function readSeen() { try { return JSON.parse(localStorage.getItem(seenKey())) || {}; } catch (e) { return {}; } }
   function touch(uid) {
@@ -7088,6 +7135,10 @@ function Topbar({ me, roleLabel, initials, theme, onToggleTheme, notifications, 
    ========================================================================= */
 const CHAT_BASE = String(window.EDU_API_BASE || '').replace(/\/+$/, '');
 const CHAT_TOKEN_KEY = 'edustream_chat_token';
+/* Token localStorage'ga yozilmay qolsa (xotira to'lgan), RAMda ham saqlanadi — chat uzilib qolmasin */
+let chatTokMem = '';
+const chatGetTok = () => { let t = ''; try { t = localStorage.getItem(CHAT_TOKEN_KEY) || ''; } catch (e) { t = ''; } return t || chatTokMem; };
+const chatSetTok = (t) => { chatTokMem = t || ''; try { if (t) localStorage.setItem(CHAT_TOKEN_KEY, t); else localStorage.removeItem(CHAT_TOKEN_KEY); } catch (e) {} };
 const CHAT_GENERAL_TITLE = 'Umumiy chat';
 
 const ChatIcon = {
@@ -7247,8 +7298,7 @@ function chatEnsureSession(appMe) {
   const key = appMe.username;
   if (chatEnsureInflight[key]) return chatEnsureInflight[key];
   const p = (async () => {
-    let tok = '';
-    try { tok = localStorage.getItem(CHAT_TOKEN_KEY) || ''; } catch (e) { tok = ''; }
+    let tok = chatGetTok();
     if (tok) {
       try {
         const r = await chatApi('/auth/me', { token: tok });
@@ -7267,7 +7317,7 @@ function chatEnsureSession(appMe) {
       try { r = await chatApi('/auth/login', { method: 'POST', body: { username: appMe.username, password: appMe.password } }); } catch (e2) { r = null; }
     }
     if (!r || !r.token) return '';
-    try { localStorage.setItem(CHAT_TOKEN_KEY, r.token); } catch (e) {}
+    chatSetTok(r.token);
     window.dispatchEvent(new Event('chat-auth'));
     return r.token;
   })();
@@ -7301,7 +7351,7 @@ function ChatLogin({ onLoggedIn }) {
     setErr('');
     try {
       const r = await chatApi('/auth/login', { method: 'POST', body: { username: username.trim(), password: password } });
-      try { localStorage.setItem(CHAT_TOKEN_KEY, r.token); } catch (x) {}
+      chatSetTok(r.token);
       window.dispatchEvent(new Event('chat-auth'));
       onLoggedIn(r.token);
     } catch (x) {
@@ -7371,11 +7421,11 @@ const ROLE_LABEL = { ceo: 'CEO', ceo_support: 'CEO Support', admin: 'Admin', adm
 const chatRoleLabel = (r) => ROLE_LABEL[r] || r || 'Xodim';
 
 /* Har bir kontakt uchun amallar: yashirish, bildirishnomani cheklash va suhbatni o'chirish (tasdiq bilan). */
-function ChatRowMenu({ onHide, onDelete, onMute, muted }) {
+function ChatRowMenu({ name, onHide, onClear, onRemove, onMute, muted }) {
   const [open, setOpen] = useState(false);
-  const [confirm, setConfirm] = useState(false);
+  const [confirm, setConfirm] = useState(null);   // null | 'clear' | 'remove'
   const [pos, setPos] = useState({ top: 0, left: 0 });
-  const close = () => { setOpen(false); setConfirm(false); };
+  const close = () => { setOpen(false); setConfirm(null); };
   useEffect(() => {
     if (!open) return undefined;
     const onKey = (e) => { if (e.key === 'Escape') close(); };
@@ -7388,7 +7438,7 @@ function ChatRowMenu({ onHide, onDelete, onMute, muted }) {
     e.preventDefault();
     if (open) { close(); return; }
     const r = e.currentTarget.getBoundingClientRect();
-    const h = 180;
+    const h = 230;
     const below = r.bottom + 6;
     const top = below + h > window.innerHeight ? Math.max(8, r.top - h - 6) : below;
     setPos({ top: top, left: Math.max(8, Math.min(r.right - 230, window.innerWidth - 240)) });
@@ -7412,19 +7462,31 @@ function ChatRowMenu({ onHide, onDelete, onMute, muted }) {
                     <ChatIcon.bell /> {muted ? 'Bildirishnomani yoqish' : 'Bildirishnomani cheklash'}
                   </button>
                 )}
-                <button type="button" role="menuitem" className="chat-rmenu-item danger"
-                  disabled={!onDelete} title={onDelete ? '' : 'Bu kontakt bilan hali suhbat yo‘q'}
-                  onClick={() => setConfirm(true)}>
-                  <ChatIcon.trash /> {onDelete ? 'Suhbatni o‘chirish' : 'Suhbat yo‘q'}
+                <button type="button" role="menuitem" className="chat-rmenu-item"
+                  disabled={!onClear} title={onClear ? '' : 'Bu kontakt bilan hali yozishma yo‘q'}
+                  onClick={() => setConfirm('clear')}>
+                  <ChatIcon.trash /> {onClear ? 'Chatni tozalash' : 'Yozishma yo‘q'}
+                </button>
+                <button type="button" role="menuitem" className="chat-rmenu-item danger" onClick={() => setConfirm('remove')}>
+                  <ChatIcon.x /> Ro‘yxatdan olib tashlash
                 </button>
               </React.Fragment>
             )}
-            {confirm && onDelete && (
+            {confirm === 'clear' && onClear && (
               <div className="chat-rmenu-confirm">
-                <span>Suhbat barcha xabarlari bilan ikkala tomonda ham o‘chadi. Davom etasizmi?</span>
+                <span>«{name}» bilan barcha xabarlar ikkala tomonda ham o‘chadi. Kontakt ro‘yxatda qoladi. Davom etasizmi?</span>
                 <div>
-                  <button type="button" className="chat-ok danger" onClick={() => { close(); onDelete(); }}>Ha, o‘chirish</button>
-                  <button type="button" className="chat-ok" onClick={() => setConfirm(false)}>Bekor</button>
+                  <button type="button" className="chat-ok danger" onClick={() => { close(); onClear(); }}>Ha, tozalash</button>
+                  <button type="button" className="chat-ok" onClick={() => setConfirm(null)}>Bekor</button>
+                </div>
+              </div>
+            )}
+            {confirm === 'remove' && (
+              <div className="chat-rmenu-confirm">
+                <span>«{name}» shu ro‘yxatdan olib tashlanadi va yozishma o‘chadi. Keyin kerak bo‘lsa, «+» tugmasi orqali qayta qo‘shishingiz mumkin. Davom etasizmi?</span>
+                <div>
+                  <button type="button" className="chat-ok danger" onClick={() => { close(); onRemove(); }}>Ha, olib tashlash</button>
+                  <button type="button" className="chat-ok" onClick={() => setConfirm(null)}>Bekor</button>
                 </div>
               </div>
             )}
@@ -7436,7 +7498,7 @@ function ChatRowMenu({ onHide, onDelete, onMute, muted }) {
   );
 }
 
-function ChatPersonRow({ u, conv, active, onOpen, onHide, onDelete, onMute, muted }) {
+function ChatPersonRow({ u, conv, active, onOpen, onHide, onClear, onRemove, onMute, muted }) {
   const last = conv ? conv.last_message : null;
   const time = last ? chatListTime(last.created_at) : '';
   return (
@@ -7450,13 +7512,16 @@ function ChatPersonRow({ u, conv, active, onOpen, onHide, onDelete, onMute, mute
       <span className="chat-prow-end">
         {time && <small className="chat-row-time">{time}</small>}
         {conv && conv.unread > 0 && <em className="chat-badge">{conv.unread > 99 ? '99+' : conv.unread}</em>}
-        {onHide && <ChatRowMenu onHide={onHide} onDelete={onDelete} onMute={onMute} muted={muted} />}
+        {onHide && <ChatRowMenu name={u.name} onHide={onHide} onClear={onClear} onRemove={onRemove} onMute={onMute} muted={muted} />}
       </span>
     </div>
   );
 }
 
-function ChatUserPicker({ users, directs, generalExists, onClose, onPick, onOpenGeneral }) {
+function ChatUserPicker({ users, allUsers, scope, directs, generalExists, onClose, onPick, onOpenGeneral }) {
+  /* scope: 'staff' | 'students' | 'groups' — qaysi tabdan ochilgan bo'lsa, faqat o'sha toifa ko'rinadi */
+  const scopeWord = scope === 'students' ? 'talaba' : scope === 'groups' ? 'guruh' : 'xodim';
+  const memberPool = allUsers || users;
   const [q, setQ] = useState('');
   const [cur, setCur] = useState(0);
   const needle = q.trim().toLowerCase();
@@ -7472,7 +7537,7 @@ function ChatUserPicker({ users, directs, generalExists, onClose, onPick, onOpen
   const recentU = recentIds.map((id) => pool.find((u) => u.id === id)).filter(Boolean);
   const rest = pool.filter((u) => recentIds.indexOf(u.id) === -1);
   const others = rest.filter((u) => u.online).concat(rest.filter((u) => !u.online));
-  const showGeneral = generalExists && (!needle || 'umumiy chat'.indexOf(needle) !== -1);
+  const showGeneral = generalExists && (!scope || scope === 'groups') && (!needle || 'umumiy chat'.indexOf(needle) !== -1);
   const off0 = showGeneral ? 1 : 0;
   const items = [];
   if (showGeneral) items.push({ general: true });
@@ -7494,7 +7559,7 @@ function ChatUserPicker({ users, directs, generalExists, onClose, onPick, onOpen
     <button type="button" key="general" role="option" aria-selected={cursor === i}
       className={'chat-user' + (cursor === i ? ' cur' : '')} onMouseEnter={() => setCur(i)} onClick={() => choose({ general: true })}>
       <ChatAvatar name="Umumiy chat" general={true} />
-      <span className="chat-user-info"><b>Umumiy chat</b><small>Hamma xodimlar · {users.filter((x) => x.role !== 'student').length + 1} a’zo</small></span>
+      <span className="chat-user-info"><b>Umumiy chat</b><small>Hamma xodimlar · {memberPool.filter((x) => x.role !== 'student').length + 1} a’zo</small></span>
       <span className="chat-go">Ochish</span>
     </button>
   );
@@ -7520,22 +7585,22 @@ function ChatUserPicker({ users, directs, generalExists, onClose, onPick, onOpen
         <div className="chat-picker-head">
           <div className="chat-picker-title">
             <b>Yangi suhbat</b>
-            <small>{pool.length} ta xodim</small>
+            <small>{scope === 'groups' ? (showGeneral ? 1 : 0) : pool.length} ta {scopeWord}</small>
           </div>
           <button type="button" className="chat-icon-btn" onClick={onClose} aria-label="Yopish">×</button>
         </div>
         <div className="chat-picker-search">
           <ChatIcon.search width="18" height="18" />
-          <input type="text" autoFocus autoComplete="off" spellCheck={false} placeholder="Qidirish…" value={q}
+          <input type="text" autoFocus autoComplete="off" spellCheck={false} placeholder={scope === 'students' ? 'Talaba qidirish…' : scope === 'staff' ? 'Xodim qidirish…' : 'Qidirish…'} value={q}
             onChange={(e) => { setQ(e.target.value); setCur(0); }}
             onKeyDown={(e) => { if (['ArrowDown', 'ArrowUp', 'Enter', 'Escape'].indexOf(e.key) === -1) e.stopPropagation(); }} />
           {q && <button type="button" className="chat-clear" onClick={() => { setQ(''); setCur(0); }} aria-label="Tozalash">×</button>}
           <button type="button" className="chat-picker-plus" disabled={!items[cursor]} onClick={() => choose(items[cursor])}
-            title="Tanlangan xodim bilan suhbat" aria-label="Tanlangan xodim bilan suhbat">+</button>
+            title="Tanlanganini ochish" aria-label="Tanlanganini ochish">+</button>
         </div>
         <div className="chat-modal-list" role="listbox">
           {items.length === 0 && (
-            <div className="chat-empty"><b>Hech kim topilmadi</b><small>Qidiruvni o‘zgartirib ko‘ring</small></div>
+            <div className="chat-empty"><b>{scope === 'students' ? 'Talaba topilmadi' : scope === 'staff' ? 'Xodim topilmadi' : scope === 'groups' ? 'Guruh topilmadi' : 'Hech kim topilmadi'}</b><small>Qidiruvni o‘zgartirib ko‘ring</small></div>
           )}
           {showGeneral && <div className="chat-picker-h">Guruh</div>}
           {showGeneral && generalRow(0)}
@@ -7559,7 +7624,7 @@ const chatFmtSize = (n) => (n < 1024 ? n + ' B' : n < 1048576 ? Math.round(n / 1
 
 function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
   /* Ilova akkaunti bilan avtomatik kirish: appMe berilgan bo'lsa, token faqat shu akkaunt uchun olinadi */
-  const [token, setToken] = useState(() => { if (appMe) return ''; try { return localStorage.getItem(CHAT_TOKEN_KEY) || ''; } catch (e) { return ''; } });
+  const [token, setToken] = useState(() => (appMe ? '' : chatGetTok()));
   const [autoFailed, setAutoFailed] = useState(false);
   const [sessTick, setSessTick] = useState(0);
   const [me, setMe] = useState(null);
@@ -7577,6 +7642,24 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
   const [confirmId, setConfirmId] = useState(null);
   const [showHidden, setShowHidden] = useState(false);
   const [chatTab, setChatTab] = useState('staff');
+  /* Ro'yxatdan «olib tashlangan» kontaktlar (faqat shu foydalanuvchi uchun, login bo'yicha). «+» orqali qaytariladi */
+  const removedKey = chatUserKey('chat_removed', (me && me.username) || (appMe && appMe.username));
+  const [removedList, setRemovedList] = useState(() => loadLS(removedKey, []));
+  useEffect(() => { setRemovedList(loadLS(removedKey, [])); }, [removedKey]);
+  const removingRef = useRef({});
+  const setRemoved = (username, on) => setRemovedList((prev) => {
+    const next = on ? (prev.indexOf(username) === -1 ? prev.concat([username]) : prev) : prev.filter((x) => x !== username);
+    saveLS(removedKey, next);
+    return next;
+  });
+  /* Olib tashlangan kontakt bilan yozishma qayta paydo bo'lsa (u yozsa yoki «+» orqali ochilsa) — ro'yxatga qaytadi */
+  useEffect(() => {
+    if (!removedList.length) return;
+    const back = convs
+      .filter((c) => c.kind === 'direct' && c.other && removedList.indexOf(c.other.username) !== -1 && !removingRef.current[c.other.username])
+      .map((c) => c.other.username);
+    if (back.length) setRemovedList((prev) => { const next = prev.filter((x) => back.indexOf(x) === -1); saveLS(removedKey, next); return next; });
+  }, [convs, removedList]);
   useEffect(() => { window.__chatActiveId = activeId; }, [activeId]);
   /* Toastdan bosilganda shu suhbat ochiladi (suhbat ro'yxati yuklangach ham) */
   useEffect(() => {
@@ -7746,7 +7829,7 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
     clearTimeout(retryRef.current.timer);
     if (wsRef.current) { wsRef.current.onclose = null; try { wsRef.current.close(); } catch (e) {} wsRef.current = null; }
     if (callServer && tok) chatApi('/auth/logout', { method: 'POST', token: tok }).catch(() => {});
-    try { localStorage.removeItem(CHAT_TOKEN_KEY); } catch (e) {}
+    chatSetTok('');
     window.dispatchEvent(new Event('chat-auth'));
     setToken(''); setMe(null); setConvs([]); setUsers([]); setMsgs({}); setActiveId(null); setWsOnline(false); setBootError(false);
     if (appMe) setSessTick((n) => n + 1);
@@ -7911,18 +7994,24 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
     if (activeRef.current === id) setActiveId(null);
   };
 
-  const deleteConv = (id) => {
+  /* Yozishmani tozalash: xabarlar o'chadi, kontakt ro'yxatda qoladi */
+  const clearConv = (id) => {
     if (!id) return;
-    const list = convsRef.current.filter((c) => c.kind === 'direct');
-    const idx = list.findIndex((c) => c.id === id);
-    const next = idx === -1 ? null : (list[idx + 1] || list[idx - 1] || null);
     chatApi('/conversations/' + id, { method: 'DELETE', token: tokenRef.current })
-      .then(() => {
-        removeConvLocal(id);
-        if (next) setActiveId(next.id);
-        if (notify) notify('Suhbat o‘chirildi');
-      })
-      .catch(() => { if (notify) notify('O‘chirib bo‘lmadi', 'danger'); });
+      .then(() => { removeConvLocal(id); if (notify) notify('Yozishma tozalandi'); })
+      .catch(() => { if (notify) notify('Tozalab bo‘lmadi', 'danger'); });
+  };
+
+  /* Ro'yxatdan olib tashlash: yozishma o'chadi va kontakt ro'yxatdan ketadi. «+» orqali qayta qo'shiladi */
+  const removeContact = (u, conv) => {
+    setRemoved(u.username, true);
+    if (conv && activeRef.current === conv.id) setActiveId(null);
+    if (!conv) { if (notify) notify('«' + u.name + '» ro‘yxatdan olib tashlandi'); return; }
+    removingRef.current[u.username] = 1;
+    chatApi('/conversations/' + conv.id, { method: 'DELETE', token: tokenRef.current })
+      .then(() => { removeConvLocal(conv.id); if (notify) notify('«' + u.name + '» ro‘yxatdan olib tashlandi'); })
+      .catch(() => { setRemoved(u.username, false); if (notify) notify('Olib tashlab bo‘lmadi', 'danger'); })
+      .then(() => { delete removingRef.current[u.username]; });
   };
 
   /* Xabar yuborish: avval darhol ko'rsatiladi (optimistik), keyin server tasdiqlaydi */
@@ -8077,8 +8166,12 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
   const shownGeneral = general && matches(CHAT_GENERAL_TITLE) ? general : null;
   const visibleAll = users.filter((u) => !u.hidden);
   const isStu = (u) => u.role === 'student';
-  const staffList = visibleAll.filter((u) => !isStu(u));
-  const studentList = visibleAll.filter((u) => isStu(u));
+  const isRemoved = (u) => removedList.indexOf(u.username) !== -1;
+  /* pick* — «+» oynasi uchun (olib tashlanganlar ham bor), *List — chap panel uchun */
+  const pickStaff = visibleAll.filter((u) => !isStu(u));
+  const pickStudents = visibleAll.filter((u) => isStu(u));
+  const staffList = pickStaff.filter((u) => !isRemoved(u));
+  const studentList = pickStudents.filter((u) => !isRemoved(u));
   /* Har bir ko'rinadigan foydalanuvchi uchun alohida chat: yozishmasi bor bo'lsa oxirgi faollik bo'yicha,
      bo'lmasa ismi bo'yicha pastda */
   const rowsFor = (list) => list
@@ -8090,7 +8183,7 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
       if (ta !== tb) return tb.localeCompare(ta);
       return a.u.name.localeCompare(b.u.name);
     });
-  const hiddenFor = (wantStudent) => users.filter((u) => u.hidden && isStu(u) === wantStudent && matches(u.name + ' ' + u.username));
+  const hiddenFor = (wantStudent) => users.filter((u) => u.hidden && !isRemoved(u) && isStu(u) === wantStudent && matches(u.name + ' ' + u.username));
   const unreadOf = (list) => list.reduce((a, u) => {
     const c = directs.find((x) => x.other && x.other.id === u.id);
     return a + (c ? c.unread : 0);
@@ -8101,11 +8194,11 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
   const renderPeople = (rows, hiddenList, emptyText) => (
     <React.Fragment>
       <div className="chat-sec">{isStudent ? 'Ustozlar' : 'Profillar'}</div>
-      {rows.length === 0 && <div className="chat-hint pad small">{emptyText}</div>}
+      {rows.length === 0 && <div className="chat-hint pad small">{!needle && removedList.length > 0 ? 'Ro‘yxat bo‘sh. Qayta qo‘shish uchun yuqoridagi «+» tugmasini bosing' : emptyText}</div>}
       {rows.map(({ u, conv }) => (
         <ChatPersonRow key={'p' + u.id} u={u} conv={conv} active={!!conv && conv.id === activeId}
           onOpen={() => (conv ? setActiveId(conv.id) : openWith(u.id))}
-          onHide={() => setHidden(u.id, true)} onDelete={conv ? () => deleteConv(conv.id) : null} onMute={conv && canMute ? () => toggleMute(conv) : null} muted={!!conv && isMutedConv(conv)} />
+          onHide={() => setHidden(u.id, true)} onClear={conv ? () => clearConv(conv.id) : null} onRemove={() => removeContact(u, conv)} onMute={conv && canMute ? () => toggleMute(conv) : null} muted={!!conv && isMutedConv(conv)} />
       ))}
       {hiddenList.length > 0 && (
         <React.Fragment>
@@ -8294,7 +8387,7 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
                 : <div className="chat-hint pad small">Guruh topilmadi</div>}
             </React.Fragment>
           )}
-          {tab === 'students' && (studentList.length === 0 && hiddenFor(true).length === 0 ? (
+          {tab === 'students' && (pickStudents.length === 0 && hiddenFor(true).length === 0 ? (
             <div className="chat-empty-tab">
               <span className="chat-ph-icon"><ChatIcon.users width="22" height="22" /></span>
               <b>Talabalar yo‘q</b>
@@ -8390,11 +8483,13 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
 
       {picker && (
         <ChatUserPicker
-          users={visibleAll}
+          users={tab === 'students' ? pickStudents : tab === 'staff' ? pickStaff : []}
+          allUsers={visibleAll}
+          scope={tab}
           directs={directs}
           generalExists={!!general}
           onClose={() => setPicker(false)}
-          onPick={openWith}
+          onPick={(id) => { const pu = users.find((x) => x.id === id); if (pu && isRemoved(pu)) setRemoved(pu.username, false); openWith(id); }}
           onOpenGeneral={() => { setPicker(false); openGeneral(); }}
         />
       )}
@@ -8465,7 +8560,7 @@ function useChatUnread(appMe, notify) {
     };
     const boot = async () => {
       if (appMe && appMe.username) tok = await chatEnsureSession(appMe);
-      else { try { tok = localStorage.getItem(CHAT_TOKEN_KEY) || ''; } catch (e) { tok = ''; } }
+      else { tok = chatGetTok(); }
       if (!alive) return;
       if (!tok) { setCount(0); return; }
       chatApi('/auth/me', { token: tok }).then((r) => { myChatId = r.user.id; }).catch(() => {});
@@ -8486,10 +8581,10 @@ function useChatUnread(appMe, notify) {
 /* Ilovadagi xodim VA talabalar ro'yxatini chatga yuborish.
    Yangi xodim/talaba qo'shilsa yoki o'zgarsa, chatda darhol ko'rinadi; o'chirilsa — yo'qoladi. */
 let chatSyncTimer = null;
-function syncStaffToChat(staff, students) {
-  let tok = '';
-  try { tok = localStorage.getItem(CHAT_TOKEN_KEY) || ''; } catch (e) { tok = ''; }
-  if (!tok || !Array.isArray(staff)) return;
+function syncStaffToChat(staff, students, me, retried) {
+  const tok = chatGetTok();
+  /* Bo'sh ro'yxat yuborilmaydi: aks holda chatdagi hamma xodim o'chib ketardi */
+  if (!tok || !Array.isArray(staff) || !staff.length) return;
   clearTimeout(chatSyncTimer);
   chatSyncTimer = setTimeout(() => {
     const people = staff
@@ -8500,7 +8595,13 @@ function syncStaffToChat(staff, students) {
         .map((s) => ({ username: s.username, name: s.name || s.username, role: 'student', password: s.password || undefined, avatar: s.avatar || null })));
     chatApi('/people', { method: 'PUT', token: tok, body: { people: people } })
       .then(() => window.dispatchEvent(new Event('chat-people')))
-      .catch(() => {});
+      .catch((e) => {
+        /* Token eskirgan bo'lsa — qayta kirib, sinxronlashni bir marta takrorlaymiz */
+        if (e && e.status === 401 && me && !retried) {
+          chatSetTok('');
+          chatEnsureSession(me).then((t) => { if (t) syncStaffToChat(staff, students, me, true); });
+        }
+      });
   }, 600);
 }
 
@@ -8509,7 +8610,18 @@ function StaffApp({ me, staff, setStaff, roleTpl, setRoleTpl, categories, setCat
   const chatUnread = useChatUnread(me, notify);
   useEffect(() => { const f = () => setPage('chat'); window.addEventListener('chat-open', f); return () => window.removeEventListener('chat-open', f); }, []);
   /* Ilovadagi xodim va talabalar chat ro'yxatiga sinxronlanadi */
-  useEffect(() => { chatEnsureSession(me).then((t) => { if (t) syncStaffToChat(staff, students); }); }, [me.id, staff, students]);
+  useEffect(() => { chatEnsureSession(me).then((t) => { if (t) syncStaffToChat(staff, students, me); }); }, [me.id, staff, students]);
+  /* Brauzer xotirasi to'lsa — chat jimgina buzilmasin, foydalanuvchiga aytiladi */
+  useEffect(() => {
+    const f = (e) => {
+      const lv = e && e.detail && e.detail.level;
+      notify(lv === 'memory'
+        ? "Brauzer xotirasi to'lgan: chat ma'lumotlari faqat shu oynada saqlanyapti. Kurslardagi katta rasm/fayllarni kamaytiring"
+        : "Brauzer xotirasi to'lib qoldi: chatdagi eski fayllar va xabarlar tozalandi", 'danger');
+    };
+    window.addEventListener('chat-storage', f);
+    return () => window.removeEventListener('chat-storage', f);
+  }, []);
   const [editingStudentId, setEditingStudentId] = useState(null);
   const [editingStudentTab, setEditingStudentTab] = useState('info');
   const [quickAddCourse, setQuickAddCourse] = useState(false);
