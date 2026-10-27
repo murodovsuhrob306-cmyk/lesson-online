@@ -8231,7 +8231,8 @@ function DashV2({ me, canEdit, stats, revenue, students, categories, overdueStud
 }
 
 function Sidebar({ roleLabel, navItems, activePage, onNavigate, footerName, footerSub, footerInitials, footerAvatar, onFooterClick, mobileOpen, onCloseMobile, brand }) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => typeof window !== 'undefined' && window.innerWidth > 860 && window.innerWidth < 1180);
+  useEffect(() => { const f = () => { if (window.innerWidth > 860 && window.innerWidth < 1180) setCollapsed(true); }; window.addEventListener('resize', f); return () => window.removeEventListener('resize', f); }, []);
 
   const handleNavigate = (id) => {
     onNavigate(id);
@@ -8873,20 +8874,32 @@ function chatTone(c, t0, f0, f1, dur, vol, type) {
   o.connect(g); g.connect(c.destination);
   o.start(t0); o.stop(t0 + dur + 0.02);
 }
-/* Kelgan xabar (boshqa chatdan yoki sahifa yashirin): ikki notali signal */
+/* ===== Telegram uslubidagi ovozlar (WebAudio, tashqi fayl kerak emas) ===== */
+function chatNoise(c, t0, dur, f0, f1, vol) {
+  try {
+    const len = Math.max(1, Math.floor(c.sampleRate * dur)), buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+    const src = c.createBufferSource(); src.buffer = buf;
+    const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 1.2;
+    bp.frequency.setValueAtTime(f0, t0); bp.frequency.exponentialRampToValueAtTime(f1, t0 + dur);
+    const g = c.createGain(); g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    src.connect(bp); bp.connect(g); g.connect(c.destination); src.start(t0);
+  } catch (e) {}
+}
+/* Kelgan xabar (boshqa chatdan yoki sahifa yashirin): Telegramdagi kabi "ding-dong" */
 function chatBeep() {
   const c = chatAudio(); if (!c) return;
-  try { const t = c.currentTime; chatTone(c, t, 880, 1175, 0.2, 0.11); chatTone(c, t + 0.11, 1175, 1320, 0.22, 0.08); } catch (e) { /* ovoz ixtiyoriy */ }
+  try { const t = c.currentTime; chatTone(c, t, 1318, 1318, 0.34, 0.32); chatTone(c, t + 0.13, 1760, 1760, 0.42, 0.26); chatTone(c, t, 2637, 2637, 0.2, 0.06); if (navigator.vibrate) navigator.vibrate(20); } catch (e) { /* ovoz ixtiyoriy */ }
 }
-/* Ochiq chatda kelgan xabar: yumshoq "tik" */
+/* Ochiq chatda kelgan xabar: yumshoq "tuk-tuk" */
 function chatSoftIn() {
   const c = chatAudio(); if (!c) return;
-  try { const t = c.currentTime; chatTone(c, t, 740, 988, 0.14, 0.06); } catch (e) {}
+  try { const t = c.currentTime; chatTone(c, t, 988, 988, 0.16, 0.26); chatTone(c, t + 0.075, 1480, 1480, 0.2, 0.22); } catch (e) {}
 }
-/* Xabar yuborilganda: qisqa "pop" (Telegramdagi kabi) */
+/* Xabar yuborilganda: qisqa "vuush" + "pop" (Telegramdagi kabi) */
 function chatSendSound() {
   const c = chatAudio(); if (!c) return;
-  try { const t = c.currentTime; chatTone(c, t, 520, 1040, 0.13, 0.12, 'triangle'); } catch (e) {}
+  try { const t = c.currentTime; chatNoise(c, t, 0.16, 700, 3200, 0.28); chatTone(c, t + 0.04, 420, 980, 0.12, 0.3, 'sine'); } catch (e) {}
 }
 
 /* Matndagi http(s) havolalarni bosiladigan qiladi (React matnni o'zi xavfsiz ekranlaydi) */
@@ -9497,6 +9510,7 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
   const convsRef = useRef(convs); convsRef.current = convs;
   const msgsRef = useRef(msgs); msgsRef.current = msgs;
   const activeRef = useRef(activeId); activeRef.current = activeId;
+  useEffect(() => { if (!activeId) return; try { const t = sessionStorage.getItem('fd_chat_prefill'); if (t) { sessionStorage.removeItem('fd_chat_prefill'); setDraft(t); } } catch (e) {} }, [activeId]);
   const wsRef = useRef(null);
   const retryRef = useRef({ timer: null, delay: 1000, closed: false });
   const threadRef = useRef(null);
@@ -10885,7 +10899,7 @@ function StaffApp({ me, staff, setStaff, roleTpl, setRoleTpl, categories, setCat
 
   /* Saytga kirganda bloklanganlar bo'lsa — modal chiqadi, so'ng qo'ng'iroqchaga "so'rilib" ketadi */
   const [intro, setIntro] = useState('pending'); // pending -> show -> done
-  useEffect(() => { setIntro(notifications.some((n) => !n.read) ? 'show' : 'done'); }, []);
+  useEffect(() => { let seen = false; try { seen = sessionStorage.getItem('fd_blk_intro_' + (me && me.id)) === '1'; } catch (e) {} setIntro(!seen && notifications.some((n) => !n.read) ? 'show' : 'done'); }, []);
   const markAllNotifsRead = () => setReadNotifIds(notifications.map((n) => n.id));
   const markNotifRead = (id) => setReadNotifIds((prev) => (prev.indexOf(id) === -1 ? [...prev, id] : prev));
   const unreadNotifCount = notifications.filter((n) => !n.read).length;
@@ -10965,7 +10979,7 @@ function StaffApp({ me, staff, setStaff, roleTpl, setRoleTpl, categories, setCat
     <div className={'min-h-screen bg-paper flex app-shell' + (isMob ? ' sm7' : '') + (isMob && curPage === 'chat' ? ' sm7-chat' : '')}>
       {intro === 'show' && (
         <BlockedIntroModal items={notifications}
-          onFinish={(goBlocked) => { setIntro('done'); if (goBlocked) goTo('blocked'); }} />
+          onFinish={(goBlocked) => { try { sessionStorage.setItem('fd_blk_intro_' + (me && me.id), '1'); } catch (e) {} setIntro('done'); if (goBlocked) goTo('blocked'); }} />
       )}
       {!isMob && <Sidebar roleLabel={roleLabel} navItems={nav} brand={brand}
         activePage={curPage} onNavigate={goTo}
@@ -13677,6 +13691,7 @@ function StudentsList({ students, setStudents, categories, canEdit, onOpen, noti
                 <div className="stu-meta">
                   <span className="stu-courses">{metaOf(s)}</span>
                   <span className={`stu-pill ${st.cls}`}>{st.icon && Icon[st.icon] ? React.createElement(Icon[st.icon], { width: 12, height: 12 }) : null}{st.text}</span>
+                  {(s.enrollReq || []).length > 0 && <span className="stu-pill stu-pill-req" title={(s.enrollReq || []).map((r) => r.catName + ' · ' + r.phone).join('\n')}>Yozilmoqchi: {s.enrollReq[s.enrollReq.length - 1].catName} · {s.enrollReq[s.enrollReq.length - 1].phone}</span>}
                 </div>
               </div>
               <div className="stu-acts">
@@ -14854,7 +14869,7 @@ const PERM_GROUPS = [
 ];
 const ALL_PERMS = PERM_GROUPS.flatMap((g) => g.items.map((i) => i[0]));
 const DEFAULT_ROLE_PERMS = {
-  admin_teacher: ALL_PERMS.filter((k) => k !== 'staff.manage' && k !== 'branding.edit'),
+  admin_teacher: ALL_PERMS.filter((k) => !/^(staff|branding|statistics|payments)\./.test(k)),
   support: ['dashboard.view', 'students.view', 'courses.view', 'statistics.view', 'payments.view', 'blocked.view'],
 };
 const isTopRole = (r) => r === 'ceo' || r === 'ceo_support';
@@ -15656,6 +15671,94 @@ function StaffProfile({ me, staff, setStaff, notify, onLogout, canBrand, brand, 
 /* =========================================================================
    STUDENT APP
    ========================================================================= */
+/* ===== To'lov cheki (yangi dizayn): modal va "To'lovlarim" uchun umumiy ===== */
+const rcptSum = (p) => (Number(p.amount) || 0) + (Number(p.extra) || 0);
+function rcptBars(seed) {
+  const str = String(seed || 'x'); const out = []; let h = 7;
+  for (let i = 0; i < 46; i++) { h = (h * 31 + str.charCodeAt(i % str.length) + i * 13) % 997; out.push(1 + (h % 4)); }
+  return out;
+}
+function printStudentReceipt(student, p, brandName) {
+  const w = window.open('', '_blank', 'width=460,height=760'); if (!w) return;
+  const esc = (v) => String(v == null ? '' : v).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const rows = [["O'quvchi", student.name], ['Kurs', p.courseName || '—'], ['Davr', p.month + ' ' + p.year], ['Sana', fmtDate(p.date)], ['Asosiy summa', fmtMoney(p.amount || 0)]]
+    .concat(Number(p.extra) > 0 ? [["Qo'shimcha", fmtMoney(p.extra)]] : []).concat(p.note ? [['Izoh', p.note]] : []);
+  const bars = rcptBars(rcptNoOf(p)).map((n) => '<i style="width:' + n + 'px"></i>').join('');
+  w.document.write('<!doctype html><meta charset="utf-8"><title>Chek ' + esc(rcptNoOf(p)) + '</title><style>*{box-sizing:border-box}body{font:14px system-ui,sans-serif;margin:0;padding:24px;background:#eef2f9;color:#0f172a}.t{max-width:360px;margin:0 auto;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 10px 30px rgba(15,23,42,.15)}.h{padding:26px 22px 22px;text-align:center;color:#fff;background:linear-gradient(135deg,#2563eb,#06b6d4)}.s{width:54px;height:54px;border-radius:50%;background:#fff;color:#16a34a;font-size:30px;font-weight:800;display:grid;place-items:center;margin:0 auto 10px}.a{font-size:32px;font-weight:800;margin:6px 0}.m{opacity:.9;font-size:13px}.c{border-top:2px dashed #cbd5e1;margin:0 18px}.b{padding:18px 22px}.r{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #eef2f7}.r span{color:#64748b}.r b{text-align:right}.bars{display:flex;gap:2px;justify-content:center;height:42px;margin:18px 0 8px}.bars i{display:block;height:100%;background:#0f172a}.f{text-align:center;color:#64748b;font-size:12px;padding-bottom:6px}@media print{body{background:#fff;padding:0}.t{box-shadow:none}}</style><div class="t"><div class="h"><div class="s">✓</div><div class="m">' + esc(brandName) + ' · TO\'LOV CHEKI</div><div class="a">' + esc(fmtMoney(rcptSum(p))) + '</div><div class="m">№ ' + esc(rcptNoOf(p)) + '</div></div><div class="c"></div><div class="b">' + rows.map(([k, v]) => '<div class="r"><span>' + esc(k) + '</span><b>' + esc(v) + '</b></div>').join('') + '<div class="bars">' + bars + '</div><div class="f">To\'landi · Rahmat!</div></div></div><script>setTimeout(function(){window.print()},400)<\/script>');
+  w.document.close();
+}
+function ReceiptTicket({ p, student, brandName }) {
+  const rows = [['user', "O'quvchi", student.name], ['book', 'Kurs', p.courseName || '—'], ['cal', 'Davr', p.month + ' ' + p.year], ['clock', 'Sana', fmtDate(p.date)], ['cash', 'Asosiy summa', fmtMoney(p.amount || 0)]]
+    .concat(Number(p.extra) > 0 ? [['plus', "Qo'shimcha", fmtMoney(p.extra)]] : []).concat(p.note ? [['note', 'Izoh', p.note]] : []);
+  const ic = { user: '👤', book: '📚', cal: '🗓', clock: '🕒', cash: '💵', plus: '➕', note: '📝' };
+  return (
+    <div className="tk">
+      <div className="tk-top">
+        <div className="tk-brand">{brandName}</div>
+        <div className="tk-seal"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg></div>
+        <div className="tk-st">To'lov qabul qilindi</div>
+        <div className="tk-amt">{fmtMoney(rcptSum(p))}</div>
+        <div className="tk-no">№ {rcptNoOf(p)}</div>
+      </div>
+      <div className="tk-cut"><i /><u /><i /></div>
+      <div className="tk-body">
+        {rows.map(([k, l, v]) => <div key={l} className="tk-row"><span><em>{ic[k]}</em>{l}</span><b>{v}</b></div>)}
+        <div className="tk-bars" aria-hidden="true">{rcptBars(rcptNoOf(p)).map((n, i) => <i key={i} style={{ width: n }} />)}</div>
+        <div className="tk-foot">To'landi · Rahmat!</div>
+      </div>
+    </div>
+  );
+}
+function ReceiptModal({ p, student, brand, onClose }) {
+  const brandName = (brand && brand.name) || 'Ferdinant';
+  return (
+    <Modal title="To'lov cheki" onClose={onClose}>
+      <ReceiptTicket p={p} student={student} brandName={brandName} />
+      <div className="rc-acts">
+        <button type="button" className="sp-pay-btn ghost" onClick={onClose}>Yopish</button>
+        <button type="button" className="sp-pay-btn" onClick={() => printStudentReceipt(student, p, brandName)}>Chop etish / PDF</button>
+      </div>
+    </Modal>
+  );
+}
+
+/* Bildirishnomalar: ekran o'rtasida modal (xabarlar, to'lov cheklari, eslatmalar) */
+function StudentNotifModal({ student, bill, onClose, onOpenReceipt, onReadAll, onPay }) {
+  const items = [];
+  (student.alerts || []).forEach((a) => items.push({ k: 'a' + a.id, t: a.createdAt || 0, type: 'msg', title: "O'qituvchidan xabar", text: a.text, unread: !a.read }));
+  const now = Date.now();
+  (student.payments || []).forEach((p) => {
+    const t = p.date ? new Date(p.date + (String(p.date).length === 10 ? 'T12:00:00' : '')).getTime() : 0;
+    if (now - t < 60 * 864e5) items.push({ k: 'p' + p.id, t, type: 'pay', title: "To'lov qabul qilindi", text: fmtMoney(rcptSum(p)) + ' · ' + (p.courseName || "Oylik to'lov") + ' · ' + p.month + ' ' + p.year, pay: p });
+  });
+  ((bill && bill.courses) || []).filter((c) => c.fee > 0).forEach((c) => items.push(c.blocked
+    ? { k: 'b' + c.catId, t: now, type: 'bad', title: 'Kurs bloklangan', text: '«' + c.name + '» — ' + bill.month + ' oyi uchun ' + fmtMoney(c.debt) + ' to\'lov qilinmagan.', go: true }
+    : { k: 'r' + c.catId, t: now - 1, type: 'info', title: "To'lov eslatmasi", text: '«' + c.name + '» uchun oylik to\'lov (' + fmtMoney(c.fee) + ')' + (c.nextDate ? ' — keyingi sana: ' + fmtDate(c.nextDate) : '') + '.' }));
+  (student.enrollReq || []).forEach((r) => items.push({ k: 'e' + r.id, t: new Date(r.date).getTime(), type: 'enr', title: "Yozilish so'rovi yuborildi", text: '«' + r.catName + '» · ' + r.phone }));
+  items.sort((a, b) => b.t - a.t);
+  const icon = { msg: '💬', pay: '🧾', bad: '🔒', info: '⏰', enr: '📞' };
+  const unread = items.filter((i) => i.unread).length;
+  return (
+    <Modal title="Bildirishnomalar" onClose={onClose} size="lg">
+      <div className="nf">
+        {items.length === 0 && <div className="nf-empty"><span>🔔</span><b>Hozircha bildirishnoma yo'q</b><small>Yangi xabarlar va to'lov cheklari shu yerda ko'rinadi.</small></div>}
+        {items.map((i) => (
+          <div key={i.k} className={'nf-item t-' + i.type + (i.unread ? ' unread' : '')}>
+            <i>{icon[i.type]}</i>
+            <div><b>{i.title}</b><p>{i.text}</p>{i.t > 0 && i.type !== 'bad' && i.type !== 'info' && <small>{fmtDate(new Date(i.t).toISOString().slice(0, 10))}</small>}</div>
+            {i.pay && <button type="button" className="nf-btn" onClick={() => onOpenReceipt(i.pay)}>Chek</button>}
+            {i.go && <button type="button" className="nf-btn" onClick={onPay}>To'lov</button>}
+          </div>
+        ))}
+      </div>
+      <div className="sp-modal-acts">
+        {unread > 0 && <button type="button" className="sp-btn ghost" onClick={onReadAll}>Hammasini o'qilgan deb belgilash</button>}
+        <button type="button" className="sp-btn" onClick={onClose}>Yopish</button>
+      </div>
+    </Modal>
+  );
+}
+
 function StudentPayments({ student, brand }) {
   const [view, setView] = useState(null);
   const list = [...(student.payments || [])].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || String(b.id).localeCompare(String(a.id)));
@@ -15680,34 +15783,18 @@ function StudentPayments({ student, brand }) {
       {list.length === 0 && <div className="sp-pay-empty"><Icon.cash width="26" height="26" /><b>Hozircha to'lov yo'q</b><span>O'qituvchi to'lovni qabul qilgach, chek shu yerda paydo bo'ladi.</span></div>}
       <div className="sp-pay-list">
         {list.map((p) => (
-          <div key={p.id} className="sp-pay-card">
-            <span className="sp-pay-ic"><Icon.check width="18" height="18" /></span>
-            <div className="sp-pay-main">
+          <div key={p.id} className="rcl">
+            <span className="rcl-ic"><Icon.check width="18" height="18" /></span>
+            <div className="rcl-m">
               <b>{fmtMoney(sum(p))}</b>
               <span>{p.courseName || "Oylik to'lov"} · {p.month} {p.year}</span>
               <small>{fmtDate(p.date)} · № {rcptNoOf(p)}</small>
             </div>
-            <button type="button" className="sp-pay-btn" onClick={() => setView(p)}>Chekni ko'rish</button>
+            <button type="button" className="rcl-btn" onClick={() => setView(p)}>Chekni ko'rish</button>
           </div>
         ))}
       </div>
-      {view && (
-        <Modal title="To'lov cheki" onClose={() => setView(null)}>
-          <div className="rc-paper">
-            <div className="rc-brand">{brandName}</div>
-            <div className="rc-sub">TO'LOV CHEKI · № {rcptNoOf(view)}</div>
-            {[["O'quvchi", student.name], ['Kurs', view.courseName || '—'], ['Davr', view.month + ' ' + view.year], ['Sana', fmtDate(view.date)], ['Asosiy summa', fmtMoney(view.amount || 0)]]
-              .concat(Number(view.extra) > 0 ? [["Qo'shimcha", fmtMoney(view.extra)]] : []).concat(view.note ? [['Izoh', view.note]] : [])
-              .map(([k, v]) => <div key={k} className="rc-row"><span>{k}</span><b>{v}</b></div>)}
-            <div className="rc-total"><span>Jami</span><b>{fmtMoney(sum(view))}</b></div>
-            <div className="rc-ok"><Icon.check width="15" height="15" /> To'landi</div>
-          </div>
-          <div className="rc-acts">
-            <button type="button" className="sp-pay-btn ghost" onClick={() => setView(null)}>Yopish</button>
-            <button type="button" className="sp-pay-btn" onClick={() => printReceipt(view)}>Chop etish / PDF</button>
-          </div>
-        </Modal>
-      )}
+      {view && <ReceiptModal p={view} student={student} brand={brand} onClose={() => setView(null)} />}
     </div>
   );
 }
@@ -16238,6 +16325,84 @@ const M6_ARROW = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="non
 const M6_BELL = () => <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10 21h4" /></svg>;
 const M6_X = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>;
 
+/* Kursga yozilish: o'quvchi ikki yo'ldan birini tanlaydi — chat orqali yoki telefon raqam qoldirib (faqat localStorage) */
+function EnrollModal({ cat, student, onClose, onChat, onPhone }) {
+  const [mode, setMode] = useState('chat');
+  const [phone, setPhone] = useState(student.phone || '+998 ');
+  const [err, setErr] = useState('');
+  const [done, setDone] = useState(false);
+  const digits = String(phone).replace(/\D/g, '');
+  const fmtPhone = (v) => {
+    let d = String(v).replace(/\D/g, '');
+    if (d.startsWith('998')) d = d.slice(3);
+    d = d.slice(0, 9);
+    const g = [d.slice(0, 2), d.slice(2, 5), d.slice(5, 7), d.slice(7, 9)].filter(Boolean);
+    return '+998' + (g.length ? ' ' + g.join(' ') : ' ');
+  };
+  const submit = () => {
+    if (mode === 'chat') { onChat(cat); return; }
+    if (digits.length < 12) { setErr("Telefon raqamni to'liq kiriting: +998 90 123 45 67"); return; }
+    onPhone(cat, fmtPhone(phone));
+    setDone(true);
+  };
+  const opt = (id, ic, t, d) => (
+    <button type="button" className={'enr-opt' + (mode === id ? ' on' : '')} onClick={() => { setMode(id); setErr(''); }}>
+      <i>{ic}</i><span><b>{t}</b><small>{d}</small></span><em aria-hidden="true" />
+    </button>
+  );
+  return (
+    <Modal title={'«' + cat.name + '» kursiga yozilish'} onClose={onClose} size="lg">
+      {done ? (
+        <div className="enr-done">
+          <div className="enr-ok">✓</div>
+          <p className="sp-modal-p"><b>So'rovingiz qabul qilindi.</b><br />O'qituvchi tez orada {fmtPhone(phone)} raqamiga qo'ng'iroq qiladi.</p>
+          <div className="sp-modal-acts"><button type="button" className="sp-btn" onClick={onClose}>Yaxshi</button></div>
+        </div>
+      ) : (
+        <div className="enr">
+          <p className="sp-modal-p">Qulay bo'lgan bog'lanish usulini tanlang:</p>
+          <div className="enr-opts">
+            {opt('chat', '💬', "Chat orqali bog'lanish", "O'qituvchiga chatda yozasiz, savollaringizga shu yerning o'zida javob olasiz")}
+            {opt('phone', '📞', 'Telefon raqamimni qoldiraman', "O'qituvchi sizga o'zi qo'ng'iroq qiladi")}
+          </div>
+          {mode === 'phone' && (
+            <label className="enr-ph"><span>Telefon raqamingiz</span>
+              <input type="tel" inputMode="tel" autoComplete="tel" value={phone} placeholder="+998 90 123 45 67" onChange={(e) => { setPhone(fmtPhone(e.target.value)); setErr(''); }} />
+            </label>
+          )}
+          {err && <p className="sp-msg bad">{err}</p>}
+          <div className="sp-modal-acts">
+            <button type="button" className="sp-btn ghost" onClick={onClose}>Bekor qilish</button>
+            <button type="button" className="sp-btn" onClick={submit}>{mode === 'chat' ? 'Chatga o\'tish' : 'Yuborish'}</button>
+          </div>
+        </div>
+      )}
+    </Modal>
+  );
+}
+
+/* Har safar saytga kirganda o'quvchiga to'lov eslatmasi modal bo'lib chiqadi */
+function PayRemindModal({ bill, onClose, onPay }) {
+  const rows = ((bill && bill.courses) || []).filter((c) => c.fee > 0);
+  return (
+    <Modal title="To'lov eslatmasi" onClose={onClose} size="lg">
+      <div className="prm">
+        {rows.map((c) => c.blocked ? (
+          <div key={c.catId} className="prm-row bad"><Icon.lock width="18" height="18" />
+            <div><b>«{c.name}»</b> kursi bloklangan — {bill.month} oyi uchun <b>{fmtMoney(c.debt)}</b> to'lov qilinmagan. To'lovni o'qituvchingizga topshiring.</div></div>
+        ) : (
+          <div key={c.catId} className="prm-row"><Icon.clock width="18" height="18" />
+            <div><b>«{c.name}»</b> kursi uchun oylik to'lovni ({fmtMoney(c.fee)}) qilish esdan chiqmasin.{c.nextDate ? ` Keyingi to'lov sanasi: ${fmtDate(c.nextDate)}.` : ''}</div></div>
+        ))}
+      </div>
+      <div className="sp-modal-acts">
+        <button type="button" className="sp-btn ghost" onClick={onPay}>To'lovlarim</button>
+        <button type="button" className="sp-btn" onClick={onClose}>Tushunarli</button>
+      </div>
+    </Modal>
+  );
+}
+
 function StudentApp({ me, staff, categories, students, setStudents, onLogout, notify, brand }) {
   const [page, setPage] = useState('home');
   const chatMe = { ...me, role: 'student' };
@@ -16257,6 +16422,25 @@ function StudentApp({ me, staff, categories, students, setStudents, onLogout, no
   const [blockedCat, setBlockedCat] = useState(null);   // to'lov qilinmagan kursga kirishga urinish
   const [attnBlockedCat, setAttnBlockedCat] = useState(null); // darslik nazorati bo'yicha bloklangan kursga urinish
   const [buyCat, setBuyCat] = useState(null);           // hali sotib olinmagan kursga bosilganda
+  const [enrollCat, setEnrollCat] = useState(null);     // kursga yozilish modali (chat yoki telefon)
+  const [notifOpen, setNotifOpen] = useState(false);    // bildirishnomalar modali
+  const [rcptView, setRcptView] = useState(null);       // ochilgan chek
+  const seenKey = 'edustream_rcpt_seen_' + student.id;
+  const readSeen = () => { try { const r = localStorage.getItem(seenKey); return r === null ? null : JSON.parse(r); } catch (e) { return null; } };
+  const [seenR, setSeenR] = useState(readSeen);
+  const rcptRecent = (p) => { const t = p.date ? new Date(p.date + (String(p.date).length === 10 ? 'T12:00:00' : '')).getTime() : 0; return Date.now() - t < 7 * 864e5; };
+  const unseenRcpts = (student.payments || []).filter((p) => (seenR ? seenR.indexOf(p.id) < 0 : rcptRecent(p)));
+  const newRcpt = unseenRcpts[0] || null;
+  const markSeen = (ids) => { const base = seenR || (student.payments || []).filter((p) => !rcptRecent(p)).map((p) => p.id); const nx = Array.from(new Set(base.concat(ids))); try { localStorage.setItem(seenKey, JSON.stringify(nx)); } catch (e) {} setSeenR(nx); };
+  const readAllAlerts = () => setStudent({ ...student, alerts: (student.alerts || []).map((a) => ({ ...a, read: true })) });
+  const [payRemind, setPayRemind] = useState(true);     // har safar saytga kirganda to'lov eslatmasi modali
+  const enrollViaChat = (c) => { try { sessionStorage.setItem('fd_chat_prefill', "Salom! «" + c.name + "» kursiga yozilmoqchiman."); } catch (e) {} setEnrollCat(null); go('chat'); };
+  const enrollViaPhone = (c, ph) => {
+    const rec = { id: 'er' + Date.now(), catId: c.id, catName: c.name, phone: ph, date: new Date().toISOString() };
+    try { const k = 'edustream_enroll_requests'; const a = JSON.parse(localStorage.getItem(k) || '[]'); a.push({ ...rec, studentId: student.id, studentName: student.name }); localStorage.setItem(k, JSON.stringify(a)); } catch (e) {}
+    const reqs = [...(student.enrollReq || []).filter((x) => x.catId !== c.id), rec];
+    setStudent({ ...student, phone: student.phone || ph, enrollReq: reqs });
+  };
   const courseBill = (cid) => bill.courses.find((c) => c.catId === cid);
 
   const lessonProgress = (lessonId) => student.progress?.[lessonId] || { watched: 0, completed: false };
@@ -16593,6 +16777,13 @@ function StudentApp({ me, staff, categories, students, setStudents, onLogout, no
 
   const modalsEl = (
     <React.Fragment>
+      {enrollCat && <EnrollModal cat={enrollCat} student={student} onClose={() => setEnrollCat(null)} onChat={enrollViaChat} onPhone={enrollViaPhone} />}
+      {newRcpt && !unreadAlert && <ReceiptModal p={newRcpt} student={student} brand={brand} onClose={() => markSeen([newRcpt.id])} />}
+      {rcptView && <ReceiptModal p={rcptView} student={student} brand={brand} onClose={() => setRcptView(null)} />}
+      {notifOpen && !rcptView && <StudentNotifModal student={student} bill={bill} onClose={() => setNotifOpen(false)} onOpenReceipt={(p) => setRcptView(p)} onReadAll={readAllAlerts} onPay={() => { setNotifOpen(false); go('payments'); }} />}
+      {payRemind && !unreadAlert && !enrollCat && !newRcpt && ((bill && bill.courses) || []).some((c) => c.fee > 0) && (
+        <PayRemindModal bill={bill} onClose={() => setPayRemind(false)} onPay={() => { setPayRemind(false); go('payments'); }} />
+      )}
       {unreadAlert && (
         <Modal title="Xabar" onClose={dismissAlert} size="lg">
           <div className="sp-modal-k"><Icon.bell width="16" height="16" /> O'qituvchidan xabar</div>
@@ -16708,8 +16899,8 @@ function StudentApp({ me, staff, categories, students, setStudents, onLogout, no
         {right}
       </div>
     );
-    const bellGo = () => { const a = (student.alerts || []).find((x) => !x.read); if (a) notify && notify(a.text, 'info'); else go('payments'); };
-    const bellDot = (bill.blocked || (student.alerts || []).some((x) => !x.read));
+    const bellGo = () => setNotifOpen(true);
+    const bellDot = (bill.blocked || unseenRcpts.length > 0 || (student.alerts || []).some((x) => !x.read));
     const favOn = (id) => !!fav[id];
     const toggleFav = (id) => { const n = { ...fav }; if (n[id]) delete n[id]; else n[id] = 1; setFav(n); saveLS('fav_' + me.id, n); };
     const diffAll = myCourses.reduce((a, x) => a + x.ev.diff, 0);
@@ -16902,14 +17093,14 @@ function StudentApp({ me, staff, categories, students, setStudents, onLogout, no
               <div>
                 <p className="m6-about">«{cat.name}» kursi {cat.subtopics.length} ta bo'lim va {lessons.length} ta video darsdan iborat. Darslar ketma-ket ochiladi, natijangiz avtomatik baholanadi.</p>
                 {['Video darslar va konspektlar', 'Jarayon va baho avtomatik', "O'qituvchi bilan chat"].map((t) => <div key={t} className="m6-okr"><i>✓</i><b>{t}</b></div>)}
-                <p className="m6-mut sm">Yozilish uchun administratsiyaga yozing — to'lov tasdiqlangach kurs avtomatik «Kurslarim»ga qo'shiladi.</p>
+                <p className="m6-mut sm">Yozilish uchun chat orqali yozing yoki telefon raqamingizni qoldiring — to'lov tasdiqlangach kurs avtomatik «Kurslarim»ga qo'shiladi.</p>
               </div>
             ) : (
               <div>{cat.subtopics.map((s, i) => <div key={s.id} className="m6-mod"><span className="m6-mod-n">{String(i + 1).padStart(2, '0')}</span><span className="m6-mod-x"><b>{s.name}</b><small>{s.lessons.length} ta dars</small></span><Icon.lock width="15" height="15" /></div>)}
                 {cat.subtopics.length === 0 && <p className="m6-mut">Dastur tez orada qo'shiladi.</p>}</div>
             )}
           </div>
-          <div className="m6-cta"><span><small>Oylik narx</small><b className="lg">{fmtMoney(cat.monthlyPrice)}</b></span><button type="button" className="m6-b m6-btn" disabled={cat.frozen} onClick={() => { setBuyCat(null); go('chat'); }}>Yozilish</button></div>
+          <div className="m6-cta"><span><small>Oylik narx</small><b className="lg">{fmtMoney(cat.monthlyPrice)}</b></span><button type="button" className="m6-b m6-btn" disabled={cat.frozen} onClick={() => { const c0 = cat; setBuyCat(null); setEnrollCat(c0); }}>Yozilish</button></div>
         </div>
       );
     };
@@ -17025,8 +17216,8 @@ function StudentApp({ me, staff, categories, students, setStudents, onLogout, no
                   <div className="sp5-syl">{buyCat.subtopics.map((s, i) => <div key={s.id} className="sp5-mod"><span className="sp5-mod-n">{String(i + 1).padStart(2, '0')}</span><span className="sp5-mod-x"><b>{s.name}</b><small>{s.lessons.length} ta dars</small></span><Icon.lock width="14" height="14" /></div>)}
                     {buyCat.subtopics.length === 0 && <p className="sp5-mut">Dastur tez orada qo'shiladi.</p>}</div>
                 )}
-                <div className="sp5-sheet-f"><span className="sp5-price"><small>Oylik narx</small><b>{fmtMoney(buyCat.monthlyPrice)}</b></span><button type="button" className="sp5-btn" disabled={buyCat.frozen} onClick={() => { setBuyCat(null); go('chat'); }}><I.chat />Kursga yozilish</button></div>
-                <p className="sp5-mut sm">Yozilish uchun administratsiyaga yozing — to'lov tasdiqlangach kurs avtomatik «Kurslarim»ga qo'shiladi.</p>
+                <div className="sp5-sheet-f"><span className="sp5-price"><small>Oylik narx</small><b>{fmtMoney(buyCat.monthlyPrice)}</b></span><button type="button" className="sp5-btn" disabled={buyCat.frozen} onClick={() => { const c0 = buyCat; setBuyCat(null); setEnrollCat(c0); }}><I.chat />Kursga yozilish</button></div>
+                <p className="sp5-mut sm">Yozilish uchun chat orqali yozing yoki telefon raqamingizni qoldiring — to'lov tasdiqlangach kurs avtomatik «Kurslarim»ga qo'shiladi.</p>
               </div>
             </div>
           </div>
@@ -17067,7 +17258,7 @@ function StudentApp({ me, staff, categories, students, setStudents, onLogout, no
             <div className="sp5-top-r sp-top-r">
               <span className="sp5-d-only sp5-lang"><LangSwitch variant="ls-light" /></span>
               <button type="button" className="sp5-ib" onClick={() => go('chat')} aria-label="Chat"><I.chat />{chatUnread > 0 && <i className="dot" />}</button>
-              <button type="button" className="sp5-ib" onClick={() => { const a = (student.alerts || []).find((x) => !x.read); if (a) notify && notify(a.text, 'info'); else go('payments'); }} aria-label="Xabarlar"><Icon.bell width="19" height="19" />{(bill.blocked || (student.alerts || []).some((x) => !x.read)) && <i className="dot" />}</button>
+              <button type="button" className="sp5-ib" onClick={() => setNotifOpen(true)} aria-label="Xabarlar"><Icon.bell width="19" height="19" />{(bill.blocked || unseenRcpts.length > 0 || (student.alerts || []).some((x) => !x.read)) && <i className="dot" />}</button>
             </div>
           </header>
 
@@ -17153,7 +17344,7 @@ function StudentApp({ me, staff, categories, students, setStudents, onLogout, no
 
             {page === 'payments' && <div className="sp5-page"><StudentPayments student={student} brand={brand} /></div>}
             {(page === 'profile' || page === 'account') && (
-              <div className="sp5-page">
+              <div className="sp5-page sp5-profile-page"><div className="sp5-pcol-l">
                 <section className="sp5-pf">
                   <span className="sp5-k">// daraja va tajriba</span>
                   <b>{level}-daraja · {levelName}</b><small>Jami {xp} XP — har bir tugatilgan dars +40 XP, tugatilgan kurs +200 XP</small>
@@ -17166,7 +17357,8 @@ function StudentApp({ me, staff, categories, students, setStudents, onLogout, no
                   <div className="sp5-menu-l"><i style={{ background: 'rgba(56,189,248,.15)', color: '#0ea5e9' }}><M6Icon n="globe" s={18} /></i>Til<span className="sp5-menu-r"><LangSwitch variant="ls-light" /></span></div>
                   <button type="button" className="out" onClick={onLogout}><i style={{ background: 'rgba(244,63,94,.12)', color: '#f43f5e' }}><M6Icon n="logout" s={18} /></i>Chiqish</button>
                 </div>
-                <StudentProfile student={student} onSave={(u) => { setStudent(u); notify('Profil yangilandi'); }} />
+              </div>
+              <div className="sp5-pcol-r"><StudentProfile student={student} onSave={(u) => { setStudent(u); notify('Profil yangilandi'); }} /></div>
               </div>
             )}
             {page === 'chat' && <ChatPage notify={notify} appMe={chatMe} isStudent brand={brand} canMute onOpenProfile={() => go('profile')} />}
@@ -21445,5 +21637,371 @@ body:has(.sm7) #fd-install-btn:not(.fd-in-topbar){ display:none !important; }
   .sm7-hero h3{ font-size:26px; }
 }
 </style>
+<style id="edu-fix-v11">
+/* =====================================================================
+   v10 — mobil/desktop tuzatishlar (zoom va backendga tegilmagan)
+   ===================================================================== */
+
+/* ---- 1. Kirish sahifasi: setka olib tashlandi → yumshoq "aurora" nur fon ---- */
+@media (min-width:861px){
+  html body .lx .lx-aside::before{
+    inset:-12%;
+    background-image:
+      radial-gradient(38% 34% at 18% 22%,rgba(34,211,238,.30),transparent 70%),
+      radial-gradient(42% 38% at 82% 72%,rgba(99,102,241,.34),transparent 70%),
+      radial-gradient(34% 30% at 58% 12%,rgba(59,130,246,.28),transparent 70%),
+      radial-gradient(30% 28% at 12% 85%,rgba(20,184,166,.20),transparent 70%);
+    background-size:100% 100%;background-repeat:no-repeat;
+    -webkit-mask-image:none;mask-image:none;filter:blur(26px);
+    animation:fdAurora 20s ease-in-out infinite alternate;
+  }
+}
+@keyframes fdAurora{from{transform:translate3d(-2%,2%,0) scale(1)}to{transform:translate3d(3%,-3%,0) scale(1.1)}}
+@media (prefers-reduced-motion:reduce){html body .lx .lx-aside::before{animation:none}}
+
+/* ---- 2. Kichik matnlar: kamida 12px ---- */
+.sx-eye,.stu-pill,.stu-cash-t,.course-card-kicker,.course-card-kicker *,
+.sx-d,.pv-cnt,.pv-sub,.sx-mut,.pv-st,.blk-tile-lbl,.blk-kind,.pill,.nx-role,.nx-rail-lh,.pb-tag.sm,
+.sm7-k,.sm7-up,.sm7-copy,.stu-courses,.sp5-st,.sp5-grade,.sp5-k,.sp5-tag,
+.m6-k,.m6-tag,.m6-rt,.m6-grade,.m6-copy,.m6-chip,.v2-bd,.sp-eyebrow,
+.sx-t th,.sx-t small,.sx-t em,.nx-sub small,.sx-bh small{font-size:12px !important}
+.sm7-b,.m6-b:not(.m6-ib):not(.m6-btn){font-size:12px !important;letter-spacing:0 !important}
+.sm7-b span,.m6-b span{font-size:inherit}
+svg text.v2-ax,svg text.sx-tx{font-size:12px}
+.nav-badge,.notif-badge,.sm7-b i,.sm7-b em,.sp5-ri em{font-size:11px !important}
+/* sarlavha eyebrow (mono "//") */
+.m6-k,.sm7-k{letter-spacing:0}
+
+/* ---- 3. Bosish joylari (touch) ---- */
+@media (max-width:860px){
+  .stu-row{grid-template-areas:"ava main" "acts acts" !important}
+  .stu-acts{gap:.45rem !important}
+  .stu-acts .stu-ib,.stu-row .stu-acts .stu-ib.stu-ib-cash.stu-cash{height:44px !important;min-height:44px;border-radius:.7rem !important}
+  .stu-acts .stu-ib.stu-ib-trash,.stu-acts .stu-ib[title="O'chirish"]{margin-left:.35rem}
+  .course-card-menu-btn{width:44px !important;height:44px !important}
+  .pv-act{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+  .sx-pgn button,.pg-btn,.page-btn{min-width:44px;min-height:44px}
+  .sm7-b{min-height:48px}
+  .sm7 .sm7-seg button,.sm7 [class*="lang"] button,.sm7 .sm7-lang button{min-height:44px;min-width:48px}
+  .sm7 button.sm7-link,.m6-sec button.m6-lnk,.m6-h button,.sm7-sh button{min-height:40px;padding-left:.6rem;padding-right:.6rem}
+  .sx-seg button,.sx-tabs button,.nx-pill,.nx-seg button{min-height:40px}
+}
+@media (pointer:coarse){
+  .side-collapse-btn,.side-expand-btn{width:40px;height:40px}
+  .chat-root button[aria-label="Amallar"],.chat-q+button{min-width:40px;min-height:40px}
+  input[type=checkbox],input[type=radio]{min-width:20px;min-height:20px}
+}
+@media (pointer:fine){ .side-collapse-btn{width:34px;height:34px} }
+
+/* ---- 4. To'lovlar (va boshqa .sx-t) jadvallari: telefonda KARTA ko'rinishi ---- */
+@media (max-width:1180px){
+  .sx-tw{overflow:visible !important}
+  .sx-t,.pv-tbl{min-width:0 !important;width:100% !important;display:block;border:0}
+  .sx-t thead{display:none}
+  .sx-t tbody{display:grid;gap:12px;width:100%}
+  .sx-t tr{display:block;width:100%;padding:14px;border-radius:16px;border:1px solid rgba(148,163,184,.22);background:rgba(148,163,184,.07)}
+  .sx-t td{display:flex !important;align-items:center;justify-content:space-between;gap:14px;width:100%;min-width:0 !important;padding:7px 0 !important;border:0 !important;text-align:right;font-size:14px}
+  .sx-t td[data-label]::before{content:attr(data-label);flex:none;text-align:left;font-size:12px;font-weight:600;color:var(--mut,#94a3b8);opacity:.9}
+  .sx-t td:first-child{padding-top:0 !important;padding-bottom:10px !important;margin-bottom:4px;border-bottom:1px solid rgba(148,163,184,.18) !important;justify-content:flex-start;text-align:left}
+  .sx-t td:first-child::before{display:none}
+  .sx-t td[colspan]{display:block !important;text-align:center}
+  .sx-t td[colspan]::before{display:none}
+  .sx-t td.pv-r,.sx-t td:last-child:has(.pv-acts){display:block !important;padding-top:12px !important;margin-top:4px;border-top:1px solid rgba(148,163,184,.18) !important}
+  .sx-t td.pv-r::before{display:none}
+  .sx-t .pv-acts{display:flex;gap:8px;justify-content:stretch;width:100%}
+  .sx-t .pv-act{flex:1 1 0;height:44px}
+  .sx-t .pv-act.ghost{flex:0 0 52px}
+  .sx-t .pv-who{min-width:0}
+  .sx-t .pv-who b{white-space:normal;overflow-wrap:anywhere}
+  .sx-t td .sx-pr{min-width:90px;flex:1}
+}
+
+@media (min-width:700px) and (max-width:1180px){ .sx-t tbody{grid-template-columns:repeat(2,minmax(0,1fr))} }
+
+/* ---- 5. Gorizontal siljiydigan qatorlar: chekka "so'nish" belgisi (JS qo'shadi) ---- */
+[data-fade~="r"]{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 34px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 34px),transparent)}
+[data-fade~="l"]{-webkit-mask-image:linear-gradient(270deg,#000 calc(100% - 34px),transparent);mask-image:linear-gradient(270deg,#000 calc(100% - 34px),transparent)}
+[data-fade~="l"][data-fade~="r"]{-webkit-mask-image:linear-gradient(90deg,transparent,#000 34px,#000 calc(100% - 34px),transparent);mask-image:linear-gradient(90deg,transparent,#000 34px,#000 calc(100% - 34px),transparent)}
+
+/* ---- 6. CEO / xodim paneli ---- */
+.pb-hero,.pb-hero-wrap,[class*="pb-hero"]{overflow:clip}
+.pb-hero-glow{max-width:100%;clip-path:inset(0)}
+@media (min-width:861px){
+  html body .topbar .ls-wrap .ls-btn,html body .topbar .profile-btn{max-width:280px}
+  html body .topbar .ls-wrap .ls-btn span,html body .topbar .profile-btn span{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+}
+@media (max-width:860px){
+  .sm7 .app-main>main{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px)) !important}
+}
+/* 360px va undan tor ekranlar */
+@media (max-width:380px){
+  .sm7-b{font-size:11.5px !important}
+  .nx-sub{min-width:200px}
+}
+
+/* ---- 7. O'quvchi paneli ---- */
+/* yon menyu: ikonka tagida yozuv (oldin faqat hover'da chiqardi) */
+@media (min-width:861px) and (min-height:700px){
+  .sp5-rail{gap:4px}
+  .sp5-ri{width:78px;height:auto;min-height:62px;padding:8px 2px 6px;grid-auto-flow:row;align-content:center;gap:3px;border-radius:16px}
+  .sp5-ri .sp5-tip{position:static;opacity:1;background:none;color:inherit;padding:0;border-radius:0;font-size:11.5px;font-weight:700;line-height:1.1;text-align:center;pointer-events:none;max-width:76px;white-space:normal;overflow:visible}
+  .sp5-ri.on::before{left:-9px;top:12px;bottom:12px}
+  .sp5-ri em{top:4px;right:10px}
+  .sp5-logo{margin-bottom:10px}
+}
+.sp5-top-r{margin-left:auto}
+.sp5-hero{min-height:240px}
+.sp5-hero-tx{padding-top:26px;padding-bottom:22px}
+@media (max-width:860px){
+  .m6-grid2:has(>:only-child){grid-template-columns:minmax(0,1fr)}
+  .m6-grid2>.m6-hc{width:auto}
+  .m6-body{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}
+  .m6-rk small{font-size:12px}
+}
+
+/* ===================== v12 ===================== */
+/* ---- Chat: klaviatura ochilganda fixed chat ota-elementlarning transform/filter'i ichida qolib ketmasin ---- */
+html.ckb :has(> .chat-root), html.ckb :has(.chat-root){
+  transform:none !important; filter:none !important; perspective:none !important; contain:none !important;
+  will-change:auto !important; animation:none !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+}
+html.ckb body .chat-root .chat-composer{padding-bottom:calc(8px + env(safe-area-inset-bottom,0px) * 0) !important}
+html.ckb body .chat-root .chat-composer textarea{scroll-margin-bottom:0}
+
+/* ---- O'quvchi: chap menyu doim joyida (scroll qilganda yuqoriga chiqib ketmasin) ---- */
+@media (min-width:1024px){
+  .sp5-rail{position:fixed;left:0;top:0;height:100vh;height:100dvh;overflow-y:auto;overflow-x:visible;scrollbar-width:none}
+  .sp5-rail::-webkit-scrollbar{display:none}
+  .sp5-body{margin-left:96px}
+  .sp5-right{position:sticky;top:18px;align-self:start;max-height:calc(100vh - 36px);overflow:auto;scrollbar-width:none}
+  .sp5-right::-webkit-scrollbar{display:none}
+}
+@media (min-width:1024px) and (max-height:700px){ .sp5-ri{height:50px;min-height:0} }
+/* yuqori panel ham scroll paytida ko'rinib tursin */
+@media (min-width:1024px){
+  .sp5-top{position:sticky;top:0;z-index:25;padding:12px 0 12px;margin-top:-12px;background:linear-gradient(var(--bg) 90%,transparent)}
+}
+@media (max-width:860px){
+  .m6-hd,.sm7-hd{position:fixed !important;top:0;left:0;right:0;z-index:40;margin:0 !important;box-sizing:border-box;padding-top:calc(8px + env(safe-area-inset-top,0px)) !important;padding-bottom:8px !important;padding-left:18px;padding-right:18px;background:var(--bg,#060914);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+  .sm7-hd{padding-left:16px;padding-right:16px}
+  html:has(.m6-hd) .m6-body{padding-top:calc(70px + env(safe-area-inset-top,0px)) !important}
+  html:has(.sm7-hd) .sm7 .app-main > main{padding-top:calc(76px + env(safe-area-inset-top,0px)) !important}
+  html.ckb .m6-hd,html.ckb .sm7-hd{display:none}
+}
+
+/* ---- Keng ekranlar: kartalar bo'sh joyni to'ldirsin ---- */
+.sp5-shop{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}
+@media (min-width:1700px){
+  .sp5-col{max-width:1900px}
+  .sp5-home{grid-template-columns:minmax(0,1fr) 400px;gap:28px}
+  .sp5-cards{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
+  .sp5-cat-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+  .sp5-hero{min-height:300px}
+  .sp5-hero h2{font-size:38px}
+  .sp5-hero p{max-width:520px;font-size:16px}
+}
+@media (min-width:2200px){
+  .sp5-col{max-width:2300px}
+  .sp5-home{grid-template-columns:minmax(0,1fr) 460px}
+  .sp5-cards{grid-template-columns:repeat(auto-fill,minmax(400px,1fr))}
+  .sp5-cat-grid{grid-template-columns:repeat(auto-fill,minmax(330px,1fr))}
+}
+
+/* ---- O'quvchi PROFIL sahifasi: kompyuterda ikki ustunli ---- */
+@media (min-width:1024px){
+  .sp5-profile-page{display:grid;grid-template-columns:minmax(320px,400px) minmax(0,1fr);gap:24px;align-items:start}
+  .sp5-pcol-l{display:flex;flex-direction:column;gap:18px;position:sticky;top:84px;min-width:0}
+  .sp5-pcol-l .sp5-pf{padding:26px 24px;text-align:left;align-items:flex-start}
+  .sp5-pcol-l .sp5-rk.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .sp5-pcol-l .sp5-rk.three>div{padding:14px 16px}
+  .sp5-pcol-r{min-width:0}
+  .sp5-pcol-r .sp-prof{gap:22px}
+  .sp5-pcol-r .sp-prof-h{padding:24px 28px;border-radius:28px;background:var(--card);box-shadow:var(--sh)}
+  .sp5-pcol-r .sp-prof-grid{grid-template-columns:1fr;gap:20px}
+}
+@media (min-width:1500px){ .sp5-pcol-r .sp-prof-grid{grid-template-columns:1fr 1fr} }
+@media (max-width:1023px){ .sp5-pcol-r{margin-top:18px} }
+
+/* ---- Kursga yozilish va to'lov eslatmasi modallari ---- */
+.enr,.prm,.enr-done{color:#0f172a}html.theme-dark .enr,html.theme-dark .prm,html.theme-dark .enr-done{color:#e8edf7}
+.enr-opts{display:grid;gap:10px;margin:12px 0}
+.enr-opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px 16px;border-radius:16px;border:1.5px solid rgba(148,163,184,.35);background:rgba(148,163,184,.08);color:inherit;cursor:pointer;min-height:64px;transition:border-color .15s,background .15s}
+.enr-opt:hover{border-color:rgba(99,102,241,.6)}
+.enr-opt.on{border-color:#6366f1;background:rgba(99,102,241,.14);box-shadow:0 0 0 3px rgba(99,102,241,.18)}
+.enr-opt i{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:rgba(99,102,241,.16);font-style:normal;font-size:22px}
+.enr-opt span{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.enr-opt b{font-size:15px}.enr-opt small{font-size:12.5px;opacity:.75;line-height:1.35}
+.enr-opt em{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid rgba(148,163,184,.6);position:relative}
+.enr-opt.on em{border-color:#6366f1;background:#6366f1;box-shadow:inset 0 0 0 4px #fff}
+.enr-ph{display:flex;flex-direction:column;gap:6px;margin:4px 0 8px}
+.enr-ph span{font-size:12.5px;font-weight:700;opacity:.8}
+.enr-ph input{height:50px;border-radius:14px;border:1.5px solid rgba(148,163,184,.45);background:rgba(148,163,184,.08);color:inherit;padding:0 16px;font:700 17px Manrope,system-ui,sans-serif;letter-spacing:.02em;outline:none}
+.enr-ph input:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.2)}
+.enr-done{text-align:center}.enr-ok{width:64px;height:64px;margin:6px auto 10px;border-radius:50%;display:grid;place-items:center;background:rgba(34,197,94,.16);color:#22c55e;font-size:32px;font-weight:800}
+.prm{display:grid;gap:10px;margin:6px 0 14px}
+.prm-row{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:14px;border:1px solid rgba(59,130,246,.35);background:rgba(59,130,246,.1);font-size:14.5px;line-height:1.5}
+.prm-row svg{flex:none;margin-top:3px}
+.prm-row.bad{border-color:rgba(244,63,94,.4);background:rgba(244,63,94,.1)}
+.stu-pill-req{background:rgba(99,102,241,.16) !important;color:#818cf8 !important;border:1px solid rgba(99,102,241,.4) !important}
+
+/* ===================== v13 ===================== */
+/* yuqori panel: to'liq yopiq fon (kontent ostidan ko'rinmasin) */
+@media (min-width:1024px){
+  .sp5-top{background:var(--bg) !important;margin-left:-6px;margin-right:-26px;padding-left:6px;padding-right:26px;padding-bottom:14px;margin-top:-22px;padding-top:22px;border-bottom:1px solid var(--line,rgba(148,163,184,.14));box-shadow:0 10px 24px -22px rgba(0,0,0,.5)}
+  .sp5-col{padding-top:22px}
+}
+/* "Til" ochiladigan menyu kartada kesilib qolmasin */
+.sp5-menu,.m6-menu,.m6-set,.m6-list,[class*="m6-"][class*="menu"],[class*="sp5-menu"]{overflow:visible !important}
+.sp5-menu-r .ls-menu,.sp5-menu-l .ls-menu,.m6-menu .ls-menu,.m6 .ls-menu.profile-dropdown{top:auto !important;bottom:calc(100% + 8px) !important;right:0 !important;left:auto !important;position:absolute !important;z-index:80 !important;width:210px}
+.sp5-menu-l,.sp5-menu-r{position:relative}
+@media (max-width:860px){ .m6 .ls-wrap{position:relative} }
+
+/* ---- To'lov cheki: yangi "bilet" dizayni ---- */
+.tk{--tk-a:#2563eb;--tk-b:#06b6d4;max-width:380px;margin:4px auto 14px;border-radius:26px;overflow:hidden;background:#fff;color:#0f172a;box-shadow:0 24px 50px -24px rgba(37,99,235,.55),0 0 0 1px rgba(148,163,184,.25);position:relative}
+.tk-top{position:relative;padding:20px 22px 26px;text-align:center;color:#fff;background:radial-gradient(120% 90% at 100% 0,rgba(255,255,255,.28),transparent 55%),linear-gradient(135deg,var(--tk-a),var(--tk-b))}
+.tk-brand{font:800 12px Manrope,sans-serif;letter-spacing:.16em;text-transform:uppercase;opacity:.9}
+.tk-seal{width:60px;height:60px;margin:14px auto 10px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#16a34a;box-shadow:0 0 0 7px rgba(255,255,255,.25),0 10px 20px -8px rgba(0,0,0,.35);animation:tkPop .5s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes tkPop{from{transform:scale(.3);opacity:0}to{transform:none;opacity:1}}
+.tk-st{font:700 14px Manrope,sans-serif;opacity:.95}
+.tk-amt{font:800 34px/1.15 Manrope,sans-serif;margin:6px 0 4px;letter-spacing:-.02em}
+.tk-no{display:inline-block;padding:4px 12px;border-radius:999px;background:rgba(255,255,255,.2);font:700 12px ui-monospace,Menlo,Consolas,monospace}
+.tk-cut{position:relative;height:0;margin:0 0;border-top:2px dashed #cbd5e1}
+.tk-cut i{position:absolute;top:-13px;width:26px;height:26px;border-radius:50%;background:var(--tk-hole,#0f141a)}
+.tk-cut i:first-child{left:-13px}.tk-cut i:last-child{right:-13px}
+html:not(.theme-dark) .tk-cut i{background:#fff;box-shadow:inset 0 0 0 1px rgba(148,163,184,.3)}
+.tk-body{padding:18px 22px 16px}
+.tk-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 0;border-bottom:1px dashed #e2e8f0;font-size:14px}
+.tk-row span{display:flex;align-items:center;gap:8px;color:#64748b;font-weight:600}
+.tk-row span em{font-style:normal;font-size:15px}
+.tk-row b{text-align:right;color:#0f172a;word-break:break-word}
+.tk-bars{display:flex;justify-content:center;gap:2px;height:44px;margin:18px 0 8px;opacity:.85}
+.tk-bars i{display:block;height:100%;background:#0f172a;border-radius:1px}
+.tk-foot{text-align:center;color:#16a34a;font:800 13px Manrope,sans-serif;letter-spacing:.04em}
+.rc-acts .sp-pay-btn{height:44px;padding:0 20px;border-radius:12px;font:800 14px Manrope,sans-serif;cursor:pointer;border:0;color:#fff;background:linear-gradient(135deg,#2563eb,#06b6d4)}
+.rc-acts .sp-pay-btn.ghost{background:transparent;color:#0f172a;border:1.5px solid rgba(148,163,184,.55)}html.theme-dark .rc-acts .sp-pay-btn.ghost{color:#e8edf7}
+.rc-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* "To'lovlarim" ro'yxati: chek-kartalar */
+.rcl{position:relative;display:flex;align-items:center;gap:14px;padding:16px 18px 16px 26px;border-radius:18px;background:var(--card,rgba(148,163,184,.1));box-shadow:var(--sh,0 0 0 1px rgba(148,163,184,.2));overflow:hidden}
+.rcl::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;background:linear-gradient(180deg,#22c55e,#06b6d4)}
+.rcl::after{content:"";position:absolute;right:150px;top:10px;bottom:10px;border-left:2px dashed rgba(148,163,184,.4)}
+.rcl-ic{flex:none;display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:rgba(34,197,94,.15);color:#22c55e}
+.rcl-m{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.rcl-m b{font:800 20px Manrope,sans-serif}
+.rcl-m span{font-size:13.5px;font-weight:600}
+.rcl-m small{font-size:12px;opacity:.7;font-family:ui-monospace,Menlo,monospace}
+.rcl-btn{flex:none;width:128px;height:42px;border:0;border-radius:12px;cursor:pointer;font:800 13px Manrope,sans-serif;color:#fff;background:linear-gradient(135deg,#2563eb,#06b6d4);box-shadow:0 10px 20px -10px rgba(37,99,235,.7)}
+@media (max-width:620px){ .rcl{flex-wrap:wrap;padding-right:16px}.rcl::after{display:none}.rcl-btn{width:100%} }
+.sp-pay-list{display:grid;gap:12px}
+
+/* ---- Bildirishnomalar modali ---- */
+.nf{display:grid;gap:10px;margin:4px 0 14px;max-height:min(60vh,520px);overflow:auto;padding-right:2px;color:#0f172a}
+html.theme-dark .nf{color:#e8edf7}
+.nf-item{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border-radius:16px;border:1px solid rgba(148,163,184,.28);background:rgba(148,163,184,.08)}
+.nf-item i{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;font-style:normal;font-size:19px;background:rgba(99,102,241,.16)}
+.nf-item > div{flex:1;min-width:0}
+.nf-item b{font-size:14.5px}.nf-item p{margin:3px 0 2px;font-size:13.5px;line-height:1.45;opacity:.9}.nf-item small{font-size:12px;opacity:.65}
+.nf-item.unread{border-color:#6366f1;background:rgba(99,102,241,.12);box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+.nf-item.t-pay i{background:rgba(34,197,94,.18)}.nf-item.t-bad{border-color:rgba(244,63,94,.4);background:rgba(244,63,94,.09)}.nf-item.t-bad i{background:rgba(244,63,94,.18)}.nf-item.t-info i{background:rgba(59,130,246,.18)}
+.nf-btn{flex:none;align-self:center;height:38px;padding:0 14px;border:0;border-radius:11px;cursor:pointer;font:800 13px Manrope,sans-serif;color:#fff;background:linear-gradient(135deg,#2563eb,#06b6d4)}
+.nf-empty{display:grid;justify-items:center;gap:4px;padding:30px 10px;text-align:center}.nf-empty span{font-size:38px}.nf-empty small{opacity:.7}
+</style>
+<script id="edu-fix-v11-js">
+(function(){
+  /* A) jadval kataklariga sarlavha nomlarini (data-label) qo'yish — telefonda karta ko'rinishi uchun */
+  function labelTables(){
+    document.querySelectorAll('table.sx-t').forEach(function(t){
+      var hs=[].map.call(t.querySelectorAll('thead th'),function(h){return (h.textContent||'').replace(/[↑↓▲▼]/g,'').trim()});
+      if(!hs.length) return;
+      t.querySelectorAll('tbody tr').forEach(function(tr){
+        [].forEach.call(tr.children,function(td,i){
+          var l=hs[i]||''; if(td.getAttribute('data-label')!==l){ if(l) td.setAttribute('data-label',l); else td.removeAttribute('data-label'); }
+        });
+      });
+    });
+  }
+  /* B) gorizontal siljiydigan qatorlar uchun chekka belgisi */
+  var CAND='[class*="chip"],[class*="tabs"],[class*="rail"],[class*="subs"],[class*="seg"],.m6-hs,.m6-row,.sx-tw,.nx-tabs,[class*="scroll"],[class*="filters"]';
+  function fade(el){
+    var ov=getComputedStyle(el).overflowX; if(ov!=='auto'&&ov!=='scroll'){ if(el.hasAttribute('data-fade')) el.removeAttribute('data-fade'); return; }
+    var max=el.scrollWidth-el.clientWidth; if(max<6){ el.removeAttribute('data-fade'); return; }
+    var v=[]; if(el.scrollLeft>6) v.push('l'); if(el.scrollLeft<max-6) v.push('r');
+    var s=v.join(' '); if(el.getAttribute('data-fade')!==s){ if(s) el.setAttribute('data-fade',s); else el.removeAttribute('data-fade'); }
+    if(!el.__fdf){ el.__fdf=1; el.addEventListener('scroll',function(){fade(el)},{passive:true}); }
+  }
+  function scan(){ labelTables(); document.querySelectorAll(CAND).forEach(fade); }
+
+  /* C) kichik matn (<12px) va kichik bosish joylari (<40px) ni avtomatik tuzatish */
+  var coarse=window.matchMedia('(max-width:860px),(pointer:coarse)');
+  var SKIP='.lx,.sp5-hero,.m6-hero,.sp-win,[class*="sp-term"],[class*="sp-win"],[class*="sp-file"],[class*="sp-live"],[class^="c-"],[class*=" c-"],[class*="lx-"],svg,[aria-hidden="true"],.nt-switch,.pb-switch,.bc-sw,.sm7-b.mid,.m6-b.mid,.sp5-ri em,.vp,.vp *';
+  function enforce(root){
+    if(!root||root.nodeType!==1) return;
+    var list=[root].concat([].slice.call(root.querySelectorAll('*')));
+    var mob=coarse.matches;
+    list.forEach(function(el){
+      if(el.__fdOk===1) return;
+      var tag=el.tagName; if(tag==='SCRIPT'||tag==='STYLE'||tag==='svg'||tag==='path'||tag==='INPUT') return;
+      if(el.closest&&el.closest(SKIP)) return;
+      var cs=getComputedStyle(el);
+      if(cs.display==='none'||cs.position==='fixed') return;
+      var own=false; for(var i=0;i<el.childNodes.length;i++){var n=el.childNodes[i]; if(n.nodeType===3&&n.textContent.trim()){own=true;break}}
+      if(own&&parseFloat(cs.fontSize)<12){
+        var w=el.getBoundingClientRect().width;
+        if(w>24||el.textContent.trim().length>2){ el.style.setProperty('font-size','12px','important'); }
+      }
+      if(mob&&(tag==='BUTTON'||(tag==='A'&&el.hasAttribute('href'))||el.getAttribute('role')==='button')){
+        var r=el.getBoundingClientRect();
+        if(r.width>0&&r.height>0&&(r.height<40||r.width<40)&&cs.position!=='absolute'){
+          if(r.height<40) el.style.setProperty('min-height','40px','important');
+          if(r.width<40) el.style.setProperty('min-width','40px','important');
+        }
+      }
+    });
+  }
+  var pend=[]; var pq=0;
+  function flush(){ pq=0; var l=pend; pend=[]; l.forEach(function(n){ try{ enforce(n) }catch(e){} }); }
+  function queue(n){ pend.push(n); if(!pq) pq=requestAnimationFrame(flush); }
+  new MutationObserver(function(ms){ ms.forEach(function(m){ [].forEach.call(m.addedNodes,function(n){ if(n.nodeType===1) queue(n); }); }); }).observe(document.documentElement,{childList:true,subtree:true});
+  queue(document.body);
+  var q=0; function sched(){ if(q) return; q=setTimeout(function(){q=0; try{scan()}catch(e){}},250); }
+  new MutationObserver(sched).observe(document.documentElement,{childList:true,subtree:true});
+  window.addEventListener('resize',sched); sched();
+})();
+</script>
+
+<script id="edu-paste-creds">
+/* Login sahifasi: "Login: x / Parol: y" (yoki "x y", "x<Tab>y", ikki qator) nusxasini CTRL+V qilinsa —
+   login → login maydoniga, parol → parol maydoniga avtomatik joylashadi. */
+(function(){
+  function parse(t){
+    t=String(t||'').trim(); if(!t||t.length>200) return null;
+    var lm=t.match(/\b(?:login|username|user|foydalanuvchi|логин)\s*(?:[:=]|\s[-–]\s)\s*([^\s,;|]+)/i);
+    var pm=t.match(/\b(?:parol|password|pass|pwd|пароль)\s*(?:[:=]|\s[-–]\s)\s*(\S+)/i);
+    if(lm&&pm) return [lm[1],pm[1]];
+    var parts=t.split(/[\r\n\t]+|\s*[|;,]\s*|\s+\/\s+/).map(function(x){return x.trim()}).filter(Boolean);
+    if(parts.length<2) parts=t.split(/\s+/);
+    if(parts.length!==2) return null;
+    return parts.map(function(x){return x.replace(/^(?:login|parol|password|username)\s*[:=]\s*/i,'')});
+  }
+  function setVal(el,v){ var d=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value'); d.set.call(el,v); el.dispatchEvent(new Event('input',{bubbles:true})); }
+  document.addEventListener('paste',function(e){
+    var t=e.target; if(!t||t.tagName!=='INPUT'||!t.closest) return;
+    var box=t.closest('.lx'); if(!box) return;
+    var ins=box.querySelectorAll('input.lx-in'); if(ins.length<2) return;
+    var cd=e.clipboardData||window.clipboardData; if(!cd) return;
+    var r=parse(cd.getData('text')); if(!r) return;
+    e.preventDefault();
+    setVal(ins[0],r[0]); setVal(ins[1],r[1]);
+    try{ ins[1].focus(); }catch(x){}
+  },true);
+  var q=0,obs=new MutationObserver(function(){ if(q)return; q=setTimeout(function(){ q=0;
+    document.querySelectorAll('.lx input.lx-in').forEach(function(el,i){
+      if(i===0){ el.setAttribute('autocomplete','username'); el.setAttribute('autocapitalize','none'); el.setAttribute('autocorrect','off'); el.setAttribute('spellcheck','false'); }
+      if(i===1){ el.setAttribute('autocomplete','current-password'); }
+    });},300); });
+  obs.observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
 </body>
 </html>
