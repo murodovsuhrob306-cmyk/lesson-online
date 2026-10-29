@@ -9031,7 +9031,7 @@ function chatPreviewOf(last) {
   if (last.deleted_at) return "Xabar o'chirildi";
   const t = chatPlain(last.body).replace(/\s+/g, ' ').trim();
   if (t) return t;
-  if (last.attachment) return ((last.attachment.type || '').indexOf('image/') === 0 ? '🖼 Rasm' : '📎 ' + (last.attachment.name || 'Fayl'));
+  if (last.attachment) return ((last.attachment.type || '').indexOf('image/') === 0 ? '🖼 Rasm' : (last.attachment.type || '').indexOf('audio/') === 0 ? '🎤 Ovozli xabar' : '📎 ' + (last.attachment.name || 'Fayl'));
   return '';
 }
 
@@ -9356,7 +9356,10 @@ const chatSplitFwd = (body) => {
   if (e < 0) return null;
   return { from: body.slice(FWD_MARK.length, e), text: body.slice(e + FWD_MARK.length + 1) };
 };
-const chatPlain = (body) => { const f = chatSplitFwd(body); return f ? f.text : (body == null ? '' : String(body)); };
+const CHAT_RX = '\u2063RX\u2063';
+const chatIsRx = (b) => typeof b === 'string' && b.indexOf(CHAT_RX) === 0;
+const chatRxParse = (b) => { if (!chatIsRx(b)) return null; const p = b.slice(CHAT_RX.length).split('\u2063'); return p.length >= 2 && p[1] ? { id: p[0], emoji: p[1] } : null; };
+const chatPlain = (body) => { if (chatIsRx(body)) { const r = chatRxParse(body); return r ? 'Reaksiya ' + r.emoji : ''; } const f = chatSplitFwd(body); return f ? f.text : (body == null ? '' : String(body)); };
 const CHAT_MI = {
   dots: (p) => (<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" {...p}><circle cx="12" cy="5" r="1.7" /><circle cx="12" cy="12" r="1.7" /><circle cx="12" cy="19" r="1.7" /></svg>),
   fwd: (p) => (<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="m15 5 6 6-6 6" /><path d="M21 11H9a6 6 0 0 0-6 6v1" /></svg>),
@@ -9371,14 +9374,31 @@ function MsgSlide({ canReply, selMode, onReply, onHold, onToggle, children }) {
   const timer = useRef(null);
   const fired = useRef(false);
   const moved = useRef(false);
+  const mouseRef = useRef(false);
+  const rootRef = useRef(null);
+  const replyRef = useRef(onReply); replyRef.current = onReply;
+  useEffect(() => {
+    const el = rootRef.current; if (!el || !canReply || selMode) return undefined;
+    let acc = 0, tm = null;
+    const h = (e) => {
+      if (Math.abs(e.deltaX) < 2 || Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+      e.preventDefault();
+      acc = Math.min(125, acc + Math.abs(e.deltaX)); const v = Math.min(88, acc * 0.7);
+      setDrag(true); setDx(v);
+      clearTimeout(tm); tm = setTimeout(() => { if (v >= 56 && replyRef.current) replyRef.current(); acc = 0; setDx(0); setDrag(false); }, 150);
+    };
+    el.addEventListener('wheel', h, { passive: false });
+    return () => { el.removeEventListener('wheel', h); clearTimeout(tm); };
+  }, [canReply, selMode]);
   const clear = () => { if (timer.current) { clearTimeout(timer.current); timer.current = null; } };
   const buzz = (n) => { try { if (navigator.vibrate) navigator.vibrate(n); } catch (x) {} };
   const down = (e) => {
-    if (e.pointerType === 'mouse' || (e.target.closest && e.target.closest('a,button,textarea,input'))) return;
+    if ((e.pointerType === 'mouse' && e.button !== 0) || (e.target.closest && e.target.closest('a,button,textarea,input,audio,.tg-vp,.tg-rx'))) return;
+    mouseRef.current = e.pointerType === 'mouse';
     st.current = { x: e.clientX, y: e.clientY, dir: null, v: 0, hit: false };
     fired.current = false; moved.current = false;
     clear();
-    if (!selMode) timer.current = setTimeout(() => { if (st.current && !st.current.dir) { fired.current = true; buzz(14); onHold && onHold(); } }, 420);
+    if (!selMode && e.pointerType !== 'mouse') timer.current = setTimeout(() => { if (st.current && !st.current.dir) { fired.current = true; buzz(14); onHold && onHold(); } }, 420);
   };
   const move = (e) => {
     const s = st.current; if (!s || fired.current) return;
@@ -9387,7 +9407,7 @@ function MsgSlide({ canReply, selMode, onReply, onHold, onToggle, children }) {
       if (Math.abs(ddx) < 8 && Math.abs(ddy) < 8) return;
       clear();
       s.dir = Math.abs(ddx) > Math.abs(ddy) ? 'x' : 'y';
-      if (s.dir === 'x' && canReply && !selMode) setDrag(true);
+      if (s.dir === 'x' && canReply && !selMode) { setDrag(true); if (mouseRef.current) { try { window.getSelection().removeAllRanges(); e.currentTarget.setPointerCapture(e.pointerId); } catch (x) {} } }
     }
     if (s.dir !== 'x' || !canReply || selMode) return;
     moved.current = true;
@@ -9407,7 +9427,7 @@ function MsgSlide({ canReply, selMode, onReply, onHold, onToggle, children }) {
   };
   const p = Math.min(1, dx / 56);
   return (
-    <div className="chat-slide" onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} onClickCapture={click}
+    <div className="chat-slide" ref={rootRef} onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} onClickCapture={click}
       onContextMenu={(e) => { if (TOUCH_UI) e.preventDefault(); }}>
       <span className="chat-slide-ic" style={{ opacity: p, transform: 'translateY(-50%) scale(' + (0.6 + 0.4 * p) + ')' }}><ChatIcon.reply /></span>
       <div className="chat-slide-track" style={{ transform: 'translateX(' + dx + 'px)', transition: drag ? 'none' : 'transform .2s ease' }}>{children}</div>
@@ -9416,7 +9436,7 @@ function MsgSlide({ canReply, selMode, onReply, onHold, onToggle, children }) {
 }
 
 /* Menyu (⋮): ekranda aniq joylashadi, chetga chiqib ketmaydi */
-function ChatPop({ x, y, onClose, items }) {
+function ChatPop({ x, y, onClose, items, rx, onRx }) {
   const ref = useRef(null);
   const [pos, setPos] = useState({ left: x, top: y, vis: false });
   useLayoutEffect(() => {
@@ -9429,6 +9449,7 @@ function ChatPop({ x, y, onClose, items }) {
   return ReactDOM.createPortal(
     <div className="chat-pop-back" onClick={onClose} onContextMenu={(e) => { e.preventDefault(); onClose(); }}>
       <div ref={ref} className="chat-pop" style={{ left: pos.left, top: pos.top, visibility: pos.vis ? 'visible' : 'hidden' }} onClick={(e) => e.stopPropagation()} role="menu">
+        {rx && <div className="chat-pop-rx">{rx.map((em) => <button key={em} type="button" onClick={() => { onClose(); onRx(em); }}>{em}</button>)}</div>}
         {items.filter(Boolean).map((it) => (
           <button key={it.label} type="button" role="menuitem" className={'chat-pop-it' + (it.danger ? ' danger' : '')} onClick={() => { onClose(); it.onClick(); }}>
             {it.icon}<span>{it.label}</span>
@@ -9438,6 +9459,36 @@ function ChatPop({ x, y, onClose, items }) {
     </div>, document.body);
 }
 
+function TgVoice({ att }) {
+  const aRef = useRef(null);
+  const [pl, setPl] = useState(false);
+  const [t, setT] = useState(0);
+  const dur0 = parseInt(((att.name || '').match(/voice-(\d+)s/) || [])[1] || '0', 10);
+  const [dur, setDur] = useState(dur0);
+  const bars = rcptBars(att.name + att.size);
+  const fmt = (v) => { v = Math.max(0, Math.round(v)); return Math.floor(v / 60) + ':' + String(v % 60).padStart(2, '0'); };
+  const toggle = () => { const a = aRef.current; if (!a) return; if (a.paused) { document.querySelectorAll('.tg-vp audio').forEach((x) => { if (x !== a) x.pause(); }); a.play().catch(() => {}); } else a.pause(); };
+  const seek = (e) => { const a = aRef.current; const r = e.currentTarget.getBoundingClientRect(); if (a && dur) a.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * dur; };
+  const frac = dur ? Math.min(1, t / dur) : 0;
+  return (
+    <div className="tg-vp">
+      <button type="button" className="tg-vp-b" onClick={toggle} aria-label={pl ? 'To\'xtatish' : 'Tinglash'}>
+        {pl ? <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1.2" /><rect x="14" y="5" width="4" height="14" rx="1.2" /></svg>
+          : <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" /></svg>}
+      </button>
+      <div className="tg-vp-w" onClick={seek}>
+        {bars.map((h, i) => <i key={i} className={i / bars.length < frac ? 'on' : ''} style={{ height: 6 + h * 4 }} />)}
+      </div>
+      <span className="tg-vp-t">{fmt(pl || t ? t : dur)}</span>
+      <audio ref={aRef} src={att.data} preload="metadata"
+        onLoadedMetadata={(e) => { const d = e.currentTarget.duration; if (isFinite(d) && d > 0) setDur(d); }}
+        onTimeUpdate={(e) => setT(e.currentTarget.currentTime)} onPlay={() => setPl(true)} onPause={() => setPl(false)} onEnded={() => { setPl(false); setT(0); }} />
+    </div>
+  );
+}
+const TgIc = {
+  pin: (p) => (<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...p}><path d="M12 17v5" /><path d="M9 3h6l-1 6 3 3v2H7v-2l3-3-1-6z" /></svg>),
+};
 function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
   /* Ilova akkaunti bilan avtomatik kirish: appMe berilgan bo'lsa, token faqat shu akkaunt uchun olinadi */
   const [token, setToken] = useState(() => (appMe ? '' : chatGetTok()));
@@ -9519,6 +9570,55 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
   const convsRef = useRef(convs); convsRef.current = convs;
   const msgsRef = useRef(msgs); msgsRef.current = msgs;
   const activeRef = useRef(activeId); activeRef.current = activeId;
+  /* Telegram kabi: har bir suhbat uchun qoralama saqlanadi; xabarlar «mahkamlanadi»; suhbat ichida qidiruv */
+  const draftKey = chatUserKey('chat_drafts', appMe && appMe.username);
+  const draftsRef = useRef(null);
+  if (draftsRef.current === null) draftsRef.current = loadLS(draftKey, {}) || {};
+  const draftOwnerRef = useRef(null);
+  useEffect(() => { draftOwnerRef.current = activeId; setDraft(activeId && draftsRef.current[activeId] ? draftsRef.current[activeId] : ''); }, [activeId]);
+  useEffect(() => {
+    if (!activeId || draftOwnerRef.current !== activeId) return;
+    if (draft) draftsRef.current[activeId] = draft; else delete draftsRef.current[activeId];
+    saveLS(draftKey, draftsRef.current);
+  }, [draft]);
+  /* Ovozli xabar */
+  const [rec, setRec] = useState(null);
+  const recRef = useRef(null);
+  const stopRec = (cancel) => { const R = recRef.current; if (!R || !R.mr || R.mr.state === 'inactive') return; R.cancel = !!cancel; try { R.mr.stop(); } catch (e) {} };
+  useEffect(() => () => { const R = recRef.current; if (R && R.mr && R.mr.state !== 'inactive') { R.cancel = true; try { R.mr.stop(); } catch (e) {} } }, [activeId]);
+  const startRec = async () => {
+    if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) || !window.MediaRecorder) { if (notify) notify("Brauzer ovoz yozishni qo'llamaydi", 'danger'); return; }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mime = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'].find((t) => MediaRecorder.isTypeSupported(t)) || '';
+      const mr = new MediaRecorder(stream, Object.assign({ audioBitsPerSecond: 24000 }, mime ? { mimeType: mime } : {}));
+      const R = { mr, chunks: [], t0: Date.now(), cancel: false, mime: mr.mimeType || mime || 'audio/webm', iv: 0 };
+      recRef.current = R;
+      mr.ondataavailable = (e) => { if (e.data && e.data.size) R.chunks.push(e.data); };
+      mr.onstop = () => {
+        stream.getTracks().forEach((t) => t.stop()); clearInterval(R.iv); setRec(null);
+        if (R.cancel) return;
+        const sec = Math.max(1, Math.round((Date.now() - R.t0) / 1000));
+        const blob = new Blob(R.chunks, { type: R.mime });
+        const rd = new FileReader();
+        rd.onload = () => {
+          const base = String(R.mime || 'audio/webm').split(';')[0];
+          const data = String(rd.result || '').replace(/^data:[^,]*?;base64,/, 'data:' + base + ';base64,');
+          if (data.length > 690000) { if (notify) notify('Ovozli xabar juda uzun', 'danger'); return; }
+          sendVoice({ name: 'voice-' + sec + 's.' + (/mp4/.test(base) ? 'm4a' : /ogg/.test(base) ? 'ogg' : 'webm'), type: base, size: blob.size, data: data });
+        };
+        rd.readAsDataURL(blob);
+      };
+      mr.start();
+      setRec({ sec: 0 });
+      R.iv = setInterval(() => { const sc = Math.round((Date.now() - R.t0) / 1000); setRec({ sec: sc }); if (sc >= 120) stopRec(false); }, 250);
+    } catch (e) { if (notify) notify('Mikrofonga ruxsat berilmadi', 'danger'); }
+  };
+  const pinKey = chatUserKey('chat_pins', appMe && appMe.username);
+  const [pins, setPins] = useState(() => loadLS(pinKey, {}) || {});
+  const [pinIdx, setPinIdx] = useState(0);
+  const savePins = (next) => { setPins(next); saveLS(pinKey, next); };
+  const [msgSearch, setMsgSearch] = useState(null);   // null | { q, i }
   useEffect(() => { if (!activeId) return; try { const t = sessionStorage.getItem('fd_chat_prefill'); if (t) { sessionStorage.removeItem('fd_chat_prefill'); setDraft(t); } } catch (e) {} }, [activeId]);
   const wsRef = useRef(null);
   const retryRef = useRef({ timer: null, delay: 1000, closed: false });
@@ -9745,6 +9845,24 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
 
   const activeEntry = activeId ? msgs[activeId] : null;
   const activeItems = activeEntry ? activeEntry.items : [];
+  const pinIds = ((activeId && pins[activeId]) || []).filter((id) => activeItems.some((x) => x.id === id && !x.deleted_at));
+  const pinCur = pinIds.length ? pinIds[Math.min(pinIdx, pinIds.length - 1)] : null;
+  const pinMsg = pinCur != null ? activeItems.find((x) => x.id === pinCur) : null;
+  const togglePin = (m) => {
+    const cur = (pins[activeId] || []);
+    const next = cur.indexOf(m.id) >= 0 ? cur.filter((x) => x !== m.id) : cur.concat([m.id]);
+    savePins({ ...pins, [activeId]: next });
+    setPinIdx(Math.max(0, next.length - 1));
+  };
+  const msgHits = msgSearch && msgSearch.q.trim() ? activeItems.filter((x) => !x.deleted_at && !chatIsRx(x.body) && chatPlain(x.body).toLowerCase().indexOf(msgSearch.q.trim().toLowerCase()) >= 0).map((x) => x.id) : [];
+  const rxMap = {};
+  activeItems.forEach((x) => {
+    if (x.deleted_at || x.failed || !chatIsRx(x.body)) return;
+    const pr = chatRxParse(x.body); if (!pr) return;
+    const o = rxMap[pr.id] || (rxMap[pr.id] = {}); const arr = o[pr.emoji] || (o[pr.emoji] = []);
+    const i = arr.indexOf(x.sender_id); if (i >= 0) arr.splice(i, 1); else arr.push(x.sender_id);
+  });
+  const hitCur = msgHits.length ? msgHits[((msgSearch.i % msgHits.length) + msgHits.length) % msgHits.length] : null;
   useEffect(() => { setSel([]); setMenu(null); }, [activeId]);
   const lastItem = activeItems.length ? activeItems[activeItems.length - 1] : null;
   const lastKey = lastItem ? String(lastItem.id) : '';
@@ -9920,6 +10038,26 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
     atBottomRef.current = true;
     chatSendSound();
     patchConv(convId, (c) => Object.assign({}, c, { last_message: tmp, updated_at: tmp.created_at }));
+    postTmp(convId, tmp);
+  };
+
+  const sendVoice = (att) => {
+    const convId = activeRef.current;
+    if (!convId || !meRef.current) return;
+    const clientId = 'c-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+    const tmp = { id: clientId, client_id: clientId, conversation_id: convId, sender_id: meRef.current.id, body: '', attachment: att, created_at: new Date().toISOString(), reply_to: null, reply: null };
+    atBottomRef.current = true;
+    chatSendSound();
+    patchConv(convId, (c) => Object.assign({}, c, { last_message: tmp, updated_at: tmp.created_at }));
+    postTmp(convId, tmp);
+  };
+  /* Reaksiya: yashirin xizmat xabari sifatida yuboriladi (backend o'zgarmaydi), ikki tomonda ham pufak ostida chiqadi */
+  const sendReaction = (m, emoji) => {
+    const convId = activeRef.current;
+    if (!convId || !meRef.current || typeof m.id !== 'number') return;
+    const clientId = 'c-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+    const tmp = { id: clientId, client_id: clientId, conversation_id: convId, sender_id: meRef.current.id, body: CHAT_RX + m.id + '\u2063' + emoji, attachment: null, created_at: new Date().toISOString(), reply_to: null, reply: null };
+    atBottomRef.current = atBottomRef.current;
     postTmp(convId, tmp);
   };
 
@@ -10144,6 +10282,7 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
   const thread = [];
   let lastDay = null;
   activeItems.forEach((m) => {
+    if (chatIsRx(m.body)) return;
     const day = chatDayLabel(m.created_at);
     if (day !== lastDay) {
       thread.push(<div key={'day-' + m.id} className="chat-day"><span>{day}</span></div>);
@@ -10173,10 +10312,16 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
     const bodyText = fw ? fw.text : m.body;
     const toggleSel = () => setSel((a) => (a.indexOf(m.id) >= 0 ? a.filter((x) => x !== m.id) : a.concat(m.id)));
     const openMenu = (e) => { e.stopPropagation(); const r = e.currentTarget.getBoundingClientRect(); setMenu({ id: m.id, x: r.right, y: r.bottom }); };
+    const att = m.attachment;
+    const isImgA = !!att && (att.type || '').indexOf('image/') === 0;
+    const isAud = !!att && (att.type || '').indexOf('audio/') === 0;
+    const mediaOnly = isImgA && !bodyText && !quote && !fw && !deleted;
+    const rxs = rxMap[m.id] ? Object.keys(rxMap[m.id]).filter((e2) => rxMap[m.id][e2].length) : [];
     const msgEl = (
       <div key={String(m.client_id || m.id)} data-mid={m.id} tabIndex={-1}
+        onDoubleClick={(e) => { if (real && !selMode && !isEditing && !(e.target.closest && e.target.closest('a,button,textarea,.tg-vp'))) sendReaction(m, '\u2764\ufe0f'); }}
         onContextMenu={(e) => { if (!TOUCH_UI && real && !isEditing && !confirming && !selMode) { e.preventDefault(); setMenu({ id: m.id, x: e.clientX, y: e.clientY }); } }}
-        className={'chat-msg' + (mine ? ' mine' : '') + (m.failed ? ' failed' : '') + (deleted ? ' deleted' : '') + (flashId === m.id ? ' flash' : '') + (picked ? ' picked' : '')}>
+        className={'chat-msg' + (mine ? ' mine' : '') + (m.failed ? ' failed' : '') + (deleted ? ' deleted' : '') + (flashId === m.id ? ' flash' : '') + (picked ? ' picked' : '') + (mediaOnly ? ' media' : '') + (msgHits.indexOf(m.id) >= 0 ? ' hit' : '') + (hitCur === m.id ? ' hit-cur' : '') + (pinIds.indexOf(m.id) >= 0 ? ' pinned' : '')}>
         {selMode && real && <span className={'chat-pick' + (picked ? ' on' : '')}>{picked && <ChatIcon.check />}</span>}
         <div className="chat-bubble">
           {real && !isEditing && !confirming && !selMode && (
@@ -10204,12 +10349,13 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
             <div className="chat-text chat-deleted">Xabar o'chirildi</div>
           ) : (
             <React.Fragment>
-              {m.attachment && (m.attachment.type || '').indexOf('image/') === 0 && (
+              {isAud && <TgVoice att={m.attachment} />}
+              {isImgA && (
                 <a href={m.attachment.data} download={m.attachment.name} className="chat-img" title={m.attachment.name}>
-                  <img src={m.attachment.data} alt={m.attachment.name} />
+                  <img src={m.attachment.data} alt={m.attachment.name} onLoad={() => { const T = threadRef.current; if (T && atBottomRef.current) T.scrollTop = T.scrollHeight; }} />
                 </a>
               )}
-              {m.attachment && (m.attachment.type || '').indexOf('image/') !== 0 && (
+              {m.attachment && !isImgA && !isAud && (
                 <a href={m.attachment.data} download={m.attachment.name} className="chat-file">
                   <ChatIcon.clip />
                   <span><b>{m.attachment.name}</b><small>{chatFmtSize(m.attachment.size || 0)} · yuklab olish</small></span>
@@ -10235,6 +10381,11 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
                   ? <span className="chat-tick">…</span>
                   : <span className={'chat-tick' + (read ? ' read' : '')}>{read ? '✓✓' : '✓'}</span>)}
             </div>
+          )}
+          {rxs.length > 0 && !deleted && (
+            <div className="tg-rx">{rxs.map((e2) => (
+              <button key={e2} type="button" className={rxMap[m.id][e2].indexOf(me.id) >= 0 ? 'me' : ''} onClick={() => sendReaction(m, e2)}><span>{e2}</span>{rxMap[m.id][e2].length > 1 ? <b>{rxMap[m.id][e2].length}</b> : null}</button>
+            ))}</div>
           )}
         </div>
       </div>
@@ -10386,7 +10537,27 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
                       : (active.other.online ? 'onlayn' : 'oflayn') + ' · ' + chatRoleLabel(active.other.role)}
                 </small>
               </div>
+              <button type="button" className="chat-icon-btn tg-hsearch" aria-label="Suhbatdan qidirish" title="Suhbatdan qidirish" onClick={() => setMsgSearch(msgSearch ? null : { q: '', i: 0 })}><ChatIcon.search width="20" height="20" /></button>
             </header>
+            {msgSearch && !selMode && (
+              <div className="tg-sbar">
+                <ChatIcon.search width="18" height="18" />
+                <input autoFocus value={msgSearch.q} placeholder="Xabarlardan qidirish" onChange={(e) => { setMsgSearch({ q: e.target.value, i: 0 }); }}
+                  onKeyDown={(e) => { if (e.key === 'Escape') setMsgSearch(null); else if (e.key === 'Enter' && msgHits.length) { const ni = e.shiftKey ? msgSearch.i - 1 : msgSearch.i + 1; setMsgSearch({ ...msgSearch, i: ni }); jumpToMsg(msgHits[((ni % msgHits.length) + msgHits.length) % msgHits.length]); } }} />
+                <span className="tg-scnt">{msgSearch.q.trim() ? (msgHits.length ? (((msgSearch.i % msgHits.length) + msgHits.length) % msgHits.length) + 1 + '/' + msgHits.length : '0') : ''}</span>
+                <button type="button" className="chat-icon-btn" disabled={!msgHits.length} aria-label="Oldingisi" onClick={() => { const ni = msgSearch.i - 1; setMsgSearch({ ...msgSearch, i: ni }); jumpToMsg(msgHits[((ni % msgHits.length) + msgHits.length) % msgHits.length]); }}><ChatIcon.down style={{ transform: 'rotate(180deg)' }} /></button>
+                <button type="button" className="chat-icon-btn" disabled={!msgHits.length} aria-label="Keyingisi" onClick={() => { const ni = msgSearch.i + 1; setMsgSearch({ ...msgSearch, i: ni }); jumpToMsg(msgHits[((ni % msgHits.length) + msgHits.length) % msgHits.length]); }}><ChatIcon.down /></button>
+                <button type="button" className="chat-icon-btn" aria-label="Yopish" onClick={() => setMsgSearch(null)}><ChatIcon.x /></button>
+              </div>
+            )}
+            {pinMsg && !msgSearch && !selMode && (
+              <div className="tg-pin">
+                <button type="button" className="tg-pin-b" onClick={() => { jumpToMsg(pinMsg.id); setPinIdx((pinIdx + 1) % pinIds.length); }}>
+                  <TgIc.pin /><span className="tg-pin-t"><b>Mahkamlangan xabar{pinIds.length > 1 ? ' #' + (Math.min(pinIdx, pinIds.length - 1) + 1) : ''}</b><span>{chatPlain(pinMsg.body) || 'Fayl'}</span></span>
+                </button>
+                <button type="button" className="chat-icon-btn" aria-label="Mahkamdan olish" onClick={() => togglePin(pinMsg)}><ChatIcon.x /></button>
+              </div>
+            )}
             <div className={'chat-thread' + (selMode ? ' selmode' : '')} ref={threadRef} onScroll={onThreadScroll}>
               {activeEntry && activeEntry.hasMore && (
                 <button type="button" className="chat-older" onClick={loadOlder}>Eski xabarlar</button>
@@ -10431,34 +10602,47 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
             <form className="chat-composer" onSubmit={(e) => { e.preventDefault(); send(); }}
               onDragOver={(e) => { if (e.dataTransfer && Array.from(e.dataTransfer.types || []).indexOf('Files') >= 0) e.preventDefault(); }}
               onDrop={(e) => { const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) { e.preventDefault(); pickFile(f); } }}>
-              <button type="button" className="chat-emoji-btn chat-attach-btn" onClick={() => fileRef.current && fileRef.current.click()} aria-label="Fayl yoki rasm biriktirish" title="Fayl yoki rasm biriktirish" disabled={attachBusy}>
-                <ChatIcon.clip />
-              </button>
+              {rec ? (
+                <div className="tg-rec"><i className="tg-rec-dot" /><b>{Math.floor(rec.sec / 60)}:{String(rec.sec % 60).padStart(2, '0')}</b><span>Yozilmoqda…</span>
+                  <button type="button" className="tg-rec-x" onClick={() => stopRec(true)} aria-label="Bekor qilish"><ChatIcon.trash width="18" height="18" /></button></div>
+              ) : (
+              <div className="tg-field">
+                <button type="button" className={'chat-emoji-btn' + (emojiOpen ? ' on' : '')} onClick={() => setEmojiOpen((v) => !v)} aria-label="Emoji" title="Emoji">
+                  <ChatIcon.smile />
+                </button>
+                <textarea
+                  ref={taRef}
+                  rows={1}
+                  maxLength={4000}
+                  placeholder={isGroup ? 'Umumiy chatga yozing…' : 'Xabar'}
+                  value={draft}
+                  onChange={(e) => onDraftChange(e.target.value)}
+                  onPaste={(e) => { const it = e.clipboardData && Array.from(e.clipboardData.items || []).find((x) => x.kind === 'file'); if (it) { const f = it.getAsFile(); if (f) { e.preventDefault(); pickFile(f); } } }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey && !TOUCH_UI) { e.preventDefault(); send(); }
+                    else if (e.key === 'Escape' && replyTo) { setReplyTo(null); }
+                  }}
+                />
+                <button type="button" className="chat-emoji-btn chat-attach-btn" onClick={() => fileRef.current && fileRef.current.click()} aria-label="Fayl yoki rasm biriktirish" title="Fayl yoki rasm biriktirish" disabled={attachBusy}>
+                  <ChatIcon.clip />
+                </button>
+              </div>
+              )}
               <input ref={fileRef} type="file" hidden onChange={(e) => { const f = e.target.files && e.target.files[0]; e.target.value = ''; pickFile(f); }} />
-              <button type="button" className={'chat-emoji-btn' + (emojiOpen ? ' on' : '')} onClick={() => setEmojiOpen((v) => !v)} aria-label="Emoji" title="Emoji">
-                <ChatIcon.smile />
-              </button>
               {emojiOpen && (
                 <div className="chat-emoji-pop" role="dialog" aria-label="Emoji tanlash">
                   {CHAT_EMOJIS.map((em) => <button type="button" key={em} onClick={() => insertEmoji(em)}>{em}</button>)}
                 </div>
               )}
-              <textarea
-                ref={taRef}
-                rows={1}
-                maxLength={4000}
-                placeholder={isGroup ? 'Umumiy chatga yozing…' : 'Xabar yozing…'}
-                value={draft}
-                onChange={(e) => onDraftChange(e.target.value)}
-                onPaste={(e) => { const it = e.clipboardData && Array.from(e.clipboardData.items || []).find((x) => x.kind === 'file'); if (it) { const f = it.getAsFile(); if (f) { e.preventDefault(); pickFile(f); } } }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
-                  else if (e.key === 'Escape' && replyTo) { setReplyTo(null); }
-                }}
-              />
-              <button type="submit" className="chat-send" disabled={!draft.trim() && !attach} aria-label="Yuborish">
-                <ChatIcon.send />
-              </button>
+              {rec ? (
+                <button type="button" className="chat-send" onClick={() => stopRec(false)} aria-label="Yuborish"><ChatIcon.send /></button>
+              ) : (!draft.trim() && !attach && !attachBusy) ? (
+                <button type="button" className="chat-send tg-mic" onClick={startRec} aria-label="Ovozli xabar" title="Ovozli xabar">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></svg>
+                </button>
+              ) : (
+                <button type="submit" className="chat-send" disabled={!draft.trim() && !attach} aria-label="Yuborish"><ChatIcon.send /></button>
+              )}
             </form>
           </React.Fragment>
         )}
@@ -10476,9 +10660,10 @@ function ChatPage({ notify, appMe, onOpenProfile, isStudent, brand, canMute }) {
         const m = activeItems.find((x) => x.id === menu.id);
         if (!m) return null;
         const mineM = m.sender_id === me.id;
-        return <ChatPop x={menu.x} y={menu.y} onClose={() => setMenu(null)} items={[
+        return <ChatPop x={menu.x} y={menu.y} onClose={() => setMenu(null)} rx={['👍', '❤️', '😂', '😮', '😢', '🙏']} onRx={(em) => sendReaction(m, em)} items={[
           { label: 'Javob', icon: <ChatIcon.reply />, onClick: () => { setReplyTo(m); if (taRef.current) taRef.current.focus({ preventScroll: true }); } },
           { label: 'Nusxalash', icon: <ChatIcon.copy />, onClick: () => copyMsg(m) },
+          { label: pinIds.indexOf(m.id) >= 0 ? 'Mahkamdan olish' : 'Mahkamlash', icon: <TgIc.pin />, onClick: () => togglePin(m) },
           m.body ? { label: 'Uzatish', icon: <CHAT_MI.fwd />, onClick: () => setFwdMsg(m) } : null,
           { label: 'Belgilash', icon: <CHAT_MI.sel />, onClick: () => setSel([m.id]) },
           mineM ? { label: 'Tahrirlash', icon: <ChatIcon.pencil />, onClick: () => setEditing({ id: m.id, text: chatPlain(m.body) }) } : null,
@@ -13705,7 +13890,7 @@ function StudentsList({ students, setStudents, categories, canEdit, onOpen, noti
                 <div className="stu-meta">
                   <span className="stu-courses">{metaOf(s)}</span>
                   <span className={`stu-pill ${st.cls}`}>{st.icon && Icon[st.icon] ? React.createElement(Icon[st.icon], { width: 12, height: 12 }) : null}{st.text}</span>
-                  {(s.enrollReq || []).length > 0 && <span className="stu-pill stu-pill-req" title={(s.enrollReq || []).map((r) => r.catName + ' · ' + r.phone).join('\n')}>Yozilmoqchi: {s.enrollReq[s.enrollReq.length - 1].catName} · {s.enrollReq[s.enrollReq.length - 1].phone}</span>}
+                  {(() => { const pend = (s.enrollReq || []).filter((r) => !(s.access && s.access[r.catId] && s.access[r.catId].active)); const lr = pend[pend.length - 1]; return lr ? <span className="stu-pill stu-pill-req" title={pend.map((r) => r.catName + ' · ' + r.phone).join('\n')}>Yozilmoqchi: {lr.catName}{lr.phone ? ' · ' + lr.phone : ''}</span> : null; })()}
                 </div>
               </div>
               <div className="stu-acts">
@@ -18062,8 +18247,12 @@ function LessonTools({ uid, category, cur, flat, pick }) {
   const [tab, setTab] = useState('notes');
   const [notes, setNotes] = useState(() => loadLS('notes_' + uid, {})[lid] || '');
   const [saved, setSaved] = useState(() => loadLS('saved_' + uid, []));
-  const [rate, setRate] = useState(() => loadLS('rate_' + uid, {})[lid] || 0);
+  const [rates, setRates] = useState(() => loadLS('rate_' + uid, {}) || {});
+  const [tags, setTags] = useState(() => (loadLS('rtag_' + uid, {}) || {})[lid] || []);
+  const [hov, setHov] = useState(0);
   const [flash, setFlash] = useState(false);
+  const [thanks, setThanks] = useState(false);
+  const rate = rates[lid] || 0;
   const isSaved = saved.includes(lid);
   const onNotes = (v) => {
     setNotes(v);
@@ -18074,8 +18263,15 @@ function LessonTools({ uid, category, cur, flat, pick }) {
   };
   const toggleSave = () => { const n = isSaved ? saved.filter((x) => x !== lid) : [...saved, lid]; setSaved(n); saveLS('saved_' + uid, n); };
   const setStars = (n) => {
-    const v = rate === n ? 0 : n; setRate(v);
-    const all = loadLS('rate_' + uid, {}); if (v) all[lid] = v; else delete all[lid]; saveLS('rate_' + uid, all);
+    const v = rate === n ? 0 : n;
+    const all = { ...rates }; if (v) all[lid] = v; else delete all[lid];
+    setRates(all); saveLS('rate_' + uid, all);
+    if (v) { setThanks(true); clearTimeout(window.__ltR); window.__ltR = setTimeout(() => setThanks(false), 1800); }
+    if (!v && tags.length) { setTags([]); const t = loadLS('rtag_' + uid, {}) || {}; delete t[lid]; saveLS('rtag_' + uid, t); }
+  };
+  const toggleTag = (t) => {
+    const n = tags.includes(t) ? tags.filter((x) => x !== t) : [...tags, t];
+    setTags(n); const all = loadLS('rtag_' + uid, {}) || {}; if (n.length) all[lid] = n; else delete all[lid]; saveLS('rtag_' + uid, all);
   };
   const download = () => {
     const all = loadLS('notes_' + uid, {});
@@ -18086,35 +18282,60 @@ function LessonTools({ uid, category, cur, flat, pick }) {
     a.download = category.name + '-konspekt.txt'; a.click(); URL.revokeObjectURL(a.href);
   };
   const items = flat.filter((x) => saved.includes(x.l.id));
-  const labels = ['', 'Yomon', "O'rtacha", 'Yaxshi', 'Juda yaxshi', "Ajoyib!"];
+  const labels = ['', 'Yomon', "O'rtacha", 'Yaxshi', 'Juda yaxshi', 'Ajoyib!'];
+  const TAGS = ['Tushunarli', 'Foydali', 'Qiziqarli', 'Murakkab', 'Tez edi', 'Sekin edi'];
+  const ratedList = flat.filter((x) => rates[x.l.id]);
+  const avg = ratedList.length ? ratedList.reduce((t, x) => t + rates[x.l.id], 0) / ratedList.length : 0;
+  const shown = hov || rate;
+  const Star = ({ on }) => (<svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.9-4.7 4.5 1.2 6.4L12 17.4 6.3 20.5l1.2-6.4L2.8 9.6l6.4-.9L12 2.8z" fill={on ? '#f5b301' : 'none'} stroke={on ? '#f5b301' : 'currentColor'} strokeWidth="1.7" strokeLinejoin="round" /></svg>);
   return (
-    <div className="lt-box">
-      <div className="lt-tabs">
-        <button className={tab === 'notes' ? 'on' : ''} onClick={() => setTab('notes')}><Icon.edit width="13" height="13" /> Konspekt</button>
-        <button className={tab === 'rate' ? 'on' : ''} onClick={() => setTab('rate')}><Icon.medal width="13" height="13" /> Baholash</button>
-        <button className={tab === 'saved' ? 'on' : ''} onClick={() => setTab('saved')}><Icon.pin width="13" height="13" /> Saralanganlar ({items.length})</button>
-        <button className={`lt-save ${isSaved ? 'on' : ''}`} onClick={toggleSave}>{isSaved ? '★ Saralangan' : '☆ Saralash'}</button>
+    <div className="lt-box lt2">
+      <div className="lt-seg" role="tablist">
+        <button type="button" role="tab" aria-selected={tab === 'notes'} className={tab === 'notes' ? 'on' : ''} onClick={() => setTab('notes')}><Icon.edit width="15" height="15" /><span>Konspekt</span></button>
+        <button type="button" role="tab" aria-selected={tab === 'rate'} className={tab === 'rate' ? 'on' : ''} onClick={() => setTab('rate')}><Icon.medal width="15" height="15" /><span>Baholash</span>{rate > 0 && <em>{rate}★</em>}</button>
+        <button type="button" role="tab" aria-selected={tab === 'saved'} className={tab === 'saved' ? 'on' : ''} onClick={() => setTab('saved')}><Icon.pin width="15" height="15" /><span>Saralangan</span><em>{items.length}</em></button>
+        <button type="button" className={'lt-fav' + (isSaved ? ' on' : '')} onClick={toggleSave} aria-pressed={isSaved} title={isSaved ? 'Saralanganlardan olish' : 'Saralash'}>
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.9-4.7 4.5 1.2 6.4L12 17.4 6.3 20.5l1.2-6.4L2.8 9.6l6.4-.9L12 2.8z" fill={isSaved ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /></svg>
+          <span>{isSaved ? 'Saralangan' : 'Saralash'}</span>
+        </button>
       </div>
       {tab === 'notes' && (
-        <div>
+        <div className="lt-pane">
           <textarea className="lt-area" value={notes} onChange={(e) => onNotes(e.target.value)} placeholder="Bu dars bo'yicha o'z yozuvlaringiz, kodlar va savollaringizni yozing — avtomatik saqlanadi…" />
           <div className="lt-row">
             <span className="lt-hint">{flash ? '✓ Saqlandi' : `${notes.length} belgi · avtomatik saqlanadi`}</span>
-            <button className="cs-ghost" onClick={download}>⬇ Barcha konspektlarni yuklab olish (.txt)</button>
+            <button type="button" className="lt-dl" onClick={download}><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 4v11M7 11l5 5 5-5M5 20h14" /></svg>Konspektlarni yuklab olish (.txt)</button>
           </div>
         </div>
       )}
       {tab === 'rate' && (
-        <div className="lt-rate">
-          <div className="lt-stars">{[1, 2, 3, 4, 5].map((n) => <button key={n} className={n <= rate ? 'on' : ''} onClick={() => setStars(n)} aria-label={n + ' yulduz'}>★</button>)}</div>
-          <span className="lt-hint">{rate ? labels[rate] : 'Darsni baholang — yulduzni bosing'}</span>
+        <div className="lt-pane lt-rate2">
+          <div className="lt-rate-h">
+            <b>{rate ? labels[rate] : 'Bu darsni baholang'}</b>
+            <span>{thanks ? '✓ Bahoyingiz saqlandi — rahmat!' : (cur.l.title || '')}</span>
+          </div>
+          <div className="lt-stars2" onMouseLeave={() => setHov(0)}>
+            {[1, 2, 3, 4, 5].map((n) => (
+              <button key={n} type="button" className={n <= shown ? 'on' : ''} onMouseEnter={() => setHov(n)} onClick={() => setStars(n)} aria-label={n + ' yulduz'} aria-pressed={n <= rate}><Star on={n <= shown} /></button>
+            ))}
+          </div>
+          {rate > 0 && (
+            <div className="lt-tags">
+              <small>Nima yoqdi / nima qiyin bo'ldi?</small>
+              <div>{TAGS.map((t) => <button key={t} type="button" className={tags.includes(t) ? 'on' : ''} onClick={() => toggleTag(t)}>{t}</button>)}</div>
+            </div>
+          )}
+          <div className="lt-avg">
+            <div><small>Kurs bo'yicha o'rtacha baho</small><b>{ratedList.length ? avg.toFixed(1) : '—'}<i>★</i></b></div>
+            <div><small>Baholangan darslar</small><b>{ratedList.length}<i> / {flat.length}</i></b></div>
+          </div>
         </div>
       )}
       {tab === 'saved' && (
-        <div className="lt-list">
-          {items.length === 0 && <p className="lt-hint">Hali saralangan dars yo'q. Muhim darsni «☆ Saralash» bilan belgilab qo'ying.</p>}
+        <div className="lt-pane lt-list">
+          {items.length === 0 && <p className="lt-hint">Hali saralangan dars yo'q. Muhim darsni yuqoridagi «Saralash» tugmasi bilan belgilab qo'ying.</p>}
           {items.map((x) => (
-            <button key={x.l.id} className={x.l.id === lid ? 'on' : ''} onClick={() => pick(x.s, x.l)}>
+            <button key={x.l.id} type="button" className={x.l.id === lid ? 'on' : ''} onClick={() => pick(x.s, x.l)}>
               <span>{x.s.name} · {x.i + 1}-dars</span><b>{x.l.title}</b>
             </button>
           ))}
@@ -22273,7 +22494,167 @@ html body .sp5 .sp5-bw{color:#2a6cb8}
 .enr-opt i{color:#347fd3;background:rgba(52,127,211,.14)}
 .tk-row em{display:inline-grid;place-items:center;width:28px;height:28px;margin-right:9px;border-radius:9px;background:rgba(52,127,211,.12);color:#347fd3;font-style:normal;vertical-align:middle}
 .tk-row em svg{display:block}
+
+/* ===================== v18: Telegram uslubidagi chat ===================== */
+html body .chat-root form.chat-composer{display:flex;align-items:flex-end;gap:8px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:var(--cc-side);border-top:1px solid var(--cc-line)}
+.chat-root .tg-field{flex:1;min-width:0;display:flex;align-items:flex-end;gap:0;border-radius:22px;border:1px solid var(--cc-line);background:var(--cc-chat);min-height:44px;transition:border-color .15s,box-shadow .15s}
+.chat-root .tg-field:focus-within{border-color:#347fd3;box-shadow:0 0 0 3px rgba(52,127,211,.16)}
+.chat-root .tg-field .chat-emoji-btn{flex:none;width:40px;height:44px;border-radius:0;background:transparent;color:var(--cc-mut)}
+.chat-root .tg-field .chat-emoji-btn.on,.chat-root .tg-field .chat-emoji-btn:hover{color:#347fd3;background:transparent}
+html body .chat-root form.chat-composer .tg-field textarea{flex:1;min-width:0;border:0 !important;background:transparent !important;box-shadow:none !important;border-radius:0 !important;padding:12px 2px 11px !important;margin:0;max-height:132px;line-height:1.35;font-size:16px !important;color:var(--cc-ink) !important;outline:0 !important;overflow-y:auto}
+html body .chat-root form.chat-composer .tg-field textarea:focus{box-shadow:none !important;border:0 !important}
+.chat-root .chat-composer .chat-send{flex:none;width:44px;height:44px;background:#347fd3;color:#fff;box-shadow:none}
+.chat-root .chat-composer .chat-send:disabled{background:rgba(52,127,211,.35);opacity:1}
+.chat-root .chat-composer .chat-emoji-pop{bottom:calc(100% + 6px);left:10px}
+/* sarlavha qidiruv tugmasi, qidiruv paneli, mahkamlangan xabar */
+.chat-head{display:flex;align-items:center}
+.tg-hsearch{margin-left:auto;flex:none}
+.tg-sbar{display:flex;align-items:center;gap:4px;padding:6px 8px 6px 14px;background:var(--cc-side);border-bottom:1px solid var(--cc-line);color:var(--cc-mut)}
+.tg-sbar input{flex:1;min-width:0;height:38px;border:0;outline:0;background:transparent;color:var(--cc-ink);font:600 16px inherit;font-family:inherit}
+.tg-scnt{font:700 12.5px Manrope,sans-serif;color:var(--cc-mut);white-space:nowrap;padding:0 4px}
+.tg-pin{display:flex;align-items:center;background:var(--cc-side);border-bottom:1px solid var(--cc-line);padding:0 6px 0 0}
+.tg-pin-b{flex:1;min-width:0;display:flex;align-items:center;gap:10px;text-align:left;padding:7px 8px 7px 14px;border-left:3px solid #347fd3;margin:6px 0 6px 10px;color:#347fd3;background:none;border-top:0;border-right:0;border-bottom:0;cursor:pointer}
+.tg-pin-t{min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.tg-pin-t b{font-size:12.5px;color:#347fd3}
+.tg-pin-t span{font-size:13.5px;color:var(--cc-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-root .chat-msg.hit .chat-bubble{box-shadow:0 0 0 2px rgba(250,204,21,.6) !important}
+.chat-root .chat-msg.hit-cur .chat-bubble{box-shadow:0 0 0 3px #facc15 !important}
+.tg-sbar input{border:0 !important;box-shadow:none !important;background:transparent !important;padding:0 !important;border-radius:0 !important}
+.tg-sbar .chat-icon-btn,.tg-pin .chat-icon-btn{background:transparent !important;box-shadow:none !important;border:0 !important;color:var(--cc-mut)}
+.tg-sbar .chat-icon-btn:disabled{opacity:.35}
+.chat-msg.pinned .chat-bubble::after{content:"";position:absolute;top:6px;left:-5px;width:8px;height:8px;border-radius:50%;background:#347fd3}
+/* pufakchalar: Telegramga o'xshash */
+.chat-root .chat-bubble{border-radius:18px 18px 18px 6px}
+.chat-root .chat-msg.mine .chat-bubble{border-radius:18px 18px 6px 18px;background:#347fd3 !important;color:#fff;border-color:transparent !important;box-shadow:none}
+.chat-root .chat-msg.mine .chat-bubble .chat-text,.chat-root .chat-msg.mine .chat-meta,.chat-root .chat-msg.mine .chat-meta span{color:#fff}
+.chat-root .chat-msg.mine .chat-meta{opacity:.85}
+.chat-root .chat-msg.mine .chat-tick.read{color:#bfe3ff}
+.chat-root .chat-msg.mine .chat-bubble a{color:#fff;text-decoration:underline}
+.chat-root .chat-msg.mine .chat-quote{background:rgba(255,255,255,.18);border-left-color:#fff;color:#fff}
+.chat-root .chat-msg.mine .chat-quote b{color:#fff}
+.chat-root .chat-thread{background-image:radial-gradient(rgba(52,127,211,.07) 1.2px,transparent 1.4px);background-size:22px 22px}
+@media (max-width:860px){
+  .chat-root .chat-head{padding-left:4px}
+  .chat-root .chat-msg{max-width:86%}
+}
+
+/* ===================== v19 ===================== */
+/* --- chat: rasm (bubblesiz), reaksiya, ovozli xabar --- */
+.chat-root .chat-thread{overflow-x:hidden;overscroll-behavior:contain}
+.chat-root .chat-slide{touch-action:pan-y}
+.chat-root .chat-msg.media .chat-bubble{background:transparent !important;box-shadow:none !important;border:0 !important;padding:0 !important;color:inherit}
+.chat-root .chat-msg.media .chat-img{display:block;border-radius:18px;overflow:hidden;line-height:0}
+.chat-root .chat-msg.media .chat-img img{display:block;max-width:min(320px,72vw);max-height:420px;width:auto;height:auto;border-radius:18px;object-fit:cover}
+.chat-root .chat-msg.media .chat-meta{position:absolute;right:8px;bottom:8px;margin:0;padding:2px 9px;border-radius:12px;background:rgba(0,0,0,.52);color:#fff !important;backdrop-filter:blur(6px)}
+.chat-root .chat-msg.media .chat-meta span{color:#fff !important}
+.chat-root .chat-msg.media .chat-bubble{position:relative}
+.chat-root .chat-msg.media .tg-rx{margin-top:6px}
+.tg-rx{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.tg-rx button{display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 9px;border-radius:13px;border:1px solid rgba(128,150,190,.35);background:rgba(128,150,190,.16);color:inherit;font:700 12.5px Manrope,sans-serif;cursor:pointer}
+.tg-rx button span{font-size:14px;line-height:1}
+.tg-rx button.me{background:rgba(52,127,211,.28);border-color:#347fd3}
+.chat-root .chat-msg.mine .tg-rx button{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.4);color:#fff}
+.chat-root .chat-msg.mine .tg-rx button.me{background:#fff;color:#2a6cb8}
+.chat-pop-rx{display:flex;gap:2px;padding:6px 6px 8px;margin-bottom:4px;border-bottom:1px solid rgba(128,150,190,.22)}
+.chat-pop-rx button{flex:1;min-width:34px;height:38px;border:0;border-radius:12px;background:transparent;font-size:21px;cursor:pointer;transition:transform .12s,background .12s}
+.chat-pop-rx button:hover{background:rgba(52,127,211,.16);transform:scale(1.18)}
+.tg-vp{display:flex;align-items:center;gap:10px;min-width:210px;max-width:270px;padding:2px 2px 2px 0}
+.tg-vp-b{flex:none;width:42px;height:42px;border-radius:50%;border:0;display:grid;place-items:center;background:#347fd3;color:#fff;cursor:pointer}
+.chat-root .chat-msg.mine .tg-vp-b{background:#fff;color:#2a6cb8}
+.tg-vp-w{flex:1;min-width:0;height:34px;display:flex;align-items:center;gap:2px;cursor:pointer}
+.tg-vp-w i{flex:1;min-width:2px;border-radius:2px;background:currentColor;opacity:.35}
+.tg-vp-w i.on{opacity:1;color:#347fd3}
+.chat-root .chat-msg.mine .tg-vp-w i.on{color:#fff}
+.tg-vp-t{flex:none;font:700 12px Manrope,sans-serif;font-variant-numeric:tabular-nums;opacity:.85}
+.tg-vp audio{display:none}
+.tg-rec{flex:1;min-width:0;display:flex;align-items:center;gap:10px;height:46px;padding:0 6px 0 16px;border-radius:23px;border:1px solid rgba(244,63,94,.45);background:rgba(244,63,94,.08)}
+.tg-rec b{font:800 15px Manrope,sans-serif;font-variant-numeric:tabular-nums}
+.tg-rec span{flex:1;font-size:13px;opacity:.7}
+.tg-rec-dot{width:11px;height:11px;border-radius:50%;background:#f43f5e;animation:tgrec 1s ease-in-out infinite}
+@keyframes tgrec{50%{opacity:.25;transform:scale(.8)}}
+.tg-rec-x{width:38px;height:38px;border-radius:50%;border:0;background:transparent;color:#f43f5e;display:grid;place-items:center;cursor:pointer}
+
+/* --- dars asboblari (Konspekt / Baholash / Saralangan) --- */
+.lt2{background:rgba(128,150,190,.07) !important;border:1px solid rgba(128,150,190,.22) !important;border-radius:20px !important;padding:12px !important;color:inherit}
+.lt-seg{display:flex;align-items:center;gap:6px;padding:4px;border-radius:16px;background:rgba(128,150,190,.12);margin-bottom:12px}
+.lt-seg>button{flex:1;min-width:0;display:inline-flex;align-items:center;justify-content:center;gap:7px;height:42px;padding:0 8px;border:0;border-radius:12px;background:transparent;color:inherit;opacity:.78;font:700 13.5px Manrope,sans-serif;cursor:pointer;white-space:nowrap;transition:background .15s,opacity .15s}
+.lt-seg>button svg{flex:none}
+.lt-seg>button em{font-style:normal;font-size:11.5px;padding:1px 7px;border-radius:9px;background:rgba(128,150,190,.25)}
+.lt-seg>button.on{opacity:1;background:#347fd3;color:#fff;box-shadow:0 6px 14px -8px #347fd3}
+.lt-seg>button.on em{background:rgba(255,255,255,.28)}
+.lt-seg>.lt-fav{flex:none;padding:0 12px;border:1px solid rgba(128,150,190,.35);opacity:1}
+.lt-seg>.lt-fav.on{background:rgba(245,179,1,.18);border-color:#f5b301;color:#f5b301}
+.lt-pane{animation:ltin .18s ease}
+@keyframes ltin{from{opacity:0;transform:translateY(4px)}}
+.lt2 .lt-area{width:100%;min-height:150px;resize:vertical;border-radius:14px;border:1px solid rgba(128,150,190,.3);background:rgba(128,150,190,.08);color:inherit;padding:12px 14px;font:500 15px/1.55 inherit;outline:0}
+.lt2 .lt-area:focus{border-color:#347fd3;box-shadow:0 0 0 3px rgba(52,127,211,.18)}
+.lt2 .lt-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px}
+.lt2 .lt-hint{font-size:12.5px;opacity:.7}
+.lt-dl{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:12px;border:1px solid rgba(128,150,190,.35);background:transparent;color:inherit;font:700 12.5px Manrope,sans-serif;cursor:pointer}
+.lt-dl:hover{border-color:#347fd3;color:#347fd3}
+.lt-rate2{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:6px 4px 4px}
+.lt-rate-h b{display:block;font:800 20px Manrope,sans-serif}
+.lt-rate-h span{display:block;font-size:12.5px;opacity:.7;margin-top:3px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lt-stars2{display:flex;gap:6px}
+.lt-stars2 button{width:54px;height:54px;border:0;border-radius:16px;background:rgba(128,150,190,.1);color:rgba(128,150,190,.7);display:grid;place-items:center;cursor:pointer;transition:transform .12s,background .12s}
+.lt-stars2 button:hover{transform:translateY(-2px) scale(1.06)}
+.lt-stars2 button.on{background:rgba(245,179,1,.14)}
+.lt-tags{width:100%}
+.lt-tags small{display:block;font-size:12.5px;opacity:.7;margin-bottom:8px}
+.lt-tags>div{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+.lt-tags button{height:34px;padding:0 14px;border-radius:17px;border:1px solid rgba(128,150,190,.35);background:transparent;color:inherit;font:700 12.5px Manrope,sans-serif;cursor:pointer}
+.lt-tags button.on{background:#347fd3;border-color:#347fd3;color:#fff}
+.lt-avg{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:2px}
+.lt-avg>div{padding:12px 14px;border-radius:14px;background:rgba(128,150,190,.1);text-align:left}
+.lt-avg small{display:block;font-size:12px;opacity:.7}
+.lt-avg b{display:block;margin-top:3px;font:800 22px Manrope,sans-serif}
+.lt-avg b i{font-style:normal;font-size:14px;opacity:.7;margin-left:3px}
+.lt2 .lt-list{display:flex;flex-direction:column;gap:8px}
+.lt2 .lt-list>button{text-align:left;padding:11px 14px;border-radius:14px;border:1px solid rgba(128,150,190,.3);background:rgba(128,150,190,.08);color:inherit;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.lt2 .lt-list>button span{font-size:12px;opacity:.7}
+.lt2 .lt-list>button.on,.lt2 .lt-list>button:hover{border-color:#347fd3}
+@media (max-width:560px){
+  .lt-seg>button:not(.on) span,.lt-seg>button:not(.on) em{display:none}
+  .lt-seg>button:not(.on){flex:0 0 52px}
+  .lt-seg>button.on{flex:1}
+  .lt-seg>.lt-fav span{display:none}
+  .lt-stars2 button{width:48px;height:48px}
+  .lt-avg b{font-size:19px}
+}
+/* izoh yuborish tugmasi telefonda kesilmasin */
+.cm-row{flex-wrap:wrap}
+.cm-btns{display:flex;gap:8px;margin-left:auto}
+.cm-btn{white-space:nowrap;flex:none;width:auto !important;min-width:0;height:40px}
+.cm-btn.pri{border-radius:12px !important}
+@media (max-width:560px){.cm-hint{display:none}.cm-btns{width:100%}.cm-btns .cm-btn.pri{flex:1;justify-content:center}.cs-sheet-fab{bottom:calc(14px + env(safe-area-inset-bottom,0px)) !important;height:44px;padding:0 16px}}
+
+/* --- to'lov / statistika kartalari (zamonaviy) --- */
+.sx-kpis .sx-k{position:relative;overflow:hidden;container-type:inline-size;display:flex !important;flex-direction:column;gap:0 !important;padding:18px 20px 16px !important;border-radius:22px !important;border:1px solid rgba(128,150,190,.2) !important;border-top:1px solid rgba(128,150,190,.2) !important;border-left:1px solid rgba(128,150,190,.2) !important;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 10%,transparent),transparent 55%),rgba(128,150,190,.06) !important;box-shadow:none !important;transform:none !important}
+.sx-kpis .sx-k::after{display:block !important;content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c) 26%,transparent),transparent 70%);opacity:1}
+.sx-kpis .sx-k:hover{border-color:color-mix(in srgb,var(--c) 55%,transparent) !important;transform:translateY(-2px) !important}
+.sx-kpis .sx-k .sx-kh{display:flex !important;align-items:center;gap:10px !important}
+.sx-kpis .sx-k .sx-kh i{width:38px !important;height:38px !important;border-radius:12px !important;background:color-mix(in srgb,var(--c) 20%,transparent) !important;color:var(--c) !important;box-shadow:none !important}
+.sx-kpis .sx-k .sx-kh span{flex:1;font:700 13px Manrope,sans-serif;opacity:.8}
+.sx-kpis .sx-k b{margin-top:16px !important;font:800 clamp(20px,9.4cqw,32px)/1.1 Manrope,sans-serif !important;letter-spacing:-.02em;white-space:nowrap}
+.sx-kpis .sx-k small{margin-top:7px;font-size:12.5px;opacity:.7;line-height:1.35}
+.sx-kpis .sx-k .sx-kp{height:6px !important;margin-top:14px !important;background:rgba(128,150,190,.2) !important}
+.sx-kpis .sx-k .sx-kp u{background:var(--c) !important}
 </style>
+<script id="edu-flat-js">
+(function(){
+  var RX=/gradient\([^)]*rgb\(\s*(34, 211, 238|56, 189, 248|6, 182, 212|14, 165, 233)\)/;
+  function flat(el){
+    if(el.nodeType!==1||el.closest('[data-keep-grad],.course-card,.ccard,.cc-cover,svg')) return;
+    try{ var cs=getComputedStyle(el); if(cs.backgroundImage&&cs.backgroundImage.indexOf('gradient')>-1&&RX.test(cs.backgroundImage)){ el.style.setProperty('background-image','none','important'); el.style.setProperty('background-color','#347fd3','important'); } }catch(e){}
+  }
+  function scan(root){ flat(root); var all=root.querySelectorAll?root.querySelectorAll('*'):[]; for(var i=0;i<all.length;i++) flat(all[i]); }
+  var pend=[],t=0;
+  function run(){ t=0; var n=pend; pend=[]; for(var i=0;i<n.length;i++){ if(n[i].isConnected) scan(n[i]); } }
+  new MutationObserver(function(ms){ for(var i=0;i<ms.length;i++){ for(var j=0;j<ms[i].addedNodes.length;j++){ var a=ms[i].addedNodes[j]; if(a.nodeType===1) pend.push(a); } } if(pend.length&&!t) t=setTimeout(run,120); }).observe(document.documentElement,{childList:true,subtree:true});
+  if(document.body) scan(document.body);
+})();
+</script>
+
 <script id="edu-fix-v11-js">
 (function(){
   /* A) jadval kataklariga sarlavha nomlarini (data-label) qo'yish — telefonda karta ko'rinishi uchun */
